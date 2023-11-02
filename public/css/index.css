@@ -1,0 +1,43 @@
+body {
+  background-color: var(--primary);
+  height: 100vh;
+  justify-content: space-evenly;
+  padding: 0 2rem;
+}
+
+header{
+    gap: 2rem;
+}
+
+/* TODO make global */
+h1{
+    font-size: 1.5rem;
+}
+
+h2{
+    font-size: 1rem;
+}
+
+main{
+    width: 100%;
+}
+
+.btn-container{
+    gap: 1rem;
+    width: 75%;
+}
+
+footer{
+    color: var(--secondary);
+    gap: 1rem;
+
+}
+
+footer p{
+    margin: 0;
+}
+
+.footer-policy{
+    gap: 0.5rem;
+    font-size: 0.7rem;
+}
