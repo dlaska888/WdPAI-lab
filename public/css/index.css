@@ -1,43 +1,83 @@
 body {
-  background-color: var(--primary);
   height: 100vh;
-  justify-content: space-evenly;
-  padding: 0 2rem;
+
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 2fr 1fr;
+  grid-template-areas: 
+  "header ."
+  "header main"
+  "header footer";
+
+  background-color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    body{
+        padding: 0 2rem;
+
+        grid-template-columns: 1fr;
+        grid-template-rows: .5fr 2fr 1fr .5fr;
+        grid-template-areas:
+        "."
+        "header"
+        "main"
+        "footer";
+    }
+    
 }
 
 header{
-    gap: 2rem;
+    padding: 2rem;
+
+    grid-area: header;
+    justify-content: center;
+
+    background-color: var(--primary-light);
 }
 
-/* TODO make global */
-h1{
-    font-size: 1.5rem;
+@media (max-width: 768px) {
+    header{
+        background-color: var(--primary);
+    }
 }
 
-h2{
-    font-size: 1rem;
+header .header-container{
+    max-width: 600px;
+    gap: 3rem;
 }
 
 main{
     width: 100%;
+
+    grid-area: main;
+    gap: 2rem;
 }
 
-.btn-container{
-    gap: 1rem;
+main h2{
+    font-size: 2rem;
+}
+
+main .btn-container{
     width: 75%;
+    gap: 1rem;
+}
+
+main h2{
+    gap: 2rem;
 }
 
 footer{
-    color: var(--secondary);
+    grid-area: footer;
     gap: 1rem;
-
+    color: var(--secondary);
 }
 
 footer p{
     margin: 0;
 }
 
-.footer-policy{
+footer .footer-policy{
     gap: 0.5rem;
     font-size: 0.7rem;
 }
