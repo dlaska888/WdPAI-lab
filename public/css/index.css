@@ -1,83 +1,70 @@
 body {
-  height: 100vh;
+	height: 100vh;
 
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: 1fr 2fr 1fr;
-  grid-template-areas: 
-  "header ."
-  "header main"
-  "header footer";
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	grid-template-rows: 1fr 2fr 1fr;
+	grid-template-areas:
+		"header ."
+		"header main"
+		"header footer";
 
-  background-color: var(--primary);
+	background-color: var(--primary);
 }
 
 @media (max-width: 768px) {
-    body{
-        padding: 0 2rem;
+	body {
+		padding: 0 1rem;
 
-        grid-template-columns: 1fr;
-        grid-template-rows: .5fr 2fr 1fr .5fr;
-        grid-template-areas:
-        "."
-        "header"
-        "main"
-        "footer";
-    }
-    
+		grid-template-columns: 1fr;
+		grid-template-rows: 0.5fr 1fr 1fr 0.5fr;
+		grid-template-areas:
+			"."
+			"header"
+			"main"
+			"footer";
+	}
 }
 
-header{
-    padding: 2rem;
+header {
+	padding: 2rem;
 
-    grid-area: header;
-    justify-content: center;
+	grid-area: header;
+	justify-content: space-around;
 
-    background-color: var(--primary-light);
+	background-color: var(--primary-light);
 }
 
 @media (max-width: 768px) {
-    header{
-        background-color: var(--primary);
-    }
+	header {
+		padding: 1rem 0;
+		background-color: var(--primary);
+	}
 }
 
-header .header-container{
-    max-width: 600px;
-    gap: 3rem;
+header .header-container {
+	max-width: 600px;
+	gap: 3rem;
 }
 
-main{
-    width: 100%;
+main {
+	width: 100%;
 
-    grid-area: main;
-    gap: 2rem;
+	grid-area: main;
+	gap: 2rem;
 }
 
-main h2{
-    font-size: 2rem;
+main h2 {
+	font-size: 2rem;
 }
 
-main .btn-container{
-    width: 75%;
-    gap: 1rem;
+main .btn-container {
+	width: 75%;
+	gap: 1rem;
 }
 
-main h2{
-    gap: 2rem;
+main h2 {
+	gap: 2rem;
 }
 
-footer{
-    grid-area: footer;
-    gap: 1rem;
-    color: var(--secondary);
-}
 
-footer p{
-    margin: 0;
-}
-
-footer .footer-policy{
-    gap: 0.5rem;
-    font-size: 0.7rem;
-}

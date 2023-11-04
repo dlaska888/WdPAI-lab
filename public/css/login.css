@@ -1,0 +1,56 @@
+body {
+	height: 100vh;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: 0.5fr 2fr 0.5fr;
+	grid-template-areas:
+		"."
+		"main"
+		"footer";
+
+	background-color: var(--primary);
+}
+
+main {
+	width: 60vh;
+	max-width: 100vw;
+	padding: 1rem;
+
+	grid-area: main;
+
+	justify-self: center;
+	align-self: center;
+}
+
+main .main-form {
+	height: 100%;
+	width: 100%;
+	gap: 2rem;
+	padding: 2rem 0;
+	justify-content: space-evenly;
+
+	border-radius: 1rem;
+	background-color: var(--primary-light);
+}
+
+main .input-container {
+	width: 75%;
+	gap: 1rem;
+}
+
+main .input {
+	width: 100%;
+}
+
+@media (max-width: 768px) {
+	main .main-form {
+		background-color: var(--primary);
+	}
+	main .input-container {
+		width: 100%;
+	}
+}
+
+footer {
+	grid-area: footer;
+}
