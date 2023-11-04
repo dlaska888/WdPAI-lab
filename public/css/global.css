@@ -6,16 +6,16 @@
 
 a {
 	text-decoration: none;
+	color: inherit;
 }
 
 a:visited {
 	color: inherit;
 }
 
-:root { font-family: 'Inter', sans-serif; }
-  @supports (font-variation-settings: normal) {
-    :root { font-family: 'Inter var', sans-serif; }
-  }
+:root {
+	font-family: Arial, Helvetica, sans-serif
+}
 
 /* globally available variables */
 :root {
@@ -29,9 +29,6 @@ a:visited {
 }
 
 .text-primary {
-	font-family: "Inter";
-	font-style: normal;
-	font-weight: 600;
 	text-align: center;
 	color: #ffffff;
 }
