@@ -1,0 +1,192 @@
+
+body {
+	height: 100vh;
+	z-index: 1;
+
+	background-color: var(--grey);
+}
+
+@media (max-width: 768px) {
+	body {
+		flex-direction: column;
+		position: relative;
+	}
+}
+
+aside {
+	height: 100vh;
+	padding: 1.2rem;
+
+	background-color: var(--primary);
+	color: #fff;
+}
+
+aside nav {
+	justify-content: space-between;
+}
+
+aside ul {
+	gap: 2rem;
+	padding: 0;
+
+	list-style: none;
+}
+
+aside a {
+	text-decoration: none;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+}
+
+aside nav,
+aside ul {
+	height: 100%;
+}
+
+/* Hamburger button style */
+#nav-mobile {
+	position: fixed;
+	display: none; /* Initially hidden on desktop */
+	width: 100vw;
+	padding: 1rem;
+	z-index: 2;
+	overflow: hidden;
+
+	background-color: var(--primary);
+	transition: height 0.5s ease-in-out; /* Add smooth transition animation */
+
+	&.collapse {
+		height: 74px;
+	}
+	
+	&.expand {
+		height: 100vh;
+	}
+}
+
+#nav-mobile .nav-container {
+	min-height: 95vh;
+	justify-content: space-between;
+}
+
+#nav-mobile .nav-menu {
+	height: max-content;
+	width: 100%;
+	gap: 1rem;
+	align-items: center;
+
+}
+
+#nav-mobile .search-container {
+	justify-content: center;
+}
+
+#nav-mobile .nav-menu,
+#nav-mobile .search-container,
+#nav-mobile input {
+	width: 100%;
+}
+
+/* Media query for mobile view (adjust the max-width as needed) */
+@media (max-width: 768px) {
+	#nav-mobile {
+		display: flex;
+	}
+
+	#sidebar-container {
+		display: none;
+	}
+}
+
+#nav-content {
+	gap: 1rem;
+}
+
+#nav-content .profile-photo {
+	width: 50%;
+	height: auto;
+}
+
+.footer-logo{
+	padding: 0;
+}
+
+main {
+	top: 80px;
+	padding: 2rem;
+}
+
+main section {
+	transition: all 0.5s ease-in-out;
+}
+
+@media (max-width: 768px) {
+	main {
+		position: absolute;
+	}
+}
+
+.hidden {
+	display: none;
+}
+
+#menu-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+	cursor: pointer;
+	transition-duration: 0.5s;
+
+	--width: 30px;
+	--height: 30px;
+	--bar-height: calc(var(--height) / 7);
+	--bar-gap: calc(var(--height) / 3);
+	--color: var(--secondary);
+
+	width: var(--width);
+	height: var(--height);
+
+    .bar {
+        transition-duration: 0.5s;
+        position: relative;
+        height: var(--bar-height);
+        width: var(--width);
+        background-color: var(--color);
+
+        &:before {
+            transition-duration: 0.5s;
+            position: absolute;
+            height: var(--bar-height);
+            width: var(--width);
+            top: calc(-1 * var(--bar-gap));
+            background-color: var(--color);
+            content: "";
+        }
+
+        &:after {
+            transition-duration: 0.5s;
+            position: absolute;
+            height: var(--bar-height);
+            width: var(--width);
+            top: var(--bar-gap);
+            background-color: var(--color);
+            content: "";
+        }
+    }
+
+    &.open {
+        .bar {
+            transition-duration: 0.5s;
+            background: transparent;
+    
+            &:before {
+                transform: rotateZ(45deg) scaleX(1.25) translate(6.5px, 6.5px);
+            }
+    
+            &:after {
+                transform: rotateZ(-45deg) scaleX(1.25) translate(6px, -6px);
+            }
+        }
+    }
+}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>LinkyApp - Main</title>
+   <link rel="stylesheet" href="/public/css/global.css">
+   <link rel="stylesheet" href="/public/css/app.css">
+   <script src="/public/js/app.js" defer></script>
+</head>
+
+<body class="flex">
+   <nav id="nav-mobile" class="flex-column collapse">
+      <div class="nav-container flex-column">
+         <div class="nav-menu flex">
+            <div id="menu-btn"><div class="bar"></div></div>
+            <div class="search-container flex">
+               <input type="text" name="email" class="input" placeholder="Search">
+            </div>
+         </div>
+         <div id="nav-content" class="nav-content flex-column flex-center">
+            <img class="profile-photo" src="/public/assets/svg/account.svg" alt="Your profile photo">
+            <div class="profile-info text-primary text-shadow">
+               <h1>Silvio Suresh</h1>
+               <p>sureshsilvio@gmail.com</p>
+            </div>
+            <a href="#" class="btn-primary" type="button" title="Account">
+               <span class="btn-primary-top">Account</span>
+            </a>
+            <a href="#" class="btn-primary" type="button" title="Settings">
+               <span class="btn-primary-top">Settings</span>
+            </a>
+            <a href="#" class="btn-primary" type="button" title="Log out">
+               <span class="btn-primary-top">Log out</span>
+            </a>
+         </div>
+         <footer id="nav-footer" class="footer-logo flex-column flex-center">
+            <a href="index.html" title="LinkyApp" class="logo-text flex">
+               <img src="/public/assets/svg/logo1.svg" alt="LinkyApp">
+               <p>LinkyApp</p>
+            </a>
+         </footer>
+      </div>
+   </nav>
+   <aside id="sidebar-container">
+      <nav class="flex-column">
+         <ul class="flex-column">
+            <li>
+               <a href="#" onclick="showPage('my-documents')" title="Home">
+                  <img src="/public/assets/svg/home.svg" alt="Home">
+               </a>
+            </li>
+            <li>
+               <a href="#" onclick="showPage('shared-documents')" title="Shared">
+                  <img src="/public/assets/svg/shared.svg" alt="Shared">
+               </a>
+            </li>
+            <li>
+               <a href="#" onclick="showPage('account')" title="Account">
+                  <img src="/public/assets/svg/account.svg" alt="Account">
+               </a>
+            </li>
+            <li>
+               <a href="#" onclick="showPage('settings')" title="Settings">
+                  <img src="/public/assets/svg/settings.svg" alt="Settings">
+               </a>
+            </li>
+            <li>
+               <a href="#" onclick="logout()" title="Log out">
+                  <img src="/public/assets/svg/logout.svg" alt="Log out">
+               </a>
+            </li>
+         </ul>
+         <a href="index.html" title="LinkyApp">
+            <img src="/public/assets/svg/logo1.svg" alt="LinkyApp">
+         </a>
+      </nav>
+   </aside>
+
+   <!-- Main Content -->
+   <main>
+      <!-- Default content -->
+      <section id="default-content">
+         <h1>Welcome to My SPA</h1>
+         <p>Select an option from the sidebar to get started.</p>
+      </section>
+
+      <!-- My Documents -->
+      <section id="my-documents" class="hidden">
+         <h1>My Documents</h1>
+         <p>Here are your documents.</p>
+      </section>
+
+      <!-- Shared Documents -->
+      <section id="shared-documents" class="hidden">
+         <h1>Shared Documents</h1>
+         <p>View documents shared with you.</p>
+      </section>
+
+      <!-- Account -->
+      <section id="account" class="hidden">
+         <h1>Account</h1>
+         <p>Manage your account settings.</p>
+      </section>
+
+      <!-- Settings -->
+      <section id="settings" class="hidden">
+         <h1>Settings</h1>
+         <p>Customize your app settings.</p>
+      </section>
+   </main>
+</body>
+
+</html>
