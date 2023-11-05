@@ -15,6 +15,8 @@ a:visited {
 
 :root {
 	font-family: Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	font-style: normal;
 }
 
 /* globally available variables */
@@ -25,8 +27,6 @@ a:visited {
 	--secondary: #fff;
 	--tertiary: #a9a9a9;
 	--grey: #eee;
-	font-size: 16px;
-	font-style: normal;
 }
 
 .text-primary {
@@ -118,25 +118,6 @@ a:visited {
 	background-color: white;
 	transform: scale(1.05);
 	box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.1);
-}
-
-.text-line {
-	display: flex;
-	flex-direction: row;
-
-	&:after,
-	&:before {
-		content: "";
-		flex: 1 1;
-		border-bottom: 2px solid var(--secondary);
-		margin: auto;
-	}
-	&:after {
-		margin-left: 15px;
-	}
-	&:before {
-		margin-right: 15px;
-	}
 }
 
 .footer-logo {
