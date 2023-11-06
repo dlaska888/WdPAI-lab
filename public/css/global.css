@@ -47,13 +47,14 @@ a:visited {
 }
 
 /* Override any display: properties */
+
 @media (max-width: 768px) {
 	.hide-mobile {
 		display: none !important;
 	}
 }
 
-@media (min-width: 768px) {
+@media (min-width: 769px) {
 	.hide-desktop {
 		display: none !important;
 	}
@@ -78,11 +79,13 @@ a:visited {
 	--button_radius: 0.75em;
 	--button_color: var(--secondary);
 	--button_outline_color: #000000;
+	font-family: Arial, Helvetica, sans-serif;
 	font-size: 17px;
 	font-weight: bold;
 	border: none;
 	border-radius: var(--button_radius);
 	background: var(--button_outline_color);
+	cursor: pointer;
 
 	width: 100%;
 	max-width: 250px;
@@ -147,8 +150,4 @@ a:visited {
 .footer-logo .footer-policy {
 	gap: 0.5rem;
 	font-size: 0.7rem;
-}
-
-footer{
-	
 }

@@ -11,32 +11,46 @@ function showPage(pageId) {
 	selectedSection.classList.remove("hidden");
 }
 
+function activatePageButtons(pageClass) {
+	spaBtns.forEach((btn) => {
+		if (btn.classList.contains(pageClass)) {
+			btn.classList.add("active");
+		}
+	});
+}
+
+function findPageClass(element) {
+	return Array.from(element.classList).find((className) =>
+		className.startsWith("page-")
+	);
+}
+
 // SPA navigation buttons
-const homeBtns = document.querySelectorAll(".btn-home");
-const sharedBtns = document.querySelectorAll(".btn-shared");
-const accBtns = document.querySelectorAll(".btn-account");
-const settBtns = document.querySelectorAll(".btn-settings");
-const logoutBtns = document.querySelectorAll(".btn-logout");
 
-homeBtns.forEach((btn) =>
-	btn.addEventListener("click", () => showPage("home"))
-);
+const spaBtns = document.querySelectorAll(".btn-page");
 
-sharedBtns.forEach((btn) => {
-	btn.addEventListener("click", () => showPage("shared"));
+spaBtns.forEach((btn) => {
+	const pageClass = findPageClass(btn);
+	btn.addEventListener("click", () => showPage(pageClass));
 });
 
-accBtns.forEach((btn) =>
-	btn.addEventListener("click", () => showPage("account"))
-);
-settBtns.forEach((btn) =>
-	btn.addEventListener("click", () => showPage("settings"))
-);
-logoutBtns.forEach((btn) => btn.addEventListener("click", () => logout()));
+spaBtns.forEach((spaBtn) => {
+	spaBtn.addEventListener("click", () => {
+		spaBtns.forEach((btn) => {
+			btn.classList.remove("active");
+		});
+
+		//Link same SPA buttons on desktop and mobile
+		const pageClass = findPageClass(spaBtn);
+		activatePageButtons(pageClass);
+	});
+});
 
 // Session handling
+const logoutBtns = document.querySelectorAll(".btn-logout");
+logoutBtns.forEach((btn) => btn.addEventListener("click", () => logout()));
 function logout() {
-	window.location.href = "index.html";
+	window.location.href = "login.html";
 }
 
 // Navbar mobile
@@ -57,3 +71,5 @@ searchBtn.addEventListener("click", () => {
 	menuBtn.classList.remove("open");
 	nav.classList.remove("expand");
 });
+
+//Footer mobile
