@@ -53,7 +53,7 @@ function logout() {
 	window.location.href = "login.html";
 }
 
-// Navbar mobile
+// Navbar mobile toggle
 const navButtons = document.querySelectorAll(".btn-nav");
 const menuBtn = document.querySelector("#btn-mobile-menu");
 const nav = document.querySelector("#nav-mobile");
@@ -65,6 +65,7 @@ navButtons.forEach((btn) =>
 	})
 );
 
+//Navbar mobile collapse
 const searchBtn = document.querySelector(".search-container");
 
 searchBtn.addEventListener("click", () => {

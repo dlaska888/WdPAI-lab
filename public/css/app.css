@@ -37,16 +37,16 @@ aside {
 		text-decoration: none;
 
 		&.active,
-    &.active:hover{
+		&.active:hover {
 			background-color: var(--secondary);
 			& path {
 				fill: var(--primary);
 			}
 		}
 
-    &:hover{
-      background-color: var(--primary-light);
-    }
+		&:hover {
+			background-color: var(--primary-light);
+		}
 	}
 }
 
@@ -79,6 +79,7 @@ aside {
 		width: 100%;
 		gap: 1rem;
 		align-items: center;
+		padding-bottom: 1rem;
 
 		& .search-container {
 			justify-content: center;
@@ -108,6 +109,42 @@ aside {
 main {
 	top: 80px;
 	padding: 2rem;
+	width: 100%;
+
+	& section,
+	& .search-container,
+	& .input {
+		width: 100%;
+	}
+
+	& #page-home {
+		& .search-container {
+			gap: 1rem;
+
+			& .btn-menu{
+				border-radius: 2rem;
+				padding: 0.25rem;
+
+				& .fill-inside{
+					fill: var(--grey)
+				}
+
+				&:hover {
+					background-color: var(--primary);
+					& path{
+						fill: var(--secondary);
+					}
+					& .fill-inside{
+						fill: var(--primary);
+					}
+				}
+			}
+			
+		}
+		& input {
+			width: 100%;
+		}
+	}
 }
 
 @media (max-width: 768px) {
