@@ -30,8 +30,19 @@ a:visited {
 }
 
 .text-primary {
-	text-align: center;
 	color: #ffffff;
+}
+
+.text-secondary {
+	color: var(--secondary);
+}
+
+.text-tertiary {
+	color: var(--tertiary);
+}
+
+.text-center {
+	text-align: center;
 }
 
 .text-shadow {
@@ -42,7 +53,13 @@ a:visited {
 	text-decoration: underline;
 }
 
-.bg-secondary{
+.text-ellipsis {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.bg-secondary {
 	background-color: white;
 }
 

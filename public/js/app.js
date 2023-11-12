@@ -53,7 +53,7 @@ function logout() {
 	window.location.href = "login.html";
 }
 
-// Navbar mobile toggle
+// Navbar mobile toggle on click
 const navButtons = document.querySelectorAll(".btn-nav");
 const menuBtn = document.querySelector("#btn-mobile-menu");
 const nav = document.querySelector("#nav-mobile");
@@ -65,12 +65,33 @@ navButtons.forEach((btn) =>
 	})
 );
 
-//Navbar mobile collapse
-const searchBtn = document.querySelector(".search-container");
+//Navbar mobile collapse on click
+const collapseButtons = document.querySelectorAll(".btn-nav-collapse");
 
-searchBtn.addEventListener("click", () => {
-	menuBtn.classList.remove("open");
-	nav.classList.remove("expand");
+collapseButtons.forEach((btn) =>
+	btn.addEventListener("click", () => {
+		menuBtn.classList.remove("open");
+		nav.classList.remove("expand");
+	})
+);
+
+//Navbar and footer mobile collapse on scroll
+let lastScrollTop = 0;
+const scrollHideEls = document.querySelectorAll(".hide-on-scroll");
+
+window.addEventListener("scroll", function () {
+	let currentScroll =
+		window.pageYOffset || document.documentElement.scrollTop;
+
+	scrollHideEls.forEach((el) => {
+		if (currentScroll > lastScrollTop) {
+			// Scrolling down
+			el.classList.add("scroll-hidden");
+		} else {
+			// Scrolling up
+			el.classList.remove("scroll-hidden");
+		}
+	});
+
+	lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
 });
-
-//Footer mobile
