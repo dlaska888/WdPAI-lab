@@ -95,3 +95,14 @@ window.addEventListener("scroll", function () {
 
 	lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
 });
+
+// Link group collapsing
+const btnLinks = document.querySelectorAll(".btn-links");
+
+btnLinks.forEach((btn) => {
+	btn.addEventListener("click", () => {
+		const links = btn.closest(".group").querySelector(".links");
+		links.classList.toggle("collapse");
+		btn.classList.toggle("active");
+	});
+});

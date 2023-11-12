@@ -50,6 +50,14 @@ aside {
 	}
 }
 
+@media (max-height: 400px) {
+	aside {
+		& ul {
+			gap: 0.5rem;
+		}
+	}
+}
+
 #nav-mobile {
 	display: flex;
 	position: fixed;
@@ -75,32 +83,32 @@ aside {
 		padding: 1rem;
 		min-height: 95vh;
 		justify-content: space-between;
-	
+
 		& .nav-menu {
 			height: max-content;
 			width: 100%;
 			gap: 1rem;
 			align-items: center;
 			padding-bottom: 1rem;
-	
+
 			& .search-container {
 				justify-content: center;
 			}
 		}
-	
+
 		& #nav-content {
 			gap: 1rem;
-	
+
 			& .profile-photo {
 				width: 40%;
 				height: auto;
 			}
-	
+
 			& .footer-logo {
 				padding: 0;
 			}
 		}
-	
+
 		& .nav-menu,
 		& .search-container,
 		& input {
@@ -121,10 +129,12 @@ main {
 	}
 
 	& #page-home {
+		align-items: center;
 		height: 100%;
+		gap: 1rem;
+
 		& .search-container {
 			gap: 1rem;
-
 			& .btn-menu {
 				border-radius: 2rem;
 				padding: 0.25rem;
@@ -143,27 +153,44 @@ main {
 					}
 				}
 			}
+
 			& input {
 				width: 100%;
 			}
 		}
 
 		& .groups-container {
+			display: grid;
 			width: 100%;
-			height: 100%;
 			justify-content: center;
-			flex-wrap: wrap;
+			grid-template-columns: repeat(
+				auto-fit,
+				minmax(320px, auto)
+			); /* link group width */
+			row-gap: 1rem;
+			column-gap: 2rem;
+			padding: 0 1rem;
 			overflow: scroll;
+		}
+
+		@media (max-width: 768px) {
+			& .groups-container {
+				grid-template-columns: repeat(
+					auto-fit,
+					minmax(200px, 600px)
+				); /* link group width */
+				padding: 0.5rem;
+			}
 		}
 
 		& .group {
 			width: 100%;
-			max-width: 600px;
-			height: 45vh;
-			padding: 1rem;
+			max-height: 43vh;
+			min-height: 200px;
 			padding-bottom: 0;
 
 			& .group-menu {
+				padding: 0 0.25rem;
 				align-items: center;
 				justify-content: space-between;
 
@@ -177,6 +204,14 @@ main {
 				& .group-buttons {
 					gap: 1rem;
 				}
+
+				& .btn-links {
+					transition: 0.5s;
+				}
+
+				& .btn-links.active {
+					transform: rotate(-90deg);
+				}
 			}
 
 			& .links {
@@ -186,6 +221,7 @@ main {
 				overflow: scroll;
 				gap: 1rem;
 				border-radius: 1rem;
+				transition: 0.5s;
 
 				& .link-container {
 					padding: 0.75rem;
@@ -207,6 +243,12 @@ main {
 
 				& .link-buttons {
 					gap: 1rem;
+				}
+
+				&.collapse {
+					height: 0;
+					padding: 0;
+					margin: 0;
 				}
 			}
 		}
@@ -232,7 +274,7 @@ footer {
 	bottom: 0;
 	height: 74px;
 
-	& .footer-container{
+	& .footer-container {
 		padding: 1rem;
 		width: 100%;
 	}
@@ -270,7 +312,7 @@ footer {
 	display: none;
 }
 
-.hide-on-scroll{
+.hide-on-scroll {
 	transition: height 0.5s;
 }
 
