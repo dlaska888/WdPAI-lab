@@ -128,7 +128,7 @@ main {
 		width: 100%;
 	}
 
-   & .page-links {
+	& .page-links {
 		align-items: center;
 		height: 100%;
 		gap: 1rem;
@@ -171,7 +171,7 @@ main {
 			overflow-x: hidden;
 		}
 
-      @media (max-width: 1200px) {
+		@media (max-width: 1200px) {
 			& .groups-container {
 				padding: 0.5rem;
 				grid-template-columns: repeat(auto-fit, 400px);
@@ -218,7 +218,7 @@ main {
 			& .links {
 				margin: 0.5rem 0;
 				height: 100%;
-            min-height: min-content;
+				min-height: min-content;
 				padding: 0.5rem;
 				overflow: scroll;
 				overflow-x: hidden;
@@ -250,7 +250,7 @@ main {
 
 				&.collapse {
 					height: 0;
-               min-height: 0px;
+					min-height: 0px;
 					padding: 0;
 					margin: 0;
 				}
@@ -258,11 +258,63 @@ main {
 		}
 	}
 
-   & #page-shared{
-      .group-menu{
-         padding-right: 0.5rem;
-      }
-   }
+	& #page-shared {
+		.group-menu {
+			padding-right: 0.5rem;
+		}
+	}
+
+	& #page-settings {
+		height: 100%;
+		justify-content: space-evenly;
+
+		& .profile-container {
+			width: 50%;
+			max-width: 500px;
+			max-height: 100%;
+			padding: 3rem;
+			margin: 3rem;
+			gap: 3rem;
+
+			border-radius: 1.5rem;
+			background-color: var(--secondary);
+
+			& .profile-photo {
+				& path {
+					fill: var(--primary);
+				}
+				width: 50%;
+				max-width: 50vh;
+				height: auto;
+			}
+		}
+
+		& .settings-container {
+			overflow: scroll;
+			width: 50%;
+			max-width: 500px;
+			max-height: 80vh;
+			padding: 0 3rem;
+			gap: 1.5rem;
+
+			& .btn-primary {
+				min-width: 200px;
+				max-width: 400px;
+			}
+
+			& #btn-delete-account{
+				& span{
+					color: red !important;
+				}
+			}
+
+			@media (max-width: 768px) {
+				& {
+					width: 100%;
+				}
+			}
+		}
+	}
 }
 
 @media (max-width: 768px) {
@@ -311,6 +363,12 @@ footer {
 }
 
 /* reusable classes */
+
+.line-vertical-primary {
+	height: 30%;
+	border-left: 2px solid var(--primary);
+	border-radius: 2rem;
+}
 
 .line-secondary {
 	width: 50%;

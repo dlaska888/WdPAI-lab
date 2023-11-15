@@ -11,7 +11,7 @@ function showPage(pageId) {
 	selectedSection.classList.remove("hidden");
 }
 
-function activatePageButtons(pageClass) {
+function activatePageButton(pageClass) {
 	spaBtns.forEach((btn) => {
 		if (btn.classList.contains(pageClass)) {
 			btn.classList.add("active");
@@ -26,7 +26,6 @@ function findPageClass(element) {
 }
 
 // SPA navigation buttons
-
 const spaBtns = document.querySelectorAll(".btn-page");
 
 spaBtns.forEach((btn) => {
@@ -42,7 +41,7 @@ spaBtns.forEach((spaBtn) => {
 
 		//Link same SPA buttons on desktop and mobile
 		const pageClass = findPageClass(spaBtn);
-		activatePageButtons(pageClass);
+		activatePageButton(pageClass);
 	});
 });
 

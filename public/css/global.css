@@ -30,7 +30,7 @@ a:visited {
 }
 
 .text-primary {
-	color: #ffffff;
+	color: var(--primary);
 }
 
 .text-secondary {
