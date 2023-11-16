@@ -1,17 +1,18 @@
-// SPA navigation
+// --- SPA navigation ---
+
 function showPage(pageId) {
-	// Hide all sections
+	// hide all sections
 	const sections = document.querySelectorAll("main section");
 	sections.forEach((section) => {
 		section.classList.add("hidden");
 	});
 
-	// Show the selected section
+	// show the selected section
 	const selectedSection = document.getElementById(pageId);
 	selectedSection.classList.remove("hidden");
 }
 
-function activatePageButton(pageClass) {
+function activatePageBtn(pageClass) {
 	spaBtns.forEach((btn) => {
 		if (btn.classList.contains(pageClass)) {
 			btn.classList.add("active");
@@ -25,7 +26,7 @@ function findPageClass(element) {
 	);
 }
 
-// SPA navigation buttons
+// display page on click
 const spaBtns = document.querySelectorAll(".btn-page");
 
 spaBtns.forEach((btn) => {
@@ -33,26 +34,22 @@ spaBtns.forEach((btn) => {
 	btn.addEventListener("click", () => showPage(pageClass));
 });
 
+// highlight button while displaying page
 spaBtns.forEach((spaBtn) => {
 	spaBtn.addEventListener("click", () => {
 		spaBtns.forEach((btn) => {
 			btn.classList.remove("active");
 		});
 
-		//Link same SPA buttons on desktop and mobile
+		// link same SPA buttons on desktop and mobile
 		const pageClass = findPageClass(spaBtn);
-		activatePageButton(pageClass);
+		activatePageBtn(pageClass);
 	});
 });
 
-// Session handling
-const logoutBtns = document.querySelectorAll(".btn-logout");
-logoutBtns.forEach((btn) => btn.addEventListener("click", () => logout()));
-function logout() {
-	window.location.href = "login.html";
-}
+// --- Navbar mobile ---
 
-// Navbar mobile toggle on click
+// toggle on click
 const navButtons = document.querySelectorAll(".btn-nav");
 const menuBtn = document.querySelector("#btn-mobile-menu");
 const nav = document.querySelector("#nav-mobile");
@@ -64,7 +61,7 @@ navButtons.forEach((btn) =>
 	})
 );
 
-//Navbar mobile collapse on click
+// collapse on click
 const collapseButtons = document.querySelectorAll(".btn-nav-collapse");
 
 collapseButtons.forEach((btn) =>
@@ -74,7 +71,7 @@ collapseButtons.forEach((btn) =>
 	})
 );
 
-//Navbar and footer mobile collapse on scroll
+// navbar and footer collapse on scroll
 let lastScrollTop = 0;
 const scrollHideEls = document.querySelectorAll(".hide-on-scroll");
 
@@ -95,12 +92,14 @@ window.addEventListener("scroll", function () {
 	lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
 });
 
-// Link group collapsing
-const btnLinks = document.querySelectorAll(".btn-links");
+// --- Link groups ---
+
+// collapse on click
+const btnLinks = document.querySelectorAll(".btn-group-collapse");
 
 btnLinks.forEach((btn) => {
 	btn.addEventListener("click", () => {
-		const links = btn.closest(".group").querySelector(".links");
+		const links = btn.closest(".group").querySelector(".group-links");
 		links.classList.toggle("collapse");
 		btn.classList.toggle("active");
 	});
