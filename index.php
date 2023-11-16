@@ -1,3 +1,4 @@
 <?php
 
-echo 'Hi there 👋';
+header("Location: public/views/index.html");
+die();
