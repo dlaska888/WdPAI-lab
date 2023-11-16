@@ -25,16 +25,16 @@
 	<main class="flex-column flex-center">
 		<h2 class="text-secondary text-shadow text-center hide-mobile">Get Started</h2>
 		<div class="btn-container flex-column flex-center">
-			<a href="login.html" class="btn-primary" type="button" title="LinkyApp Sign In">
+			<a href="login" class="btn-primary" type="button" title="LinkyApp Sign In">
 				<span class="btn-primary-top">Sign In</span>
 			</a>
-			<a href="register.html" class="btn-primary" type="button" title="LinkyApp Sign Up">
+			<a href="register" class="btn-primary" type="button" title="LinkyApp Sign Up">
 				<span class="btn-primary-top">Sign Up</span>
 			</a>
 		</div>
 	</main>
 	<footer class="footer-logo flex-column flex-center">
-		<a href="index.html" title="LinkyApp" class="logo-text flex">
+		<a href="index" title="LinkyApp" class="logo-text flex">
 			<img src="/public/assets/svg/logo1.svg" alt="LinkyApp">
 			<p>LinkyApp</p>
 		</a>

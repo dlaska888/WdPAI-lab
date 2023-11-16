@@ -11,8 +11,8 @@
 
 <body>
 	<main class="flex-column flex-center">
-		<form action="app.html" class="main-form flex-column flex-center">
-			<h1 class="text-secondary text-shadow">Welcome back</h1>
+		<form action="dashboard" class="main-form flex-column flex-center">
+			<h1 class="text-secondary text-shadow text-center">Welcome back</h1>
 			<div class="input-container flex-column flex-center">
 				<input type="text" name="email" class="input" placeholder="Email or username">
 				<input type="password" name="password" class="input" placeholder="Password">
@@ -20,12 +20,12 @@
 			<button class="btn-primary" type="submit" title="LinkyApp Sign In">
 				<span class="btn-primary-top">Sign In</span>
 			</button>
-			<p class="text-secondary">Don't have an account? <a href="register.html" class="text-underline">Sign up</a>
+			<p class="text-secondary">Don't have an account? <a href="register" class="text-underline">Sign up</a>
 			</p>
 		</form>
 	</main>
 	<footer class="footer-logo flex-column flex-center">
-		<a href="index.html" title="LinkyApp" class="logo-text flex">
+		<a href="index" title="LinkyApp" class="logo-text flex">
 			<img src="/public/assets/svg/logo1.svg" alt="LinkyApp">
 			<p>LinkyApp</p>
 		</a>

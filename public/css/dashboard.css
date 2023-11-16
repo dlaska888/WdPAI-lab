@@ -297,7 +297,7 @@ main {
 			width: 50%;
 			max-width: 500px;
 			max-height: 80vh;
-			padding: 0 3rem;
+			padding: 0.25rem 3rem;
 
 			gap: 1.5rem;
 			overflow: scroll;

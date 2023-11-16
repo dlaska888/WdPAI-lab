@@ -33,6 +33,11 @@ header {
 	justify-content: space-around;
 
 	background-color: var(--primary-light);
+
+	& .header-container {
+		max-width: 600px;
+		gap: 3rem;
+	}
 }
 
 @media (max-width: 768px) {
@@ -42,29 +47,19 @@ header {
 	}
 }
 
-header .header-container {
-	max-width: 600px;
-	gap: 3rem;
-}
-
 main {
 	width: 100%;
 
 	grid-area: main;
 	gap: 2rem;
+
+	& h2 {
+		font-size: 2rem;
+		gap: 2rem;
+	}
+
+	& .btn-container {
+		width: 75%;
+		gap: 1rem;
+	}
 }
-
-main h2 {
-	font-size: 2rem;
-}
-
-main .btn-container {
-	width: 75%;
-	gap: 1rem;
-}
-
-main h2 {
-	gap: 2rem;
-}
-
-

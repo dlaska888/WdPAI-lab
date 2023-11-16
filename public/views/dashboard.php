@@ -6,8 +6,8 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>LinkyApp - Main</title>
    <link rel="stylesheet" href="/public/css/global.css">
-   <link rel="stylesheet" href="/public/css/app.css">
-   <script src="/public/js/app.js" defer></script>
+   <link rel="stylesheet" href="/public/css/dashboard.css">
+   <script src="/public/js/dashboard.js" defer></script>
 </head>
 
 <body class="flex">
@@ -39,12 +39,12 @@
                title="Settings">
                <span class="btn-primary-top">Settings</span>
             </a>
-            <a id="btn-mobile-logout" href="login.html" class="btn-logout btn-primary btn-nav" type="button" title="Log out">
+            <a id="btn-mobile-logout" href="login" class="btn-logout btn-primary btn-nav" type="button" title="Log out">
                <span class="btn-primary-top">Log out</span>
             </a>
          </div>
          <div id="nav-footer" class="footer-logo flex-column flex-center">
-            <a href="index.html" title="LinkyApp" class="logo-text flex">
+            <a href="index" title="LinkyApp" class="logo-text flex">
                <img src="/public/assets/svg/logo1.svg" alt="LinkyApp">
                <p>LinkyApp</p>
             </a>
@@ -82,12 +82,12 @@
                </a>
             </li>
             <li>
-               <a class="btn-logout btn-hover" href="login.html" title="Log out">
+               <a class="btn-logout btn-hover" href="login" title="Log out">
                   <img src="/public/assets/svg/logout.svg" alt="Log out">
                </a>
             </li>
          </ul>
-         <a href="index.html" title="LinkyApp">
+         <a href="index" title="LinkyApp">
             <img src="/public/assets/svg/logo1.svg" alt="LinkyApp">
          </a>
       </nav>

@@ -21,30 +21,30 @@ main {
 
 	justify-self: center;
 	align-self: center;
-}
 
-main .main-form {
-	height: 100%;
-	width: 100%;
-	gap: 2rem;
-	padding: 2rem 0;
-	justify-content: space-evenly;
+	& .main-form {
+		height: 100%;
+		width: 100%;
+		gap: 2rem;
+		padding: 2rem 0;
+		justify-content: space-evenly;
 
-	border-radius: 1rem;
-	background-color: var(--primary-light);
-}
+		border-radius: 1rem;
+		background-color: var(--primary-light);
+	}
 
-main .input-container {
-	width: 75%;
-	gap: 1rem;
-}
+	& .input-container {
+		width: 75%;
+		gap: 1rem;
+	}
 
-main .input {
-	width: 100%;
+	& .input {
+		width: 100%;
+	}
 }
 
 @media (max-width: 768px) {
-	main{
+	main {
 		max-width: 80vw;
 	}
 	main .main-form {
