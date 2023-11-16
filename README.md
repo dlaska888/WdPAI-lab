@@ -2,11 +2,13 @@
 
 ## Project Name
 
-**Project Name**: [Enter your project name here]
+**Project Name**: LinkyApp
 
 ## Project Description
 
-[Provide a brief description of your project. Explain what it does and why it's valuable or interesting.]
+Introducing LinkyApp: Your One-Stop Bookmark Solution 
+Ever wondered how to manage your bookmarks across multiple browsers? LinkyApp is the answer. It is a web application that allows you to store and manage your bookmarks in one, organized space.
+
 
 ## Table of Contents
 
@@ -20,28 +22,54 @@
 
 ## Getting Started
 
-[Explain what someone needs to do to get started with your project. This may include prerequisites, installation instructions, and any initial configuration steps.]
+The app will be hosted on a server in the future. As of PR#1, you can clone the repository and run the app locally - see [Installation](#installation).
 
 ## Installation
 
-[Provide detailed installation instructions. This may include command-line examples or links to more extensive installation guides.]
+Pre-requisites:
+ - docker installed
+
+Run the following commands in the root directory of the project:
+
+```docker compose up```
+
+Or if you want to run it in the background:
+
+```docker compose up -d```
 
 ## Usage
 
-[Explain how to use your project. Provide examples and show common use cases. If your project has a graphical interface, consider including screenshots or GIFs.]
+As of PR#1, you can interact with the app without having to log in. Not all features are implemented yet, but you can interact with a "view" version of the app - navigate between pages, toggle and scroll through bookmarks.
 
 ## Contributing
 
-[Explain how others can contribute to your project. This should include information on how to report issues, submit pull requests, and any coding guidelines or standards you want contributors to follow.]
+Yet to be determined.
 
 ## License
 
-[Specify the license under which your project is distributed. Common open source licenses include MIT, Apache, and GPL. If you're unsure which license to use, visit [choosealicense.com](https://choosealicense.com/) for guidance.]
+MIT License
+
+Copyright (c) 2023 Dawid Laska
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 
 ---
 
-[Include your contact information or a link to your project's GitHub repository or website if you'd like to provide additional information or support.]
-
-[Project Name] is maintained by [Your Name]. You can reach me at [your@email.com].
-
-[Optional: Add badges or links to your social media profiles or personal website if you'd like to promote your project or connect with users and contributors.]
+LinkyApp is maintained by Dawid Laska. You can reach me at dawidlaska888@gmail.com.
