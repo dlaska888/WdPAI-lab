@@ -2,7 +2,7 @@
 
 class AppController
 {
-    private $request;
+    private string $request;
 
     public function __construct()
     {
@@ -19,9 +19,9 @@ class AppController
         return $this->request === 'POST';
     }
 
-    protected function render(string $template = null, array $variables = [])
+    protected function render(string $template = null, array $variables = []): void
     {
-        $templatePath = 'public/views/' . $template . '.php';
+        $templatePath = 'src/views/' . $template . '.php';
         $output = 'File not found';
 
         if (file_exists($templatePath)) {

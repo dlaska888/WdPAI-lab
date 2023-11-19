@@ -5,22 +5,22 @@ require_once 'AppController.php';
 class DefaultController extends AppController
 {
 
-    public function index()
+    public function index(): void
     {
         $this->render('index');
     }
 
-    public function login()
+    public function login(): void
     {
         $this->render('login');
     }
 
-    public function register()
+    public function register(): void
     {
         $this->render('register');
     }
 
-    public function dashboard()
+    public function dashboard(): void
     {
         $this->render('dashboard');
     }
