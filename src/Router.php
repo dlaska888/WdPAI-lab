@@ -4,7 +4,7 @@ require_once 'src/controllers/DefaultController.php';
 
 class Router
 {
-    public static array $routes ;
+    public static array $routes;
 
     public static function get($url, $view): void
     {

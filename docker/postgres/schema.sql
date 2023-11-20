@@ -9,41 +9,41 @@ CREATE TABLE users
     user_name         VARCHAR(50)  NOT NULL,
     email             VARCHAR(150) NOT NULL,
     password_hash     TEXT         NOT NULL,
-    email_confirmed   BOOLEAN NOT NULL DEFAULT FALSE,
-    role              user_role NOT NULL DEFAULT 'normal'::user_role,
+    email_confirmed   BOOLEAN      NOT NULL DEFAULT FALSE,
+    role              user_role    NOT NULL DEFAULT 'normal'::user_role,
     refresh_token     TEXT,
     refresh_token_exp TIMESTAMP
 );
 
 -- Create TABLE groups
-CREATE TABLE groups
+CREATE TABLE link_groups
 (
-    group_id     SERIAL PRIMARY KEY,
-    user_id      INT         NOT NULL,
-    name         VARCHAR(50) NOT NULL,
-    date_created TIMESTAMP   NOT NULL DEFAULT now(),
+    link_group_id SERIAL PRIMARY KEY,
+    user_id       INT         NOT NULL,
+    name          VARCHAR(50) NOT NULL,
+    date_created  TIMESTAMP   NOT NULL DEFAULT now(),
     FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
 -- Create TABLE links
 CREATE TABLE links
 (
-    link_id  SERIAL PRIMARY KEY,
-    group_id INT         NOT NULL,
-    title    VARCHAR(50) NOT NULL,
-    url      TEXT        NOT NULL,
-    FOREIGN KEY (group_id) REFERENCES groups (group_id)
+    link_id       SERIAL PRIMARY KEY,
+    link_group_id INT         NOT NULL,
+    title         VARCHAR(50) NOT NULL,
+    url           TEXT        NOT NULL,
+    FOREIGN KEY (link_group_id) REFERENCES link_groups (link_group_id)
 );
 
 -- Create TABLE group_shares
-CREATE TABLE group_shares
+CREATE TABLE link_group_shares
 (
-    group_share_id SERIAL PRIMARY KEY,
-    user_id        INT              NOT NULL,
-    group_id       INT              NOT NULL,
-    permission     permission_level NOT NULL DEFAULT 'read'::permission_level,
-    date_created   TIMESTAMP        NOT NULL DEFAULT now(),
+    link_group_share_id SERIAL PRIMARY KEY,
+    user_id             INT              NOT NULL,
+    link_group_id       INT              NOT NULL,
+    permission          permission_level NOT NULL DEFAULT 'read'::permission_level,
+    date_created        TIMESTAMP        NOT NULL DEFAULT now(),
     FOREIGN KEY (user_id) REFERENCES users (user_id),
-    FOREIGN KEY (group_id) REFERENCES groups (group_id)
+    FOREIGN KEY (link_group_id) REFERENCES link_groups (link_group_id)
 );
 
