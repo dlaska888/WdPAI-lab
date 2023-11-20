@@ -2,8 +2,8 @@
 
 class LinkGroup
 {
-    public int $linkGroupId;
-    public int $userId;
+    public int $link_group_id;
+    public int $user_id;
     public string $name;
-    public DateTime $dateCreated;
+    public DateTime $date_created;
 }

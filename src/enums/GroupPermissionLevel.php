@@ -1,7 +1,7 @@
 <?php
 
-enum GroupPermissionLevel
+enum GroupPermissionLevel : string
 {
-    case Read;
-    case Write;
+    case READ = 'READ';
+    case WRITE = 'WRITE';
 }

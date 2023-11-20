@@ -1,7 +1,7 @@
 <?php
 
-enum UserRole
+enum UserRole : string
 {
-    case Normal;
-    case Admin;
+    case NORMAL = 'NORMAL';
+    case ADMIN = 'ADMIN';
 }

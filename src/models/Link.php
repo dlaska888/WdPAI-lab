@@ -1,10 +1,10 @@
 <?php
 
+
 class Link
 {
-    public int $linkId;
-    public int $linkGroupId;
-    public string $name;
+    public int $link_id;
+    public int $link_group_id;
     public string $title;
     public string $url;
 }
