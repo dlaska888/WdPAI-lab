@@ -14,21 +14,26 @@ interface IUserRepo
     /**
      * Find a specific user by its ID.
      *
-     * @param int $userId
+     * @param string $userId
      * @return ?LinkyUser
      */
-    public function find(int $userId): ?LinkyUser;
+    public function find(string $userId): ?LinkyUser;
 
     /**
-     * Save a user.
-     *
-     * This creates the user if it doesn't exist or updates
-     * it if it does.
+     * Inserts a user.
      *
      * @param LinkyUser $user
      * @return LinkyUser
      */
-    public function save(LinkyUser $user): LinkyUser;
+    public function insert(LinkyUser $user): LinkyUser;
+
+    /**
+     * Updates a user.
+     *
+     * @param LinkyUser $user
+     * @return LinkyUser
+     */
+    public function update(LinkyUser $user): LinkyUser;
 
     /**
      * Delete a specific user by ID.
@@ -36,13 +41,7 @@ interface IUserRepo
      * @param int $userId
      * @return bool
      */
-    public function delete(int $userId): bool;
+    public function delete(string $userId): bool;
 
-    /**
-     * Return the next ID available to uniquely identify a user.
-     *
-     * @return int
-     */
-    public function nextIdentity(): int;
 }
 

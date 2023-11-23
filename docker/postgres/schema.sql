@@ -5,7 +5,7 @@ CREATE TYPE userrole AS ENUM ('NORMAL', 'ADMIN');
 -- Create TABLE users
 CREATE TABLE linkyuser
 (
-    user_id           SERIAL PRIMARY KEY,
+    user_id           UUID PRIMARY KEY,
     user_name         VARCHAR(50)  NOT NULL UNIQUE,
     email             VARCHAR(150) NOT NULL UNIQUE,
     password_hash     TEXT         NOT NULL,
@@ -18,8 +18,8 @@ CREATE TABLE linkyuser
 -- Create TABLE groups
 CREATE TABLE linkgroup
 (
-    link_group_id SERIAL PRIMARY KEY,
-    user_id       INT         NOT NULL,
+    link_group_id UUID PRIMARY KEY,
+    user_id       UUID         NOT NULL,
     name          VARCHAR(50) NOT NULL,
     date_created  TIMESTAMP   NOT NULL DEFAULT now(),
     FOREIGN KEY (user_id) REFERENCES linkyuser (user_id)
@@ -28,8 +28,8 @@ CREATE TABLE linkgroup
 -- Create TABLE links
 CREATE TABLE link
 (
-    link_id       SERIAL PRIMARY KEY,
-    link_group_id INT         NOT NULL,
+    link_id       UUID PRIMARY KEY,
+    link_group_id UUID         NOT NULL,
     title         VARCHAR(50) NOT NULL,
     url           TEXT        NOT NULL,
     FOREIGN KEY (link_group_id) REFERENCES linkgroup (link_group_id)
@@ -38,9 +38,9 @@ CREATE TABLE link
 -- Create TABLE group_shares
 CREATE TABLE linkgroupshare
 (
-    link_group_share_id SERIAL PRIMARY KEY,
-    user_id             INT              NOT NULL,
-    link_group_id       INT              NOT NULL,
+    link_group_share_id UUID PRIMARY KEY,
+    user_id             UUID              NOT NULL,
+    link_group_id       UUID              NOT NULL,
     permission          permissionlevel NOT NULL DEFAULT 'READ'::permissionlevel,
     date_created        TIMESTAMP        NOT NULL DEFAULT now(),
     FOREIGN KEY (user_id) REFERENCES linkyuser (user_id),
