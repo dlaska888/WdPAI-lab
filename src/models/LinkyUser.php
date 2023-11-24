@@ -4,8 +4,6 @@ require_once "src/enums/UserRole.php";
 require_once "src/enums/UserRole.php";
 require_once "src/helpers/UUIDGenerator.php";
 
-use helpers\UUIDGenerator;
-
 class LinkyUser
 {
     public string $user_id;

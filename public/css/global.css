@@ -169,4 +169,6 @@ a:visited {
 	font-size: 0.7rem;
 }
 
-
+.messages{
+	color: var(--secondary);
+}

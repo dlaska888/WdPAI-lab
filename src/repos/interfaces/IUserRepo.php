@@ -17,7 +17,7 @@ interface IUserRepo
      * @param string $userId
      * @return ?LinkyUser
      */
-    public function find(string $userId): ?LinkyUser;
+    public function findById(string $userId): ?LinkyUser;
 
     /**
      * Inserts a user.

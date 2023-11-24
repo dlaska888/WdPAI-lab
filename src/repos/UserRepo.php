@@ -1,18 +1,12 @@
 <?php
 
 require_once "src/repos/interfaces/IUserRepo.php";
+require_once "src/repos/Repo.php";
 require_once "src/models/LinkyUser.php";
 require_once "src/enums/UserRole.php";
 
-class UserRepo implements IUserRepo
+class UserRepo extends Repo implements IUserRepo
 {
-    private Database $db;
-
-    public function __construct(Database $db)
-    {
-        $this->db = $db;
-    }
-
     public function all(): array
     {
         $users = array();
@@ -28,10 +22,34 @@ class UserRepo implements IUserRepo
         return $users;
     }
 
-    public function find(string $userId): ?LinkyUser
+    public function findById(string $userId): ?LinkyUser
     {
         $stmt = $this->db->connect()->prepare('SELECT * FROM LinkyUser WHERE user_id = :user_id');
         $stmt->execute(['user_id' => $userId]);
+        $result = $stmt->fetch();
+        if (!$result) {
+            return null;
+        }
+        return $this->mapToObject($result);
+    }
+
+    public function findByUserName(string $user_name): ?LinkyUser
+    {
+        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkyUser WHERE user_name = :user_name');
+        $stmt->execute(['user_name' => $user_name]);
+        $result = $stmt->fetch();
+        
+        if (!$result) {
+            return null;
+        }
+        
+        return $this->mapToObject($result);
+    }
+
+    public function findByEmail(string $email): ?LinkyUser
+    {
+        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkyUser WHERE email = :email');
+        $stmt->execute(['email' => $email]);
         $result = $stmt->fetch();
         if (!$result) {
             return null;
@@ -58,7 +76,7 @@ class UserRepo implements IUserRepo
             'refresh_token_exp' => $user->refresh_token_exp?->format('Y-m-d H:i:s'),
         ]);
 
-        return $this->find($user->user_id);
+        return $this->findById($user->user_id);
     }
 
     public function update(LinkyUser $user): LinkyUser
@@ -88,7 +106,7 @@ class UserRepo implements IUserRepo
             'refresh_token_exp' => $user->refresh_token_exp?->format('Y-m-d H:i:s'),
         ]);
 
-        return $this->find($user->user_id);
+        return $this->findById($user->user_id);
     }
 
     public function delete(string $userId): bool
