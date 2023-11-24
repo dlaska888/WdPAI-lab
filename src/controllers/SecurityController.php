@@ -1,16 +1,22 @@
 <?php
 
+use JetBrains\PhpStorm\NoReturn;
+
 require_once "src/Database.php";
 require_once "src/repos/UserRepo.php";
+require_once "src/handlers/UserSessionHandler.php";
 
 class SecurityController extends AppController
 {
     private UserRepo $userRepo;
+    
+    private UserSessionHandler $sessionHandler;
 
     public function __construct()
     {
         parent::__construct();
         $this->userRepo = new UserRepo();
+        $this->sessionHandler = new UserSessionHandler();
     }
 
     public function login(): void
@@ -37,7 +43,10 @@ class SecurityController extends AppController
             return;
         }
 
+        $this->sessionHandler->setSession($user);
+
         header("Location: dashboard");
+        exit();
     }
 
     public function register(): void
@@ -72,8 +81,19 @@ class SecurityController extends AppController
         );
 
         $this->userRepo->insert($user);
+        
+        $this->sessionHandler->setSession($user);
 
-        $this->render('login', ['messages' => ['You\'ve been successfully registered!']]);
+        header("Location: dashboard");
+        exit();
+    }
+
+    #[NoReturn]
+    private function logout(): void
+    {
+        $this->sessionHandler->unsetSession();
+        header("Location: dashboard");
+        exit();
     }
 
     private function validateLoginData(string $email, string $password): array

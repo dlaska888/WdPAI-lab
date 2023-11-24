@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/public/css/global.css">
     <link rel="stylesheet" href="/public/css/login.css">
-    <title>LinkyApp - Login</title>
+    <title>LinkyApp Login</title>
 </head>
 
 <body>
@@ -17,15 +17,15 @@
             <input type="text" name="email" class="input" placeholder="Email or username" required>
             <input type="password" name="password" class="input" placeholder="Password" required>
         </div>
-        <div class="messages">
-            <?php
-            if (isset($messages)) {
+        <?php if (isset($messages)): ?>
+            <div class="messages">
+                <?php
                 foreach ($messages as $message) {
                     echo $message;
                 }
-            }
-            ?>
-        </div>
+                ?>
+            </div>
+        <?php endif; ?>
         <button class="btn-primary" type="submit" title="LinkyApp Sign In">
             <span class="btn-primary-top">Sign In</span>
         </button>

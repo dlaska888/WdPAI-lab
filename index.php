@@ -11,7 +11,7 @@ Router::get('', DefaultController::class);
 Router::get('index', DefaultController::class);
 Router::get('login', SecurityController::class);
 Router::get('register', SecurityController::class);
-Router::get('dashboard', DefaultController::class);
+Router::get('dashboard', DashboardController::class);
 
 Router::run($path);
 
