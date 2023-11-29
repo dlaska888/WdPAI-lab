@@ -26,7 +26,7 @@ class LinkyUser
         DateTime $refresh_token_exp = null
     )
     {
-        $this->user_id = $user_id ?: UUIDGenerator::genUUID();
+        $this->user_id = $user_id ?? UUIDGenerator::genUUID();
         $this->user_name = $user_name;
         $this->email = $email;
         $this->password_hash = $password_hash;
