@@ -1,20 +1,51 @@
 <?php
 
-require_once "src/repos/interfaces/ILinkGroupRepo.php";
-require_once "src/repos/Repo.php";
+require_once "src/repos/BaseRepo.php";
 require_once "src/models/LinkGroup.php";
-require_once "src/helpers/UUIDGenerator.php";
 
-class LinkGroupRepo extends Repo implements ILinkGroupRepo
+class LinkGroupRepo extends BaseRepo
 {
-    public function all(): array
+    protected function getTableName(): string
+    {
+        return 'LinkGroup';
+    }
+
+    protected function getIdName(): string
+    {
+        return 'link_group_id';
+    }
+
+    protected function mapToObject(array $data): LinkGroup
+    {
+        return new LinkGroup(
+            user_id: $data['user_id'],
+            name: $data['name'],
+            date_created: new DateTime($data['date_created']),
+            link_group_id: $data['link_group_id']
+        );
+    }
+
+    protected function mapToArray(object $entity): array
+    {
+        if (!$entity instanceof LinkGroup) {
+            throw new InvalidArgumentException('Invalid entity type.');
+        }
+
+        return [
+            'link_group_id' => $entity->link_group_id,
+            'user_id' => $entity->user_id,
+            'name' => $entity->name,
+            'date_created' => $entity->date_created->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    public function findAllUserGroups(string $userId): array
     {
         $linkGroups = array();
 
-        $results = $this->db
-            ->connect()
-            ->query('SELECT * FROM LinkGroup')
-            ->fetchAll();
+        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroup WHERE user_id = :user_id');
+        $stmt->execute(['user_id' => $userId]);
+        $results = $stmt->fetchAll();
 
         foreach ($results as $result) {
             $linkGroups[] = $this->mapToObject($result);
@@ -23,72 +54,24 @@ class LinkGroupRepo extends Repo implements ILinkGroupRepo
         return $linkGroups;
     }
 
-    public function findById(string $linkGroupId): ?LinkGroup
+    public function findAllUserSharedGroups(string $userId): array
     {
-        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroup WHERE link_group_id = :link_group_id');
-        $stmt->execute(['link_group_id' => $linkGroupId]);
-        $result = $stmt->fetch();
+        $linkGroupShares = array();
 
-        if (!$result) {
-            return null;
+        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroupShare WHERE user_id = :user_id');
+        $stmt->execute(['user_id' => $userId]);
+        $results = $stmt->fetchAll();
+
+        foreach ($results as $result) {
+            // Get the link group details for each share
+            $linkGroup = $this->findById($result['link_group_id']);
+            if ($linkGroup) {
+                $result['link_group'] = $linkGroup;
+                $linkGroupShares[] = $this->mapToObject($result);
+            }
         }
 
-        return $this->mapToObject($result);
+        return $linkGroupShares;
     }
-
-    public function insert(LinkGroup $linkGroup): LinkGroup
-    {
-        $sql = <<<SQL
-        INSERT INTO LinkGroup (link_group_id, user_id, name, date_created)
-        VALUES (:link_group_id, :user_id, :name, :date_created);
-    SQL;
-
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute([
-            'link_group_id' => $linkGroup->link_group_id,
-            'user_id' => $linkGroup->user_id,
-            'name' => $linkGroup->name,
-            'date_created' => $linkGroup->date_created->format('Y-m-d H:i:s'),
-        ]);
-
-        return $this->findById($linkGroup->link_group_id);
-    }
-
-    public function update(LinkGroup $linkGroup): LinkGroup
-    {
-        $sql = <<<SQL
-        UPDATE LinkGroup
-        SET
-            user_id = :user_id,
-            name = :name,
-            date_created = :date_created
-        WHERE link_group_id = :link_group_id;
-    SQL;
-
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute([
-            'link_group_id' => $linkGroup->link_group_id,
-            'user_id' => $linkGroup->user_id,
-            'name' => $linkGroup->name,
-            'date_created' => $linkGroup->date_created->format('Y-m-d H:i:s'),
-        ]);
-
-        return $this->findById($linkGroup->link_group_id);
-    }
-
-    public function delete(string $linkGroupId): bool
-    {
-        $stmt = $this->db->connect()->prepare('DELETE FROM LinkGroup WHERE link_group_id = :link_group_id');
-        return $stmt->execute(['link_group_id' => $linkGroupId]);
-    }
-
-    private function mapToObject(array $linkGroupData): LinkGroup
-    {
-        return new LinkGroup(
-            user_id: $linkGroupData['user_id'],
-            name: $linkGroupData['name'],
-            date_created: new DateTime($linkGroupData['date_created']),
-            link_group_id: $linkGroupData['link_group_id']
-        );
-    }
+    
 }

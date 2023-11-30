@@ -1,0 +1,53 @@
+<?php
+require_once "src/repos/BaseRepo.php";
+require_once "src/models/LinkGroupShare.php";
+
+class LinkGroupShareRepo extends BaseRepo
+{
+    protected function getTableName(): string
+    {
+        return 'LinkGroupShare';
+    }
+
+    protected function getIdName(): string
+    {
+        return 'link_group_share_id';
+    }
+
+    protected function mapToObject(array $data): LinkGroupShare
+    {
+        return new LinkGroupShare(
+            user_id: $data['user_id'],
+            link_group_id: $data['link_group_id'],
+            date_created: new DateTime($data['date_created']),
+            permission: GroupPermissionLevel::from($data['permission']),
+            link_group_share_id: $data['link_group_share_id']
+        );
+    }
+
+    protected function mapToArray(object $entity): array
+    {
+        return [
+            'link_group_share_id' => $entity->link_group_share_id,
+            'user_id' => $entity->user_id,
+            'link_group_id' => $entity->link_group_id,
+            'permission' => $entity->permission->value,
+            'date_created' => $entity->date_created->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    public function findLinkGroupShares(string $linkGroupId): array
+    {
+        $linkGroupShares = array();
+
+        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroupShare WHERE link_group_id = :link_group_id');
+        $stmt->execute(['link_group_id' => $linkGroupId]);
+        $results = $stmt->fetchAll();
+
+        foreach ($results as $result) {
+            $linkGroupShares[] = $this->mapToObject($result);
+        }
+
+        return $linkGroupShares;
+    }
+}
