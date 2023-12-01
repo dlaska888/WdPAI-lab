@@ -82,7 +82,7 @@
                </a>
             </li>
             <li>
-               <a class="btn-logout btn-hover" href="login" title="Log out">
+               <a class="btn-logout btn-hover" href="logout" title="Log out">
                   <img src="/public/assets/svg/logout.svg" alt="Log out">
                </a>
             </li>

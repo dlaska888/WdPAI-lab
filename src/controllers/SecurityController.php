@@ -4,11 +4,14 @@ use JetBrains\PhpStorm\NoReturn;
 
 require_once "src/Database.php";
 require_once "src/repos/UserRepo.php";
+require_once "src/repos/LinkGroupRepo.php";
 require_once "src/handlers/UserSessionHandler.php";
 
 class SecurityController extends AppController
 {
     private UserRepo $userRepo;
+
+    private LinkGroupRepo $linkGroupRepo;
     
     private UserSessionHandler $sessionHandler;
 
@@ -17,11 +20,18 @@ class SecurityController extends AppController
         parent::__construct();
         $this->userRepo = new UserRepo();
         $this->sessionHandler = new UserSessionHandler();
+        $this->linkGroupRepo = new LinkGroupRepo();
     }
 
     public function login(): void
     {
         if (!$this->isPost()) {
+
+            if($this->sessionHandler->isSessionSet()){
+                header("Location: dashboard");
+                exit();
+            }
+
             $this->render('login');
             return;
         }
@@ -80,8 +90,15 @@ class SecurityController extends AppController
             password_hash: password_hash($password, PASSWORD_BCRYPT)
         );
 
+        $linkGroup = new LinkGroup(
+            user_id: $user->user_id,
+            name: 'No Group',
+            date_created: new DateTime()
+        );
+
         $this->userRepo->insert($user);
-        
+        $this->linkGroupRepo->insert($linkGroup);
+
         $this->sessionHandler->setSession($user);
 
         header("Location: dashboard");
@@ -89,7 +106,7 @@ class SecurityController extends AppController
     }
 
     #[NoReturn]
-    private function logout(): void
+    public function logout(): void
     {
         $this->sessionHandler->unsetSession();
         header("Location: dashboard");
