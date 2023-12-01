@@ -56,4 +56,17 @@ class UserRepo extends BaseRepo
         return $this->mapToObject($result);
     }
 
+    public function findByEmail(string $email): ?LinkyUser
+    {
+        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkyUser WHERE email = :email');
+        $stmt->execute(['email' => $email]);
+        $result = $stmt->fetch();
+
+        if (!$result) {
+            return null;
+        }
+
+        return $this->mapToObject($result);
+    }
+
 }

@@ -50,4 +50,21 @@ class LinkGroupShareRepo extends BaseRepo
 
         return $linkGroupShares;
     }
+
+    public function findUserGroupShares(string $userId) : array
+    {
+        $shares = array();
+
+        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroupShare WHERE user_id = :user_id');
+        $stmt->execute(['user_id' => $userId]);
+        $results = $stmt->fetchAll();
+
+        foreach ($results as $result) {
+            $objectResult = $this->mapToObject($result);
+            $shares[] = $objectResult;
+        }
+
+        return $shares;
+    }
+
 }

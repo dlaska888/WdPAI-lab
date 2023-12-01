@@ -38,4 +38,18 @@ class LinkRepo extends BaseRepo
             'url' => $entity->url,
         ];
     }
+
+    public function findGroupLinks($groupId) : array{
+        $linkGroups = array();
+
+        $stmt = $this->db->connect()->prepare('SELECT * FROM Link WHERE link_group_id = :link_group_id');
+        $stmt->execute(['link_group_id' => $groupId]);
+        $results = $stmt->fetchAll();
+
+        foreach ($results as $result) {
+            $linkGroups[] = $this->mapToObject($result);
+        }
+
+        return $linkGroups;
+    }
 }
