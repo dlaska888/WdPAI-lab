@@ -1,12 +1,16 @@
 <?php
 
+require_once "src/enums/HttpStatusCode.php";
+
 class AppController
 {
     private string $request;
+    private array $requestBody;
 
     public function __construct()
     {
         $this->request = $_SERVER['REQUEST_METHOD'];
+        $this->requestBody = json_decode(file_get_contents('php://input'), true);
     }
 
     protected function isGet(): bool
@@ -15,6 +19,11 @@ class AppController
     }
 
     protected function isPost(): bool
+    {
+        return $this->request === 'POST';
+    }
+
+    protected function isPut(): bool
     {
         return $this->request === 'POST';
     }
@@ -33,5 +42,14 @@ class AppController
         }
 
         print $output;
+    }
+    
+    protected function jsonResponse(HttpStatusCode $code, object | string $data) : void
+    {
+        header('Content-type: application/json');
+        http_response_code($code->value);
+
+        echo json_encode($data);
+        exit();
     }
 }
