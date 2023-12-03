@@ -5,7 +5,7 @@ require_once "src/enums/HttpStatusCode.php";
 class AppController
 {
     private string $request;
-    private array $requestBody;
+    private array | null $requestBody;
 
     public function __construct()
     {
@@ -25,7 +25,17 @@ class AppController
 
     protected function isPut(): bool
     {
-        return $this->request === 'POST';
+        return $this->request === 'PUT';
+    }
+    
+    protected function isDelete() : bool
+    {
+        return $this->request === 'DELETE';    
+    }
+    
+    protected function getRequestBody() : array | null
+    {
+        return $this->requestBody;
     }
 
     protected function render(string $template = null, array $variables = []): void
@@ -44,12 +54,14 @@ class AppController
         print $output;
     }
     
-    protected function jsonResponse(HttpStatusCode $code, object | string $data) : void
+    protected function response(HttpStatusCode $code, string | object $data = null) : void
     {
         header('Content-type: application/json');
         http_response_code($code->value);
 
-        echo json_encode($data);
+        if($data)
+            echo json_encode($data);
+        
         exit();
     }
 }

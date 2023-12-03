@@ -97,7 +97,7 @@ class LinkGroupRepo extends BaseRepo
     private function joinTables(LinkGroup $linkGroup): LinkGroup
     {
         $linkGroup->links = $this->linkRepo->findGroupLinks($linkGroup->link_group_id);
-        $linkGroup->permissionLevels = $this->groupShareRepo->findLinkGroupShares($linkGroup->link_group_id);
+        $linkGroup->groupShares = $this->groupShareRepo->findLinkGroupShares($linkGroup->link_group_id);
 
         return $linkGroup;
     }

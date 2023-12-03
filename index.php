@@ -10,7 +10,10 @@ $path = parse_url($path, PHP_URL_PATH);
 Router::get('', DefaultController::class);
 Router::get('index', DefaultController::class);
 Router::get('login', SecurityController::class);
+Router::get('logout', SecurityController::class);
 Router::get('register', SecurityController::class);
 Router::get('dashboard', DashboardController::class);
+Router::get('link', LinkController::class);
+Router::get('linkgroup', LinkGroupController::class);
 
  Router::run($path);

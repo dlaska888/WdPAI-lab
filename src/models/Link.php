@@ -20,4 +20,29 @@ class Link
         $this->title = $title;
         $this->url = $url;
     }
+
+    public static function fromArray(array $data): self | null
+    {
+        try{
+            return new self(
+                $data['link_group_id'],
+                $data['title'],
+                $data['url'],
+                $data['link_id'] ?? null
+            );   
+        } catch (Throwable){
+            return null;
+        }
+        
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'link_id' => $this->link_id,
+            'link_group_id' => $this->link_group_id,
+            'title' => $this->title,
+            'url' => $this->url,
+        ];
+    }
 }
