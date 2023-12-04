@@ -15,5 +15,6 @@ Router::get('register', SecurityController::class);
 Router::get('dashboard', DashboardController::class);
 Router::get('link', LinkController::class);
 Router::get('linkgroup', LinkGroupController::class);
+Router::get('linkgroupshare', LinkGroupShareController::class);
 
  Router::run($path);

@@ -54,7 +54,7 @@ class AppController
         print $output;
     }
     
-    protected function response(HttpStatusCode $code, string | object $data = null) : void
+    protected function response(HttpStatusCode $code, mixed $data = null) : void
     {
         header('Content-type: application/json');
         http_response_code($code->value);

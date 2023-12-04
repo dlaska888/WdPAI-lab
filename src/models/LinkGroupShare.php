@@ -11,7 +11,7 @@ class LinkGroupShare
     public function __construct(
         string $user_id,
         string $link_group_id,
-        DateTime $date_created,
+        DateTime $date_created = new DateTime(),
         GroupPermissionLevel $permission = GroupPermissionLevel::READ,
         string $link_group_share_id = null
     ) {
