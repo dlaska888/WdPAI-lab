@@ -1,5 +1,7 @@
 <?php
 
+namespace src\Repos\Interfaces;
+
 interface IRepo
 {
 public function all(): array;

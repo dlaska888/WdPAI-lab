@@ -1,5 +1,10 @@
 <?php
 
+namespace src;
+
+use PDO;
+use PDOException;
+
 require_once "config.php";
 
 class Database {

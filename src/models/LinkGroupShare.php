@@ -1,5 +1,11 @@
 <?php
 
+namespace src\Models;
+
+use src\Enums\GroupPermissionLevel;
+use src\Helpers\UUIDGenerator;
+use DateTime;
+
 class LinkGroupShare
 {
     public string $link_group_share_id;

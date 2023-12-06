@@ -1,6 +1,9 @@
 <?php
 
-require_once "src/enums/HttpStatusCode.php";
+namespace src\Controllers;
+
+use src\Enums\HttpStatusCode;
+use JetBrains\PhpStorm\NoReturn;
 
 class AppController
 {
@@ -54,7 +57,7 @@ class AppController
         print $output;
     }
     
-    protected function response(HttpStatusCode $code, mixed $data = null) : void
+    #[NoReturn] protected function response(HttpStatusCode $code, mixed $data = null) : void
     {
         header('Content-type: application/json');
         http_response_code($code->value);

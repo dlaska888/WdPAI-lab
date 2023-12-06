@@ -1,9 +1,10 @@
 <?php
 
-require_once "src/repos/BaseRepo.php";
-require_once "src/models/LinkGroup.php";
-require_once "src/repos/LinkRepo.php";
-require_once "src/repos/LinkGroupShareRepo.php";
+namespace src\Repos;
+
+use src\Models\LinkGroup;
+use DateTime;
+use InvalidArgumentException;
 
 class LinkGroupRepo extends BaseRepo
 {

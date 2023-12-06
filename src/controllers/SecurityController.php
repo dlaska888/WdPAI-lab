@@ -1,12 +1,18 @@
 <?php
 
+namespace src\Controllers;
+
+use src\Attributes\ApiController;
+use src\Attributes\Route;
+use src\Handlers\UserSessionHandler;
+use src\Models\LinkGroup;
+use src\Models\LinkyUser;
+use src\Repos\LinkGroupRepo;
+use src\Repos\UserRepo;
+use DateTime;
 use JetBrains\PhpStorm\NoReturn;
 
-require_once "src/Database.php";
-require_once "src/repos/UserRepo.php";
-require_once "src/repos/LinkGroupRepo.php";
-require_once "src/handlers/UserSessionHandler.php";
-
+#[ApiController]
 class SecurityController extends AppController
 {
     private UserRepo $userRepo;
@@ -23,6 +29,7 @@ class SecurityController extends AppController
         $this->linkGroupRepo = new LinkGroupRepo();
     }
 
+    #[Route("login")]
     public function login(): void
     {
         if (!$this->isPost()) {
@@ -59,6 +66,7 @@ class SecurityController extends AppController
         exit();
     }
 
+    #[Route("register")]
     public function register(): void
     {
         if (!$this->isPost()) {

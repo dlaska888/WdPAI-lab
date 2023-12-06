@@ -1,6 +1,10 @@
 <?php
 
-require_once "src/helpers/UUIDGenerator.php";
+namespace src\Models;
+
+use src\Helpers\UUIDGenerator;
+use DateTime;
+use Throwable;
 
 class LinkGroup
 {

@@ -1,7 +1,9 @@
 <?php
 
-require_once "src/Database.php";
-require_once "src/repos/interfaces/IRepo.php";
+namespace src\Repos;
+
+use src\Database;
+use src\Repos\Interfaces\IRepo;
 
 abstract class BaseRepo implements IRepo
 {

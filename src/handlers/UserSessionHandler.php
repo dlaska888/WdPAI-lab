@@ -1,6 +1,6 @@
 <?php
 
-require_once "src/handlers/AppSessionHandler.php";
+namespace src\Handlers;
 
 class UserSessionHandler extends AppSessionHandler
 {

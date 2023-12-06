@@ -1,5 +1,7 @@
 <?php
 
+namespace src\Handlers;
+
 class AppSessionHandler
 {
     public function __construct()

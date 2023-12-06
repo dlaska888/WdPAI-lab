@@ -1,8 +1,16 @@
 <?php
 
-require_once "src/controllers/AppController.php";
-require_once "src/enums/GroupPermissionLevel.php";
+namespace src\Controllers;
 
+use src\Attributes\ApiController;
+use src\Attributes\Route;
+use src\Enums\GroupPermissionLevel;
+use src\Enums\HttpStatusCode;
+use src\Handlers\UserSessionHandler;
+use src\Models\LinkGroup;
+use src\Repos\LinkGroupRepo;
+
+#[ApiController]
 class LinkGroupController extends AppController
 {
     private LinkGroupRepo $linkGroupRepo;
@@ -15,6 +23,7 @@ class LinkGroupController extends AppController
         $this->sessionHandler = new UserSessionHandler();
     }
 
+    #[Route("linkGroup")]
     public function linkGroup(string $id): void
     {
         if (!$this->sessionHandler->isSessionSet())

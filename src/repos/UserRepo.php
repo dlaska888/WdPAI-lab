@@ -1,7 +1,10 @@
 <?php
-require_once "src/repos/BaseRepo.php";
-require_once "src/models/LinkyUser.php";
-require_once "src/enums/UserRole.php";
+
+namespace src\Repos;
+
+use src\Enums\UserRole;
+use src\Models\LinkyUser;
+use DateTime;
 
 class UserRepo extends BaseRepo
 {

@@ -1,19 +1,22 @@
 <?php
 
-require_once "src/controllers/DefaultController.php";
-require_once "src/handlers/UserSessionHandler.php";
+namespace src\Controllers;
 
+use src\Attributes\ApiController;
+use src\Attributes\Route;
+use src\Handlers\UserSessionHandler;
+
+#[ApiController]
 class DashboardController extends DefaultController
 {
-    private UserRepo $userRepo;
     private UserSessionHandler $sessionHandler;
     public function __construct()
     {
         parent::__construct();
-        $this->userRepo = new UserRepo();
         $this->sessionHandler = new UserSessionHandler();
     }
 
+    #[Route("dashboard")]
     public function dashboard(): void
     {
         if(!$this->sessionHandler->isSessionSet()){

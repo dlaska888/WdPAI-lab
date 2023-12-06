@@ -1,6 +1,9 @@
 <?php
 
-require_once "src/helpers/UUIDGenerator.php";
+namespace src\Models;
+
+use src\Helpers\UUIDGenerator;
+use Throwable;
 
 class Link
 {

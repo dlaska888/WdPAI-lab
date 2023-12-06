@@ -1,7 +1,9 @@
 <?php
 
-require_once "src/models/Link.php";
-require_once "src/repos/BaseRepo.php";
+namespace src\Repos;
+
+use src\Models\Link;
+use InvalidArgumentException;
 
 class LinkRepo extends BaseRepo
 {

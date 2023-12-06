@@ -1,8 +1,10 @@
 <?php
 
-require_once "src/enums/UserRole.php";
-require_once "src/enums/UserRole.php";
-require_once "src/helpers/UUIDGenerator.php";
+namespace src\Models;
+
+use src\Enums\UserRole;
+use src\Helpers\UUIDGenerator;
+use DateTime;
 
 class LinkyUser
 {

@@ -1,5 +1,7 @@
 <?php
 
+namespace src\Helpers;
+
 class UUIDGenerator
 {
     public static function genUUID(): string

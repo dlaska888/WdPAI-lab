@@ -1,11 +1,17 @@
 <?php
 
-require_once "src/controllers/AppController.php";
-require_once "src/enums/HttpStatusCode.php";
-require_once "src/models/Link.php"; // Assuming the Link class is in this file
-require_once "src/repos/LinkRepo.php"; // Assuming the LinkRepo class is in this file
-require_once "src/handlers/UserSessionHandler.php";
+namespace src\Controllers;
 
+use src\Attributes\ApiController;
+use src\Attributes\Route;
+use src\Enums\GroupPermissionLevel;
+use src\Enums\HttpStatusCode;
+use src\Handlers\UserSessionHandler;
+use src\Models\Link;
+use src\Repos\LinkGroupRepo;
+use src\Repos\LinkRepo;
+
+#[ApiController]
 class LinkController extends AppController
 {
     private LinkGroupRepo $linkGroupRepo;
@@ -20,6 +26,7 @@ class LinkController extends AppController
         $this->sessionHandler = new UserSessionHandler();
     }
 
+    #[Route("link")]
     public function link(string $id): void
     {
         if (!$this->sessionHandler->isSessionSet()) {

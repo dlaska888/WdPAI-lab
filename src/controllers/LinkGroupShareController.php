@@ -1,12 +1,18 @@
 <?php
 
-require_once "src/controllers/AppController.php";
-require_once "src/models/LinkGroupShare.php";
-require_once "src/repos/LinkGroupShareRepo.php";
-require_once "src/handlers/UserSessionHandler.php";
-require_once "src/enums/HttpStatusCode.php";
-require_once "src/enums/GroupPermissionLevel.php";
+namespace src\Controllers;
 
+use src\Attributes\ApiController;
+use src\Attributes\Route;
+use src\Enums\GroupPermissionLevel;
+use src\Enums\HttpStatusCode;
+use src\Handlers\UserSessionHandler;
+use src\Models\LinkGroupShare;
+use src\Repos\LinkGroupRepo;
+use src\Repos\LinkGroupShareRepo;
+use DateTime;
+
+#[ApiController]
 class LinkGroupShareController extends AppController
 {
     private LinkGroupRepo $linkGroupRepo;
@@ -21,6 +27,7 @@ class LinkGroupShareController extends AppController
         $this->sessionHandler = new UserSessionHandler();
     }
 
+    #[Route("linkGroupShare")]
     public function linkGroupShare(string $id): void
     {
         if (!$this->sessionHandler->isSessionSet())
@@ -75,7 +82,7 @@ class LinkGroupShareController extends AppController
                 $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to edit this share");
 
             $permissionLevel = GroupPermissionLevel::from($linkGroupShareData['permission']);
-            $linkGroupShare->permission = $permissionLevel ?? $linkGroupShare->permission;
+            $linkGroupShare->permission = $permissionLevel;
             
             $this->response(HttpStatusCode::CREATED, $this->linkGroupShareRepo->update($linkGroupShare));
         }
