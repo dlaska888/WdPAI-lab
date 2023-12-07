@@ -3,14 +3,17 @@
 namespace src\Controllers;
 
 use src\Attributes\ApiController;
+use src\Attributes\httpMethod\HttpGet;
+use src\Attributes\MvcController;
 use src\Attributes\Route;
 
-#[ApiController]
+#[MvcController]
 class DefaultController extends AppController
 {
-    #[Route("")]
+    #[HttpGet]
+    #[Route("index")]
     public function index(): void
     {
-        $this->render('index');
+        $this->render("index");
     }
 }

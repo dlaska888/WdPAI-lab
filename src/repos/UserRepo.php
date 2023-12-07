@@ -2,9 +2,9 @@
 
 namespace src\Repos;
 
-use src\Enums\UserRole;
-use src\Models\LinkyUser;
 use DateTime;
+use src\Enums\UserRole;
+use src\Models\Entities\LinkyUser;
 
 class UserRepo extends BaseRepo
 {

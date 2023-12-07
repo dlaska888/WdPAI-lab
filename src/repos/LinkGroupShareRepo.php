@@ -2,9 +2,9 @@
 
 namespace src\Repos;
 
-use src\Enums\GroupPermissionLevel;
-use src\Models\LinkGroupShare;
 use DateTime;
+use src\Enums\GroupPermissionLevel;
+use src\Models\Entities\LinkGroupShare;
 
 class LinkGroupShareRepo extends BaseRepo
 {

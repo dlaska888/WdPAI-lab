@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\NoReturn;
 class AppController
 {
     private string $request;
-    private array | null $requestBody;
+    private array|null $requestBody;
 
     public function __construct()
     {
@@ -30,17 +30,18 @@ class AppController
     {
         return $this->request === 'PUT';
     }
-    
-    protected function isDelete() : bool
+
+    protected function isDelete(): bool
     {
-        return $this->request === 'DELETE';    
+        return $this->request === 'DELETE';
     }
-    
-    protected function getRequestBody() : array | null
+
+    protected function getRequestBody(): array|null
     {
         return $this->requestBody;
     }
 
+    #[NoReturn]
     protected function render(string $template = null, array $variables = []): void
     {
         $templatePath = 'src/views/' . $template . '.php';
@@ -56,15 +57,23 @@ class AppController
 
         print $output;
     }
-    
-    #[NoReturn] protected function response(HttpStatusCode $code, mixed $data = null) : void
+
+    #[NoReturn]
+    protected function response(HttpStatusCode $code, mixed $data = null): void
     {
         header('Content-type: application/json');
         http_response_code($code->value);
 
-        if($data)
+        if ($data)
             echo json_encode($data);
-        
+
+        exit();
+    }
+
+    #[NoReturn]
+    function redirect($url): void
+    {
+        header('Location: ' . $url);
         exit();
     }
 }

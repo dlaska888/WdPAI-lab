@@ -1,10 +1,10 @@
 <?php
 
-namespace src\Models;
+namespace src\Models\Entities;
 
+use DateTime;
 use src\Enums\GroupPermissionLevel;
 use src\Helpers\UUIDGenerator;
-use DateTime;
 
 class LinkGroupShare
 {

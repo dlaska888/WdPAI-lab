@@ -2,17 +2,19 @@
 
 namespace src\Controllers;
 
-use src\Attributes\ApiController;
-use src\Attributes\Route;
-use src\Handlers\UserSessionHandler;
-use src\Models\LinkGroup;
-use src\Models\LinkyUser;
-use src\Repos\LinkGroupRepo;
-use src\Repos\UserRepo;
 use DateTime;
 use JetBrains\PhpStorm\NoReturn;
+use src\Attributes\httpMethod\HttpGet;
+use src\Attributes\httpMethod\HttpPost;
+use src\Attributes\MvcController;
+use src\Attributes\Route;
+use src\Handlers\UserSessionHandler;
+use src\Models\Entities\LinkGroup;
+use src\Models\Entities\LinkyUser;
+use src\Repos\LinkGroupRepo;
+use src\Repos\UserRepo;
 
-#[ApiController]
+#[MvcController]
 class SecurityController extends AppController
 {
     private UserRepo $userRepo;
@@ -29,6 +31,9 @@ class SecurityController extends AppController
         $this->linkGroupRepo = new LinkGroupRepo();
     }
 
+    
+    #[HttpGet]
+    #[HttpPost]
     #[Route("login")]
     public function login(): void
     {
@@ -40,7 +45,6 @@ class SecurityController extends AppController
             }
 
             $this->render('login');
-            return;
         }
 
         $email = $_POST['email'];
@@ -50,14 +54,12 @@ class SecurityController extends AppController
 
         if (!$validationResult['valid']) {
             $this->render('login', ['messages' => $validationResult['messages']]);
-            return;
         }
 
         $user = $this->userRepo->findByEmail($email) ?? $this->userRepo->findByUserName($email);
 
         if (!$user || !password_verify($password, $user->password_hash)) {
             $this->render('login', ['messages' => ['Invalid credentials']]);
-            return;
         }
 
         $this->sessionHandler->setSession($user);
@@ -66,12 +68,13 @@ class SecurityController extends AppController
         exit();
     }
 
+    #[HttpGet]
+    #[HttpPost]
     #[Route("register")]
     public function register(): void
     {
         if (!$this->isPost()) {
             $this->render('register');
-            return;
         }
 
         $userName = $_POST['userName'];
@@ -83,13 +86,11 @@ class SecurityController extends AppController
 
         if (!$validationResult['valid']) {
             $this->render('register', ['messages' => $validationResult['messages']]);
-            return;
         }
 
         // Check if user already exists
         if ($this->userRepo->findByEmail($email) || $this->userRepo->findByUserName($userName)) {
             $this->render('register', ['messages' => ['User already exists']]);
-            return;
         }
 
         $user = new LinkyUser(
@@ -113,7 +114,7 @@ class SecurityController extends AppController
         exit();
     }
 
-    #[NoReturn]
+    #[HttpPost]
     public function logout(): void
     {
         $this->sessionHandler->unsetSession();

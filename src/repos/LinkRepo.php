@@ -2,8 +2,8 @@
 
 namespace src\Repos;
 
-use src\Models\Link;
 use InvalidArgumentException;
+use src\Models\Entities\Link;
 
 class LinkRepo extends BaseRepo
 {

@@ -2,9 +2,9 @@
 
 namespace src\Repos;
 
-use src\Models\LinkGroup;
 use DateTime;
 use InvalidArgumentException;
+use src\Models\Entities\LinkGroup;
 
 class LinkGroupRepo extends BaseRepo
 {
