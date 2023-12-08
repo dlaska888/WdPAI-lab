@@ -2,125 +2,61 @@
 
 namespace src;
 
-use src\Attributes\ApiController;
-use src\Attributes\httpMethod\HttpMethod;
-use src\Attributes\MvcController;
-use src\Attributes\Route;
-use ReflectionClass;
+use src\Controllers\AppController;
+use src\Helpers\ControllerMapper;
+use src\Helpers\RouteResolver;
 
 class Router
 {
-    public static array $routes = [];
+    private array $routes = [];
+    private ControllerMapper $controllerMapper;
+    private RouteResolver $routeResolver;
 
-    public static function run($url): void
+    public function __construct()
     {
-        $route = self::matchRoute($url ?: 'index');
+        $this->controllerMapper = new ControllerMapper();
+        $this->routeResolver = new RouteResolver();
+    }
+
+    public function run($url): void
+    {
+        $route = $this->matchRoute($url ?: 'index');
 
         if ($route === null) {
             die("Wrong url!");
         }
 
-        $action = self::$routes[$route];
-
         // Extract parameters from the URL based on the dynamic parts
-        $params = self::extractDynamicParameters($url, $route);
+        $params = $this->extractDynamicParameters($url, $route->getPath());
 
         // Call the controller's action method with parameters
-        call_user_func_array([new $action['controller'], $action['action']], $params);
+        call_user_func_array([new ($route->getController()), $route->getAction()], $params);
     }
 
-    public static function mapControllers(): void
+    public function mapControllers(): void
     {
-        // Specify the directory where your controllers are located
-        $controllersDirectory = 'src/controllers';
-
-        // Get all PHP files in the controllers directory
-        $phpFiles = glob($controllersDirectory . '/*.php');
-
-        foreach ($phpFiles as $phpFile) {
-            $className = "src\\Controllers\\" . pathinfo($phpFile, PATHINFO_FILENAME);
-            if (!class_exists($className)) {
-                include $phpFile;
-            }
-
-            $reflectionClass = new ReflectionClass($className);
-            $attributes = $reflectionClass->getAttributes(ApiController::class) ?:
-                $reflectionClass->getAttributes(MvcController::class);
-
-            if (!empty($attributes)) {
-                self::mapRoutes($className);
-            }
-
-        }
+        $this->routes = $this->controllerMapper->mapControllers();
     }
 
-    private static function mapRoutes($controllerClass): void
+    private function matchRoute(string $url): ?Route
     {
-        $reflection = new ReflectionClass($controllerClass);
-
-        foreach ($reflection->getMethods() as $method) {
-            $methodName = $method->getName();
-            $routeAttributes = $method->getAttributes(Route::class);
-            $httpMethodAttributes = array_filter($method->getAttributes(),
-                fn($attribute) => is_subclass_of($attribute->getName(), HttpMethod::class)
-            );
-
-            if (empty($routeAttributes)) {
+        foreach ($this->routes as $route) {
+            if (!$this->routeResolver->checkAuthorization($route))
                 continue;
-            }
-
-            $route = $routeAttributes[0]->getArguments()[0] ?? $methodName;
-            $httpMethods = array();
-
-            foreach ($httpMethodAttributes as $httpMethodAttribute) {
-                $httpMethodAttribute = $httpMethodAttribute->newInstance();
-                $httpMethods[] = $httpMethodAttribute->method;
-            }
-
-            if (empty($httpMethods)) {
-                $httpMethods[] = 'GET';
-            }
-
-            foreach ($httpMethods as $httpMethod) {
-                self::$routes[$httpMethod . "::" . $route] = ['controller' => $controllerClass,
-                    'action' => $methodName];
-            }
-
-
-        }
-    }
-
-    private static function matchRoute($url): ?string
-    {
-        $urlParts = explode("/", $url ?: 'index');
-
-        foreach (self::$routes as $route => $action) {
-            list($httpMethod, $route) = explode("::", $route);
-            $routeParts = explode("/", $route);
-
-            if ($_SERVER['REQUEST_METHOD'] !== $httpMethod) {
-                continue;
-            }
-
-            $match = true;
             
-            foreach ($routeParts as $index => $part) {
-                if ((!isset($urlParts[$index]) || $part !== $urlParts[$index]) && !str_starts_with($part, '{')
-                ) {
-                    $match = false;
-                    break;
-                }
-            }
+            if (!$this->routeResolver->matchHttpMethod($route))
+                continue;
 
-            if ($match) {
-                return implode("::", [$httpMethod, $route]);
-            }
+            if (!$this->routeResolver->matchUrlParts($url, $route))
+                continue;
+
+            return $route;
         }
 
         return null;
     }
 
-    private static function extractDynamicParameters($url, $route): array
+    private function extractDynamicParameters($url, $route): array
     {
         $urlParts = explode("/", $url ?: "index");
         $routeParts = explode("/", $route);

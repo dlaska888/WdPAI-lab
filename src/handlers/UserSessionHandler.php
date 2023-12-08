@@ -9,7 +9,6 @@ class UserSessionHandler extends AppSessionHandler
         parent::__construct();
     }
 
-
     public function getUserId(): ?string
     {
         return $this->isSessionSet() ? $_SESSION['user_id'] : null;

@@ -3,45 +3,21 @@
 namespace src\Controllers;
 
 use src\Enums\HttpStatusCode;
-use JetBrains\PhpStorm\NoReturn;
 
 class AppController
 {
-    private string $request;
     private array|null $requestBody;
 
     public function __construct()
     {
-        $this->request = $_SERVER['REQUEST_METHOD'];
         $this->requestBody = json_decode(file_get_contents('php://input'), true);
-    }
-
-    protected function isGet(): bool
-    {
-        return $this->request === 'GET';
-    }
-
-    protected function isPost(): bool
-    {
-        return $this->request === 'POST';
-    }
-
-    protected function isPut(): bool
-    {
-        return $this->request === 'PUT';
-    }
-
-    protected function isDelete(): bool
-    {
-        return $this->request === 'DELETE';
     }
 
     protected function getRequestBody(): array|null
     {
         return $this->requestBody;
     }
-
-    #[NoReturn]
+    
     protected function render(string $template = null, array $variables = []): void
     {
         $templatePath = 'src/views/' . $template . '.php';
@@ -55,11 +31,10 @@ class AppController
             $output = ob_get_clean();
         }
 
-        print $output;
+        echo $output;
         exit();
     }
 
-    #[NoReturn]
     protected function response(HttpStatusCode $code, mixed $data = null): void
     {
         header('Content-type: application/json');
@@ -71,8 +46,7 @@ class AppController
         exit();
     }
 
-    #[NoReturn]
-    function redirect($url): void
+    protected function redirect($url): void
     {
         header('Location: ' . $url);
         exit();

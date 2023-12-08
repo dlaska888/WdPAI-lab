@@ -3,10 +3,9 @@
 namespace src\Controllers;
 
 use DateTime;
-use JetBrains\PhpStorm\NoReturn;
+use src\attributes\controller\MvcController;
 use src\Attributes\httpMethod\HttpGet;
 use src\Attributes\httpMethod\HttpPost;
-use src\Attributes\MvcController;
 use src\Attributes\Route;
 use src\Handlers\UserSessionHandler;
 use src\Models\Entities\LinkGroup;
@@ -20,7 +19,7 @@ class SecurityController extends AppController
     private UserRepo $userRepo;
 
     private LinkGroupRepo $linkGroupRepo;
-    
+
     private UserSessionHandler $sessionHandler;
 
     public function __construct()
@@ -31,22 +30,22 @@ class SecurityController extends AppController
         $this->linkGroupRepo = new LinkGroupRepo();
     }
 
-    
+
     #[HttpGet]
+    #[Route("login")]
+    public function getLoginPage(): void
+    {
+        if ($this->sessionHandler->isSessionSet()) {
+            $this->redirect("dashboard");
+        }
+
+        $this->render('login');
+    }
+
     #[HttpPost]
     #[Route("login")]
     public function login(): void
     {
-        if (!$this->isPost()) {
-
-            if($this->sessionHandler->isSessionSet()){
-                header("Location: dashboard");
-                exit();
-            }
-
-            $this->render('login');
-        }
-
         $email = $_POST['email'];
         $password = $_POST['password'];
 
@@ -63,20 +62,20 @@ class SecurityController extends AppController
         }
 
         $this->sessionHandler->setSession($user);
-
-        header("Location: dashboard");
-        exit();
+        $this->redirect('dashboard');
     }
 
     #[HttpGet]
+    #[Route("register")]
+    public function getRegisterPage(): void
+    {
+        $this->render('register');
+    }
+
     #[HttpPost]
     #[Route("register")]
     public function register(): void
     {
-        if (!$this->isPost()) {
-            $this->render('register');
-        }
-
         $userName = $_POST['userName'];
         $email = $_POST['email'];
         $password = $_POST['password'];
@@ -110,17 +109,15 @@ class SecurityController extends AppController
 
         $this->sessionHandler->setSession($user);
 
-        header("Location: dashboard");
-        exit();
+        $this->redirect('dashboard');
     }
 
     #[HttpPost]
-    #[Route("logout")]
+    #[Route('logout')]
     public function logout(): void
     {
         $this->sessionHandler->unsetSession();
-        header("Location: dashboard");
-        exit();
+        $this->redirect('login');
     }
 
     private function validateLoginData(string $email, string $password): array

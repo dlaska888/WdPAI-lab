@@ -2,9 +2,8 @@
 
 namespace src\Controllers;
 
-use src\Attributes\ApiController;
+use src\attributes\controller\MvcController;
 use src\Attributes\httpMethod\HttpGet;
-use src\Attributes\MvcController;
 use src\Attributes\Route;
 
 #[MvcController]

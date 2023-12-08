@@ -3,7 +3,8 @@
 namespace src\Controllers;
 
 use DateTime;
-use src\Attributes\ApiController;
+use src\attributes\authorization\Authorize;
+use src\attributes\controller\ApiController;
 use src\Attributes\httpMethod\HttpDelete;
 use src\Attributes\httpMethod\HttpGet;
 use src\Attributes\httpMethod\HttpPost;
@@ -11,6 +12,7 @@ use src\Attributes\httpMethod\HttpPut;
 use src\Attributes\Route;
 use src\Enums\GroupPermissionLevel;
 use src\Enums\HttpStatusCode;
+use src\Enums\UserRole;
 use src\Handlers\UserSessionHandler;
 use src\Models\Entities\Link;
 use src\Models\Entities\LinkGroup;
@@ -20,6 +22,7 @@ use src\Repos\LinkGroupShareRepo;
 use src\Repos\LinkRepo;
 
 #[ApiController]
+#[Authorize(UserRole::NORMAL)]
 class LinkController extends AppController
 {
     private LinkRepo $linkRepo;
@@ -34,10 +37,6 @@ class LinkController extends AppController
         $this->linkGroupRepo = new LinkGroupRepo();
         $this->linkGroupShareRepo = new LinkGroupShareRepo();
         $this->sessionHandler = new UserSessionHandler();
-
-        if (!$this->sessionHandler->isSessionSet()) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User has to be logged in");
-        }
     }
 
     #[HttpGet]
@@ -134,7 +133,7 @@ class LinkController extends AppController
     }
 
     #[HttpGet]
-    #[Route("shared-link-groups")]
+    #[Route("link-groups/shared")]
     public function getAllSharedLinkGroups(): void
     {
         $linkGroups = $this->linkGroupRepo->findAllUserSharedGroups($this->sessionHandler->getUserId());
@@ -239,20 +238,20 @@ class LinkController extends AppController
         }
 
         $shareToUserId = $shareData['user_id'];
-        $linkGroupId = $groupId;
         $permissionLevel = GroupPermissionLevel::from($shareData['permission']);
 
         // Check if group is already shared to target user
-        if ($this->checkGroupAccess($shareToUserId, $groupId, $permissionLevel)) {
+        if ($this->sessionHandler->getUserId() === $shareToUserId ||
+            $this->checkGroupAccess($shareToUserId, $groupId, $permissionLevel)) {
             $this->response(HttpStatusCode::BAD_REQUEST, "Group is already shared to this user");
         }
 
         // Check if the user has access to the link group
-        if (!$group->user_id !== $this->sessionHandler->getUserId()) {
+        if ($group->user_id !== $this->sessionHandler->getUserId()) {
             $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to share this group.");
         }
 
-        $share = new LinkGroupShare($shareToUserId, $linkGroupId, new DateTime(), $permissionLevel);
+        $share = new LinkGroupShare($shareToUserId, $groupId, new DateTime(), $permissionLevel);
         $this->response(HttpStatusCode::CREATED, $this->linkGroupShareRepo->insert($share));
     }
 
@@ -323,7 +322,7 @@ class LinkController extends AppController
             return null;
         }
 
-        if ($link->group_id !== $groupId) {
+        if ($link->link_group_id !== $groupId) {
             return null;
         }
 
@@ -338,7 +337,7 @@ class LinkController extends AppController
             return null;
         }
 
-        if ($share->group_id !== $groupId) {
+        if ($share->link_group_id !== $groupId) {
             return null;
         }
 

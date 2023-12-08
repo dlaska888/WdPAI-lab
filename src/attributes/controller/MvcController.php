@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Attributes;
+namespace src\attributes\controller;
 
 use Attribute;
 

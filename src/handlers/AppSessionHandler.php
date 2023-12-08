@@ -6,11 +6,17 @@ class AppSessionHandler
 {
     public function __construct()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
-    public  function unsetSession() :void
+    public function unsetSession(): void
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            return;
+        }
+        
         // Unset all session variables
         session_unset();
 
