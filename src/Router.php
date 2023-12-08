@@ -122,7 +122,7 @@ class Router
 
     private static function extractDynamicParameters($url, $route): array
     {
-        $urlParts = explode("/", $url);
+        $urlParts = explode("/", $url ?: "index");
         $routeParts = explode("/", $route);
         $params = [];
 

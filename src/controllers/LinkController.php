@@ -41,7 +41,7 @@ class LinkController extends AppController
     }
 
     #[HttpGet]
-    #[Route("linkGroup/{groupId}/link/{linkId}")]
+    #[Route("link-group/{groupId}/link/{linkId}")]
     public function getLink(string $groupId, string $linkId): void
     {
         $link = $this->findLink($groupId, $linkId);
@@ -60,7 +60,7 @@ class LinkController extends AppController
     }
 
     #[HttpPost]
-    #[Route("linkGroup/{groupId}/link")]
+    #[Route("link-group/{groupId}/link")]
     public function addLink(string $groupId): void
     {
         $linkData = $this->getRequestBody();
@@ -80,7 +80,7 @@ class LinkController extends AppController
     }
 
     #[HttpPut]
-    #[Route("linkGroup/{groupId}/link/{linkId}")]
+    #[Route("link-group/{groupId}/link/{linkId}")]
     public function updateLink(string $groupId, string $linkId): void
     {
         $link = $this->findLink($groupId, $linkId);
@@ -107,7 +107,7 @@ class LinkController extends AppController
     }
 
     #[HttpPut]
-    #[Route("linkGroup/{groupId}/link/{linkId}")]
+    #[Route("link-group/{groupId}/link/{linkId}")]
     public function deleteLink(string $groupId, string $linkId): void
     {
         $link = $this->findLink($groupId, $linkId);
@@ -122,12 +122,11 @@ class LinkController extends AppController
             $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to delete this link");
         }
 
-        $this->linkRepo->delete($linkId);
-        $this->response(HttpStatusCode::OK);
+        $this->response(HttpStatusCode::OK, $this->linkRepo->delete($linkId));
     }
 
     #[HttpGet]
-    #[Route("linkGroups")]
+    #[Route("link-groups")]
     public function getAllLinkGroups(): void
     {
         $linkGroups = $this->linkGroupRepo->findAllUserGroups($this->sessionHandler->getUserId());
@@ -135,7 +134,7 @@ class LinkController extends AppController
     }
 
     #[HttpGet]
-    #[Route("sharedLinkGroups")]
+    #[Route("shared-link-groups")]
     public function getAllSharedLinkGroups(): void
     {
         $linkGroups = $this->linkGroupRepo->findAllUserSharedGroups($this->sessionHandler->getUserId());
@@ -143,7 +142,7 @@ class LinkController extends AppController
     }
 
     #[HttpGet]
-    #[Route("linkGroup/{groupId}")]
+    #[Route("link-group/{groupId}")]
     public function getLinkGroup(string $groupId): void
     {
         $linkGroup = $this->linkGroupRepo->findById($groupId);
@@ -162,7 +161,7 @@ class LinkController extends AppController
     }
 
     #[HttpPost]
-    #[Route("linkGroup")]
+    #[Route("link-group")]
     public function addLinkGroup(): void
     {
         $linkGroupData = $this->getRequestBody();
@@ -175,7 +174,7 @@ class LinkController extends AppController
     }
 
     #[HttpPut]
-    #[Route("linkGroup/{groupId}")]
+    #[Route("link-group/{groupId}")]
     public function updateLinkGroup(string $groupId): void
     {
         $linkGroup = $this->linkGroupRepo->findById($groupId);
@@ -203,7 +202,7 @@ class LinkController extends AppController
     }
 
     #[HttpDelete]
-    #[Route("linkGroup/{groupId}")]
+    #[Route("link-group/{groupId}")]
     public function deleteLinkGroup(string $groupId): void
     {
         $linkGroup = $this->linkGroupRepo->findById($groupId);
@@ -216,13 +215,11 @@ class LinkController extends AppController
             $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to delete this link group");
         }
 
-        // Delete the link group
-        $this->linkGroupRepo->delete($groupId);
-        $this->response(HttpStatusCode::OK);
+        $this->response(HttpStatusCode::OK, $this->linkGroupRepo->delete($groupId));
     }
 
     #[HttpPost]
-    #[Route("linkGroup/{groupId}/share")]
+    #[Route("link-group/{groupId}/share")]
     public function addGroupShare(string $groupId): void
     {
         $group = $this->linkGroupRepo->findById($groupId);
@@ -260,7 +257,7 @@ class LinkController extends AppController
     }
 
     #[HttpPut]
-    #[Route("linkGroup/{groupId}/share/{shareId}")]
+    #[Route("link-group/{groupId}/share/{shareId}")]
     public function updateGroupShare(string $groupId, string $shareId): void
     {
         $group = $this->linkGroupRepo->findById($groupId);
@@ -295,7 +292,7 @@ class LinkController extends AppController
     }
 
     #[HttpDelete]
-    #[Route("linkGroup/{groupId}/shares/{shareId}")]
+    #[Route("link-group/{groupId}/shares/{shareId}")]
     public function deleteGroupShare(string $groupId, string $shareId): void
     {
         $group = $this->linkGroupRepo->findById($groupId);
@@ -314,8 +311,7 @@ class LinkController extends AppController
             $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to delete this share");
         }
         
-        $this->linkGroupRepo->delete($shareId);
-        $this->response(HttpStatusCode::OK);
+        $this->response(HttpStatusCode::OK, $this->linkGroupRepo->delete($shareId));
     }
 
 

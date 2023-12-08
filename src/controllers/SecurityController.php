@@ -115,6 +115,7 @@ class SecurityController extends AppController
     }
 
     #[HttpPost]
+    #[Route("logout")]
     public function logout(): void
     {
         $this->sessionHandler->unsetSession();

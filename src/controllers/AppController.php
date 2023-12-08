@@ -56,6 +56,7 @@ class AppController
         }
 
         print $output;
+        exit();
     }
 
     #[NoReturn]
