@@ -2,7 +2,6 @@
 
 namespace src;
 
-use src\Controllers\AppController;
 use src\Helpers\ControllerMapper;
 use src\Helpers\RouteResolver;
 

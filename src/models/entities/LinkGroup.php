@@ -4,7 +4,6 @@ namespace src\Models\Entities;
 
 use DateTime;
 use src\Helpers\UUIDGenerator;
-use Throwable;
 
 class LinkGroup
 {

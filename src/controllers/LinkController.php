@@ -20,6 +20,13 @@ use src\Models\Entities\LinkGroupShare;
 use src\Repos\LinkGroupRepo;
 use src\Repos\LinkGroupShareRepo;
 use src\Repos\LinkRepo;
+use src\Repos\UserRepo;
+use src\Validators\AddLinkGroupShareValidator;
+use src\Validators\AddLinkGroupValidator;
+use src\Validators\AddLinkValidator;
+use src\Validators\UpdateLinkGroupShareValidator;
+use src\Validators\UpdateLinkGroupValidator;
+use src\Validators\UpdateLinkValidator;
 
 #[ApiController]
 #[Authorize(UserRole::NORMAL)]
@@ -29,10 +36,12 @@ class LinkController extends AppController
     private LinkGroupRepo $linkGroupRepo;
     private LinkGroupShareRepo $linkGroupShareRepo;
     private UserSessionHandler $sessionHandler;
+    private UserRepo $userRepo;
 
     public function __construct()
     {
         parent::__construct();
+        $this->userRepo = new UserRepo();
         $this->linkRepo = new LinkRepo();
         $this->linkGroupRepo = new LinkGroupRepo();
         $this->linkGroupShareRepo = new LinkGroupShareRepo();
@@ -63,10 +72,7 @@ class LinkController extends AppController
     public function addLink(string $groupId): void
     {
         $linkData = $this->getRequestBody();
-        if ($linkData === null || !array_key_exists('title', $linkData) ||
-            !array_key_exists('url', $linkData)) {
-            $this->response(HttpStatusCode::BAD_REQUEST, "Invalid request body");
-        }
+        $this->validateRequestData($linkData, AddLinkValidator::class);
 
         if (!$this->checkGroupAccess($this->sessionHandler->getUserId(),
             $groupId,
@@ -95,13 +101,10 @@ class LinkController extends AppController
         }
 
         $linkData = $this->getRequestBody();
-        if ($linkData === null) {
-            $this->response(HttpStatusCode::BAD_REQUEST, "Invalid request body");
-        }
+        $this->validateRequestData($linkData, UpdateLinkValidator::class);
 
         $link->title = $linkData['title'] ?? $link->title;
-        $link->url = $linkData['url'] ?? $link->url;
-
+        $link->url = $linkData['url'] ?? $link->title;
         $this->response(HttpStatusCode::OK, $this->linkRepo->update($link));
     }
 
@@ -164,9 +167,7 @@ class LinkController extends AppController
     public function addLinkGroup(): void
     {
         $linkGroupData = $this->getRequestBody();
-        if ($linkGroupData === null || !array_key_exists('name', $linkGroupData)) {
-            $this->response(HttpStatusCode::BAD_REQUEST, "Invalid request body");
-        }
+        $this->validateRequestData($linkGroupData, AddLinkGroupValidator::class);
 
         $linkGroup = new LinkGroup($this->sessionHandler->getUserId(), $linkGroupData['name']);
         $this->response(HttpStatusCode::CREATED, $this->linkGroupRepo->insert($linkGroup));
@@ -191,12 +192,9 @@ class LinkController extends AppController
 
         // Update link group data based on request body
         $linkGroupData = $this->getRequestBody();
-        if ($linkGroupData === null) {
-            $this->response(HttpStatusCode::BAD_REQUEST, "Invalid request body");
-        }
+        $this->validateRequestData($linkGroupData, UpdateLinkGroupValidator::class);
 
         $linkGroup->name = $linkGroupData['name'] ?? $linkGroup->name;
-
         $this->response(HttpStatusCode::OK, $this->linkGroupRepo->update($linkGroup));
     }
 
@@ -221,37 +219,37 @@ class LinkController extends AppController
     #[Route("link-group/{groupId}/share")]
     public function addGroupShare(string $groupId): void
     {
+        // Find group
         $group = $this->linkGroupRepo->findById($groupId);
 
         if (!$group) {
             $this->response(HttpStatusCode::NOT_FOUND, "No group with such id");
         }
 
-        $shareData = $this->getRequestBody();
-
-        if ($shareData === null ||
-            !array_key_exists('user_id', $shareData) ||
-            !array_key_exists('permission', $shareData) ||
-            !GroupPermissionLevel::tryFrom($shareData['permission'])
-        ) {
-            $this->response(HttpStatusCode::BAD_REQUEST, "Invalid request body");
-        }
-
-        $shareToUserId = $shareData['user_id'];
-        $permissionLevel = GroupPermissionLevel::from($shareData['permission']);
-
-        // Check if group is already shared to target user
-        if ($this->sessionHandler->getUserId() === $shareToUserId ||
-            $this->checkGroupAccess($shareToUserId, $groupId, $permissionLevel)) {
-            $this->response(HttpStatusCode::BAD_REQUEST, "Group is already shared to this user");
-        }
-
-        // Check if the user has access to the link group
+        // Check access
         if ($group->user_id !== $this->sessionHandler->getUserId()) {
             $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to share this group.");
         }
 
-        $share = new LinkGroupShare($shareToUserId, $groupId, new DateTime(), $permissionLevel);
+        // Validate body
+        $shareData = $this->getRequestBody();
+        $this->validateRequestData($shareData, AddLinkGroupShareValidator::class);
+
+        // Find user by email
+        $shareToUser = $this->userRepo->findByEmail($shareData['email']);
+
+        if ($shareToUser === null)
+            $this->response(HttpStatusCode::BAD_REQUEST, "User with this email not found");
+
+        // Check if group is already shared to target user
+        $permissionLevel = GroupPermissionLevel::from($shareData['permission']);
+
+        if ($this->sessionHandler->getUserId() === $shareToUser->user_id ||
+            $this->checkGroupAccess($shareToUser->user_id, $groupId, $permissionLevel)) {
+            $this->response(HttpStatusCode::BAD_REQUEST, "Group is already shared to this user");
+        }
+
+        $share = new LinkGroupShare($shareToUser->user_id, $groupId, new DateTime(), $permissionLevel);
         $this->response(HttpStatusCode::CREATED, $this->linkGroupShareRepo->insert($share));
     }
 
@@ -259,34 +257,36 @@ class LinkController extends AppController
     #[Route("link-group/{groupId}/share/{shareId}")]
     public function updateGroupShare(string $groupId, string $shareId): void
     {
+        // Find group from share
         $group = $this->linkGroupRepo->findById($groupId);
 
         if (!$group) {
             $this->response(HttpStatusCode::NOT_FOUND, "No group with such id");
         }
 
+        // Check access
+        if ($group->user_id !== $this->sessionHandler->getUserId()) {
+            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to edit this share");
+        }
+
+        // Find share 
         $share = $this->findGroupShare($groupId, $shareId);
 
         if (!$share) {
             $this->response(HttpStatusCode::NOT_FOUND, "No group share with such id");
         }
 
+        // Find user from share
+        $shareToUser = $this->userRepo->findById($share->user_id);
+
+        if ($shareToUser === null)
+            $this->response(HttpStatusCode::BAD_REQUEST, "User with this id not found");
+
+        // Validate and update
         $shareData = $this->getRequestBody();
+        $this->validateRequestData($shareData, UpdateLinkGroupShareValidator::class);
 
-        if ($shareData === null ||
-            !array_key_exists('permission', $shareData) ||
-            !GroupPermissionLevel::tryFrom($shareData['permission'])
-        ) {
-            $this->response(HttpStatusCode::BAD_REQUEST, "Invalid request body");
-        }
-
-        if ($group->user_id !== $this->sessionHandler->getUserId()) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to edit this share");
-        }
-
-        $permissionLevel = GroupPermissionLevel::from($shareData['permission']);
-        $share->permission = $permissionLevel;
-
+        $share->permission = GroupPermissionLevel::from($shareData['permission']) ?? $share->permission;
         $this->response(HttpStatusCode::CREATED, $this->linkGroupShareRepo->update($share));
     }
 
@@ -299,20 +299,19 @@ class LinkController extends AppController
         if (!$group) {
             $this->response(HttpStatusCode::NOT_FOUND, "No group with such id");
         }
-        
+
+        if ($group->user_id !== $this->sessionHandler->getUserId()) {
+            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to delete this share");
+        }
+
         $share = $this->findGroupShare($groupId, $shareId);
 
         if (!$share) {
             $this->response(HttpStatusCode::NOT_FOUND, "No group share with such id");
         }
 
-        if ($group->user_id !== $this->sessionHandler->getUserId()) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to delete this share");
-        }
-        
         $this->response(HttpStatusCode::OK, $this->linkGroupRepo->delete($shareId));
     }
-
 
     private function findLink($groupId, $linkId): ?Link
     {
@@ -344,8 +343,7 @@ class LinkController extends AppController
         return $share instanceof LinkGroupShare ? $share : null;
     }
 
-    private function checkGroupAccess(string $userId, string $linkGroupId,
-        GroupPermissionLevel $permissionLevel): bool
+    private function checkGroupAccess(string $userId, string $linkGroupId, GroupPermissionLevel $permissionLevel): bool
     {
         $linkGroup = $this->linkGroupRepo->findById($linkGroupId);
 
@@ -366,4 +364,5 @@ class LinkController extends AppController
 
         return false;
     }
+
 }

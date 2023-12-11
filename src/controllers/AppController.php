@@ -7,7 +7,7 @@ use src\Enums\HttpStatusCode;
 class AppController
 {
     private array|null $requestBody;
-
+    
     public function __construct()
     {
         $this->requestBody = json_decode(file_get_contents('php://input'), true);
@@ -16,6 +16,17 @@ class AppController
     protected function getRequestBody(): array|null
     {
         return $this->requestBody;
+    }
+
+    protected function validateRequestData(?array $data, string $validatorClass) : void
+    {
+        if($data === null)
+            $this->response(HttpStatusCode::BAD_REQUEST, 'Request body cannot be null');
+
+        $validationResult = (new $validatorClass($data))->validate();
+        if (!$validationResult['success']) {
+            $this->response(HttpStatusCode::BAD_REQUEST, $validationResult);
+        }
     }
     
     protected function render(string $template = null, array $variables = []): void
@@ -51,4 +62,6 @@ class AppController
         header('Location: ' . $url);
         exit();
     }
+
+    
 }
