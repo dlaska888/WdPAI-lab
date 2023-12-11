@@ -82,19 +82,30 @@ abstract class BaseValidator
         return $this;
     }
 
-    public function emailAddress(string $field, string $message = 'Invalid email address format.'): BaseValidator
+    public function equals(string $field, string $otherField, string $message = 'Values are not equal.'): BaseValidator
     {
-        if ($this->hasValue($field) && !filter_var($this->data[$field], FILTER_VALIDATE_EMAIL)) {
+        if (($this->hasValue($field) && $this->hasValue($otherField)) && 
+            $this->data[$field] !== $this->data[$otherField]) {
             $this->addError($field, $message);
         }
 
         return $this;
     }
 
-    public function equals(string $field, string $otherField, string $message = 'Values are not equal.'): BaseValidator
+    public function in_array(string $field, array $array, string $message = 'Value is not in array.'): 
+    BaseValidator
     {
-        if (($this->hasValue($field) && $this->hasValue($otherField)) && 
-            $this->data[$field] !== $this->data[$otherField]) {
+        if (($this->hasValue($field)) &&
+            !in_array($this->data[$field], $array)) {
+            $this->addError($field, $message);
+        }
+
+        return $this;
+    }
+
+    public function emailAddress(string $field, string $message = 'Invalid email address format.'): BaseValidator
+    {
+        if ($this->hasValue($field) && !filter_var($this->data[$field], FILTER_VALIDATE_EMAIL)) {
             $this->addError($field, $message);
         }
 

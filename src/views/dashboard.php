@@ -39,7 +39,8 @@
                title="Settings">
                <span class="btn-primary-top">Settings</span>
             </a>
-            <a id="btn-mobile-logout" href="login" class="btn-logout btn-primary btn-nav" type="button" title="Log out">
+            <a id="btn-mobile-logout" href="logout" class="btn-logout btn-primary btn-nav" type="button" title="Log 
+            out">
                <span class="btn-primary-top">Log out</span>
             </a>
          </div>

@@ -16,6 +16,7 @@ class LinkyUser
     public UserRole $role;
     public ?string $refresh_token;
     public ?DateTime $refresh_token_exp;
+    public ?string $profile_picture_id;
 
     public function __construct(
         string   $user_name,
@@ -25,7 +26,8 @@ class LinkyUser
         bool     $email_confirmed = false,
         UserRole $role = UserRole::NORMAL,
         string   $refresh_token = null,
-        DateTime $refresh_token_exp = null
+        DateTime $refresh_token_exp = null,
+        string   $profile_picture_id = null
     )
     {
         $this->user_id = $user_id ?? UUIDGenerator::genUUID();
@@ -36,7 +38,6 @@ class LinkyUser
         $this->role = $role ?: UserRole::NORMAL;
         $this->refresh_token = $refresh_token;
         $this->refresh_token_exp = $refresh_token_exp;
+        $this->profile_picture_id = $profile_picture_id;
     }
-
 }
-

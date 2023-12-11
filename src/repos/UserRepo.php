@@ -28,7 +28,8 @@ class UserRepo extends BaseRepo
             email_confirmed: (bool)$data['email_confirmed'],
             role: UserRole::from($data['role']),
             refresh_token: $data['refresh_token'],
-            refresh_token_exp: $data['refresh_token_exp'] ? new DateTime($data['refresh_token_exp']) : null
+            refresh_token_exp: $data['refresh_token_exp'] ? new DateTime($data['refresh_token_exp']) : null,
+            profile_picture_id: $data['profile_picture_id']
         );
     }
 
@@ -41,6 +42,7 @@ class UserRepo extends BaseRepo
             'password_hash' => $entity->password_hash,
             'email_confirmed' => (int)$entity->email_confirmed,
             'role' => $entity->role->name,
+            'profile_picture_id' => $entity->profile_picture_id,
             'refresh_token' => $entity->refresh_token,
             'refresh_token_exp' => $entity->refresh_token_exp ? $entity->refresh_token_exp->format('Y-m-d H:i:s') : null,
         ];

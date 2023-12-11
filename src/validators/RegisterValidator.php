@@ -13,7 +13,7 @@ class RegisterValidator extends BaseValidator
             ->notNull('email')
             ->emailAddress('email')
             ->notNull('password')
-            ->minLength('password', 6)
+            ->minLength('password', 8)
             ->maxLength('password', 255)
             ->notNull('passwordConfirm')
             ->equals('password', 'passwordConfirm', 'Passwords do not match');
