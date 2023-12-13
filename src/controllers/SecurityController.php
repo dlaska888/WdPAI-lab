@@ -46,7 +46,11 @@ class SecurityController extends AppController
     #[Route("login")]
     public function login(): void
     {
-        $this->validateRequestData($_POST, LoginValidator::class);
+        $validationResult = $this->getValidationResult($_POST, LoginValidator::class);
+        if (!$validationResult['success']) {
+            $this->render('login', ['messages' => $validationResult['errors']]);
+        }
+
         $email = $_POST['email'];
         $password = $_POST['password'];
 
@@ -71,7 +75,11 @@ class SecurityController extends AppController
     #[Route("register")]
     public function register(): void
     {
-        $this->validateRequestData($_POST, RegisterValidator::class);
+        $validationResult = $this->getValidationResult($_POST, RegisterValidator::class);
+        if (!$validationResult['success']) {
+            $this->render('register', ['messages' => $validationResult['errors']]);
+        }
+        
         $email = $_POST['email'];
         $userName = $_POST['userName'];
         $password = $_POST['password'];
@@ -101,7 +109,7 @@ class SecurityController extends AppController
         $this->redirect('dashboard');
     }
 
-    #[HttpPost]
+    #[HttpGet]
     #[Route('logout')]
     public function logout(): void
     {

@@ -72,7 +72,7 @@ class LinkController extends AppController
     public function addLink(string $groupId): void
     {
         $linkData = $this->getRequestBody();
-        $this->validateRequestData($linkData, AddLinkValidator::class);
+        $this->validationResponse($linkData, AddLinkValidator::class);
 
         if (!$this->checkGroupAccess($this->sessionHandler->getUserId(),
             $groupId,
@@ -101,7 +101,7 @@ class LinkController extends AppController
         }
 
         $linkData = $this->getRequestBody();
-        $this->validateRequestData($linkData, UpdateLinkValidator::class);
+        $this->validationResponse($linkData, UpdateLinkValidator::class);
 
         $link->title = $linkData['title'] ?? $link->title;
         $link->url = $linkData['url'] ?? $link->title;
@@ -167,7 +167,7 @@ class LinkController extends AppController
     public function addLinkGroup(): void
     {
         $linkGroupData = $this->getRequestBody();
-        $this->validateRequestData($linkGroupData, AddLinkGroupValidator::class);
+        $this->validationResponse($linkGroupData, AddLinkGroupValidator::class);
 
         $linkGroup = new LinkGroup($this->sessionHandler->getUserId(), $linkGroupData['name']);
         $this->response(HttpStatusCode::CREATED, $this->linkGroupRepo->insert($linkGroup));
@@ -192,7 +192,7 @@ class LinkController extends AppController
 
         // Update link group data based on request body
         $linkGroupData = $this->getRequestBody();
-        $this->validateRequestData($linkGroupData, UpdateLinkGroupValidator::class);
+        $this->validationResponse($linkGroupData, UpdateLinkGroupValidator::class);
 
         $linkGroup->name = $linkGroupData['name'] ?? $linkGroup->name;
         $this->response(HttpStatusCode::OK, $this->linkGroupRepo->update($linkGroup));
@@ -233,7 +233,7 @@ class LinkController extends AppController
 
         // Validate body
         $shareData = $this->getRequestBody();
-        $this->validateRequestData($shareData, AddLinkGroupShareValidator::class);
+        $this->validationResponse($shareData, AddLinkGroupShareValidator::class);
 
         // Find user by email
         $shareToUser = $this->userRepo->findByEmail($shareData['email']);
@@ -284,7 +284,7 @@ class LinkController extends AppController
 
         // Validate and update
         $shareData = $this->getRequestBody();
-        $this->validateRequestData($shareData, UpdateLinkGroupShareValidator::class);
+        $this->validationResponse($shareData, UpdateLinkGroupShareValidator::class);
 
         $share->permission = GroupPermissionLevel::from($shareData['permission']) ?? $share->permission;
         $this->response(HttpStatusCode::CREATED, $this->linkGroupShareRepo->update($share));

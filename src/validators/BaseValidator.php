@@ -17,9 +17,10 @@ abstract class BaseValidator
     public function validate(): array
     {
         $this->addValidation();
-        
-        if (!empty($this->errors))
+
+        if (!empty($this->errors)) {
             return ['success' => false, 'errors' => $this->errors];
+        }
 
         return ['success' => true, 'errors' => []];
     }
@@ -84,7 +85,7 @@ abstract class BaseValidator
 
     public function equals(string $field, string $otherField, string $message = 'Values are not equal.'): BaseValidator
     {
-        if (($this->hasValue($field) && $this->hasValue($otherField)) && 
+        if (($this->hasValue($field) && $this->hasValue($otherField)) &&
             $this->data[$field] !== $this->data[$otherField]) {
             $this->addError($field, $message);
         }
@@ -92,7 +93,7 @@ abstract class BaseValidator
         return $this;
     }
 
-    public function in_array(string $field, array $array, string $message = 'Value is not in array.'): 
+    public function in_array(string $field, array $array, string $message = 'Value is not in array.'):
     BaseValidator
     {
         if (($this->hasValue($field)) &&

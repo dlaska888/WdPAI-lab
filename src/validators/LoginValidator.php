@@ -7,8 +7,7 @@ class LoginValidator extends BaseValidator
     public function addValidation(): void
     {
         $this
-            ->notNull('email')
-            ->emailAddress('email')
-            ->notNull('password');
+            ->notNull('email', 'Please enter your email')
+            ->notNull('password', 'Please enter your password');
     }
 }

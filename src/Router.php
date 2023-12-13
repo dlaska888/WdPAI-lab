@@ -2,34 +2,41 @@
 
 namespace src;
 
+use src\Controllers\AppController;
+use src\Enums\HttpStatusCode;
 use src\Helpers\ControllerMapper;
 use src\Helpers\RouteResolver;
+use Throwable;
 
 class Router
 {
     private array $routes = [];
     private ControllerMapper $controllerMapper;
     private RouteResolver $routeResolver;
+    private AppController $appController;
 
     public function __construct()
     {
         $this->controllerMapper = new ControllerMapper();
         $this->routeResolver = new RouteResolver();
+        $this->appController = new AppController();
     }
 
     public function run($url): void
     {
         $route = $this->matchRoute($url ?: 'index');
 
-        if ($route === null) {
-            die("Wrong url!");
-        }
-
         // Extract parameters from the URL based on the dynamic parts
         $params = $this->extractDynamicParameters($url, $route->getPath());
 
         // Call the controller's action method with parameters
-        call_user_func_array([new ($route->getController()), $route->getAction()], $params);
+        try {
+            call_user_func_array([new ($route->getController()), $route->getAction()], $params);
+        }
+        catch (Throwable) {
+            $this->appController->render('error',
+                ['code' => HttpStatusCode::INTERNAL_SERVER_ERROR, 'description' => 'Something went wrong']);
+        }
     }
 
     public function mapControllers(): void
@@ -37,22 +44,32 @@ class Router
         $this->routes = $this->controllerMapper->mapControllers();
     }
 
-    private function matchRoute(string $url): ?Route
+    private function matchRoute(string $url): Route
     {
+        $found = null;
         foreach ($this->routes as $route) {
-            if (!$this->routeResolver->checkAuthorization($route))
+            if (!$this->routeResolver->matchHttpMethod($route)) {
                 continue;
-            
-            if (!$this->routeResolver->matchHttpMethod($route))
-                continue;
+            }
 
-            if (!$this->routeResolver->matchUrlParts($url, $route))
+            if (!$this->routeResolver->matchUrlParts($url, $route)) {
                 continue;
+            }
 
-            return $route;
+            $found = $route;
         }
 
-        return null;
+        if ($found === null) {
+            $this->appController->render('error',
+                ['code' => HttpStatusCode::NOT_FOUND, 'description' => 'This page does not exist']);
+        }
+
+        if (!$this->routeResolver->checkAuthorization($found)) {
+            $this->appController->render('error',
+                ['code' => HttpStatusCode::UNAUTHORIZED, 'description' => "You don't have access to this resource"]);
+        }
+
+        return $found;
     }
 
     private function extractDynamicParameters($url, $route): array

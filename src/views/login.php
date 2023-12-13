@@ -19,11 +19,9 @@
         </div>
         <?php if (isset($messages)): ?>
             <div class="messages">
-                <?php
-                foreach ($messages as $message) {
-                    echo $message;
-                }
-                ?>
+                <?php foreach ($messages as $message): ?>
+                    <p><?= $message; ?></p>
+                <?php endforeach; ?>
             </div>
         <?php endif; ?>
         <button class="btn-primary" type="submit" title="LinkyApp Sign In">

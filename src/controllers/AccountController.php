@@ -87,7 +87,7 @@ class AccountController extends AppController
         if (!array_key_exists("file", $_FILES))
             $this->response(HttpStatusCode::BAD_REQUEST, "No file uploaded");
 
-        $this->validateRequestData($_FILES['file'], FileValidator::class);
+        $this->validationResponse($_FILES['file'], FileValidator::class);
 
         if (!is_uploaded_file($_FILES['file']['tmp_name']))
             $this->response(HttpStatusCode::BAD_REQUEST, "No file uploaded");
@@ -138,7 +138,7 @@ class AccountController extends AppController
         $user = $this->userRepo->findById($userId);
 
         $requestData = $this->getRequestBody();
-        $this->validateRequestData($requestData, UpdateUserNameValidator::class);
+        $this->validationResponse($requestData, UpdateUserNameValidator::class);
 
         if ($this->userRepo->findByUserName($requestData['userName']))
             $this->response(HttpStatusCode::BAD_REQUEST, "This username is already taken");
@@ -156,7 +156,7 @@ class AccountController extends AppController
         $user = $this->userRepo->findById($userId);
 
         $requestData = $this->getRequestBody();
-        $this->validateRequestData($requestData, UpdatePasswordValidator::class);
+        $this->validationResponse($requestData, UpdatePasswordValidator::class);
 
         $password = $requestData['password'];
         $newPassword = $requestData['newPassword']; // Checking passwordConfirm is done in validator

@@ -7,7 +7,7 @@ use src\Enums\HttpStatusCode;
 class AppController
 {
     private array|null $requestBody;
-    
+
     public function __construct()
     {
         $this->requestBody = json_decode(file_get_contents('php://input'), true);
@@ -18,18 +18,16 @@ class AppController
         return $this->requestBody;
     }
 
-    protected function validateRequestData(?array $data, string $validatorClass) : void
+    protected function getValidationResult(?array $data, string $validatorClass): array
     {
-        if($data === null)
-            $this->response(HttpStatusCode::BAD_REQUEST, 'Request body cannot be null');
-
-        $validationResult = (new $validatorClass($data))->validate();
-        if (!$validationResult['success']) {
-            $this->response(HttpStatusCode::BAD_REQUEST, $validationResult);
+        if ($data === null) {
+            return ['success' => false, 'errors' => 'Invalid request data'];
         }
+
+        return (new $validatorClass($data))->validate();
     }
-    
-    protected function render(string $template = null, array $variables = []): void
+
+    public function render(string $template = null, array $variables = []): void
     {
         $templatePath = 'src/views/' . $template . '.php';
         $output = 'File not found';
@@ -46,15 +44,25 @@ class AppController
         exit();
     }
 
-    protected function response(HttpStatusCode $code, mixed $data = null): void
+    public function response(HttpStatusCode $code, mixed $data = null): void
     {
         header('Content-type: application/json');
         http_response_code($code->value);
 
-        if ($data)
+        if ($data) {
             echo json_encode($data);
+        }
 
         exit();
+    }
+
+    protected function validationResponse(?array $data, string $validatorClass): void
+    {
+        $result = $this->getValidationResult($data, $validatorClass);
+        
+        if(!$result['success']){
+            $this->response(HttpStatusCode::BAD_REQUEST, $result);
+        }
     }
 
     protected function redirect($url): void
@@ -63,5 +71,5 @@ class AppController
         exit();
     }
 
-    
+
 }
