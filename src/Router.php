@@ -32,10 +32,8 @@ class Router
         // Call the controller's action method with parameters
         try {
             call_user_func_array([new ($route->getController()), $route->getAction()], $params);
-        }
-        catch (Throwable) {
-            $this->appController->render('error',
-                ['code' => HttpStatusCode::INTERNAL_SERVER_ERROR, 'description' => 'Something went wrong']);
+        } catch (Throwable) {
+            $this->renderError(HttpStatusCode::INTERNAL_SERVER_ERROR, "Something went wrong");
         }
     }
 
@@ -46,30 +44,27 @@ class Router
 
     private function matchRoute(string $url): Route
     {
-        $found = null;
-        foreach ($this->routes as $route) {
-            if (!$this->routeResolver->matchHttpMethod($route)) {
-                continue;
-            }
+        $matchedRoutes = array_filter($this->routes, function (Route $route) use ($url) {
+            return $this->routeResolver->matchUrlParts($url, $route);
+        });
 
-            if (!$this->routeResolver->matchUrlParts($url, $route)) {
-                continue;
-            }
-
-            $found = $route;
+        if (empty($matchedRoutes)) {
+            $this->renderError(HttpStatusCode::NOT_FOUND, 'Not found');
         }
 
-        if ($found === null) {
-            $this->appController->render('error',
-                ['code' => HttpStatusCode::NOT_FOUND, 'description' => 'This page does not exist']);
+        $matchedMethod = current(array_filter($matchedRoutes, function (Route $route) {
+            return $this->routeResolver->matchHttpMethod($route);
+        }));
+
+        if (!$matchedMethod) {
+            $this->renderError(HttpStatusCode::METHOD_NOT_ALLOWED, 'Method not allowed');
         }
 
-        if (!$this->routeResolver->checkAuthorization($found)) {
-            $this->appController->render('error',
-                ['code' => HttpStatusCode::UNAUTHORIZED, 'description' => "You don't have access to this resource"]);
+        if (!$this->routeResolver->checkAuthorization($matchedMethod)) {
+            $this->renderError(HttpStatusCode::UNAUTHORIZED, "You don't have access to this resource");
         }
 
-        return $found;
+        return $matchedMethod;
     }
 
     private function extractDynamicParameters($url, $route): array
@@ -87,5 +82,13 @@ class Router
         }
 
         return $params;
+    }
+
+    private function renderError(HttpStatusCode $code, string $description): void
+    {
+        $this->appController->render('error', [
+            'code' => $code,
+            'description' => $description
+        ]);
     }
 }
