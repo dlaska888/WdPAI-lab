@@ -1755,7 +1755,6 @@
          </div>
       </section>
    </main>
-
    <footer class="flex bg-secondary hide-desktop hide-on-scroll">
       <div class="footer-container flex">
          <div id="btn-mobile-home" class="page-home btn-container btn-footer btn-page active">

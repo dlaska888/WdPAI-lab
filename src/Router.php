@@ -32,7 +32,8 @@ class Router
         // Call the controller's action method with parameters
         try {
             call_user_func_array([new ($route->getController()), $route->getAction()], $params);
-        } catch (Throwable) {
+        }
+        catch (Throwable) {
             $this->renderError(HttpStatusCode::INTERNAL_SERVER_ERROR, "Something went wrong");
         }
     }
@@ -86,9 +87,9 @@ class Router
 
     private function renderError(HttpStatusCode $code, string $description): void
     {
-        $this->appController->render('error', [
+        $this->appController->render( 'error', [
             'code' => $code,
             'description' => $description
-        ]);
+        ], $code);
     }
 }

@@ -7,6 +7,7 @@ use src\attributes\controller\MvcController;
 use src\Attributes\httpMethod\HttpGet;
 use src\Attributes\httpMethod\HttpPost;
 use src\Attributes\Route;
+use src\Enums\HttpStatusCode;
 use src\Handlers\UserSessionHandler;
 use src\Models\Entities\LinkGroup;
 use src\Models\Entities\LinkyUser;
@@ -48,7 +49,7 @@ class SecurityController extends AppController
     {
         $validationResult = $this->getValidationResult($_POST, LoginValidator::class);
         if (!$validationResult['success']) {
-            $this->render('login', ['messages' => $validationResult['errors']]);
+            $this->render( 'login', ['messages' => $validationResult['errors']], HttpStatusCode::BAD_REQUEST);
         }
 
         $email = $_POST['email'];
@@ -57,7 +58,7 @@ class SecurityController extends AppController
         $user = $this->userRepo->findByEmail($email) ?? $this->userRepo->findByUserName($email);
 
         if (!$user || !password_verify($password, $user->password_hash)) {
-            $this->render('login', ['messages' => ['Invalid credentials']]);
+            $this->render('login', ['messages' => ['Invalid credentials']], HttpStatusCode::UNAUTHORIZED);
         }
 
         $this->sessionHandler->setSession($user);
@@ -77,16 +78,16 @@ class SecurityController extends AppController
     {
         $validationResult = $this->getValidationResult($_POST, RegisterValidator::class);
         if (!$validationResult['success']) {
-            $this->render('register', ['messages' => $validationResult['errors']]);
+            $this->render('register', ['messages' => $validationResult['errors']], HttpStatusCode::BAD_REQUEST);
         }
-        
+
         $email = $_POST['email'];
         $userName = $_POST['userName'];
         $password = $_POST['password'];
 
         // Check if user already exists
         if ($this->userRepo->findByEmail($email) || $this->userRepo->findByUserName($userName)) {
-            $this->render('register', ['messages' => ['User already exists']]);
+            $this->render('register', ['messages' => ['User already exists']], HttpStatusCode::BAD_REQUEST);
         }
 
         $user = new LinkyUser(

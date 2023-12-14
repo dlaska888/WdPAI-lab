@@ -27,7 +27,8 @@ class AppController
         return (new $validatorClass($data))->validate();
     }
 
-    public function render(string $template = null, array $variables = []): void
+    public function render(string $template = null, array $variables = [], HttpStatusCode $code = HttpStatusCode::OK):
+    void
     {
         $templatePath = 'src/views/' . $template . '.php';
         $output = 'File not found';
@@ -40,6 +41,7 @@ class AppController
             $output = ob_get_clean();
         }
 
+        http_response_code($code->value);
         echo $output;
         exit();
     }
@@ -59,8 +61,8 @@ class AppController
     protected function validationResponse(?array $data, string $validatorClass): void
     {
         $result = $this->getValidationResult($data, $validatorClass);
-        
-        if(!$result['success']){
+
+        if (!$result['success']) {
             $this->response(HttpStatusCode::BAD_REQUEST, $result);
         }
     }
