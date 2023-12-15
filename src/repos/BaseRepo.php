@@ -2,7 +2,7 @@
 
 namespace src\Repos;
 
-use src\Database;
+use src\models\Database;
 use src\Repos\Interfaces\IRepo;
 
 abstract class BaseRepo implements IRepo

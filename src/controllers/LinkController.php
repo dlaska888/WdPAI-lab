@@ -3,15 +3,7 @@
 namespace src\Controllers;
 
 use DateTime;
-use src\attributes\authorization\Authorize;
-use src\attributes\controller\ApiController;
-use src\Attributes\httpMethod\HttpDelete;
-use src\Attributes\httpMethod\HttpGet;
-use src\Attributes\httpMethod\HttpPost;
-use src\Attributes\httpMethod\HttpPut;
-use src\Attributes\Route;
 use src\Enums\GroupPermissionLevel;
-use src\Enums\HttpStatusCode;
 use src\Enums\UserRole;
 use src\Handlers\UserSessionHandler;
 use src\Models\Entities\Link;
@@ -21,6 +13,15 @@ use src\Repos\LinkGroupRepo;
 use src\Repos\LinkGroupShareRepo;
 use src\Repos\LinkRepo;
 use src\Repos\UserRepo;
+use src\routing\attributes\authorization\Authorize;
+use src\routing\attributes\controller\Controller;
+use src\routing\attributes\httpMethod\HttpDelete;
+use src\routing\attributes\httpMethod\HttpGet;
+use src\routing\attributes\httpMethod\HttpPost;
+use src\routing\attributes\httpMethod\HttpPut;
+use src\routing\attributes\Route;
+use src\routing\enums\HttpStatusCode;
+use src\routing\responses\Json;
 use src\Validators\AddLinkGroupShareValidator;
 use src\Validators\AddLinkGroupValidator;
 use src\Validators\AddLinkValidator;
@@ -28,7 +29,7 @@ use src\Validators\UpdateLinkGroupShareValidator;
 use src\Validators\UpdateLinkGroupValidator;
 use src\Validators\UpdateLinkValidator;
 
-#[ApiController]
+#[Controller]
 #[Authorize(UserRole::NORMAL)]
 class LinkController extends AppController
 {
@@ -50,267 +51,282 @@ class LinkController extends AppController
 
     #[HttpGet]
     #[Route("link-group/{groupId}/link/{linkId}")]
-    public function getLink(string $groupId, string $linkId): void
+    public function getLink(string $groupId, string $linkId): Json
     {
         $link = $this->findLink($groupId, $linkId);
 
         if (!$link) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No link with such id in this group");
+            return new Json("No link with such id in this group", HttpStatusCode::NOT_FOUND);
         }
 
-        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(),
-            $groupId,
-            GroupPermissionLevel::READ)) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to access this link");
+        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $groupId, GroupPermissionLevel::READ)) {
+            return new Json("User is not authorized to access this link", HttpStatusCode::UNAUTHORIZED);
         }
 
-        $this->response(HttpStatusCode::OK, $link);
+        return new Json($link, HttpStatusCode::OK);
     }
 
     #[HttpPost]
     #[Route("link-group/{groupId}/link")]
-    public function addLink(string $groupId): void
+    public function addLink(string $groupId): Json
     {
         $linkData = $this->getRequestBody();
-        $this->validationResponse($linkData, AddLinkValidator::class);
+        $validationResult = $this->getValidationResult($linkData, AddLinkValidator::class);
 
-        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(),
-            $groupId,
-            GroupPermissionLevel::WRITE)) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to create link in this group");
+        if (!$validationResult->isSuccess()) {
+            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+        }
+
+        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $groupId, GroupPermissionLevel::WRITE)) {
+            return new Json("User is not authorized to create link in this group", HttpStatusCode::UNAUTHORIZED);
         }
 
         $link = new Link($groupId, $linkData['title'], $linkData['url']);
-        $this->response(HttpStatusCode::CREATED, $this->linkRepo->insert($link));
+        return new Json($this->linkRepo->insert($link), HttpStatusCode::CREATED);
     }
 
     #[HttpPut]
     #[Route("link-group/{groupId}/link/{linkId}")]
-    public function updateLink(string $groupId, string $linkId): void
+    public function updateLink(string $groupId, string $linkId): Json
     {
         $link = $this->findLink($groupId, $linkId);
 
         if (!$link) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No link with such id");
+            return new Json("No link with such id", HttpStatusCode::NOT_FOUND);
         }
 
-        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(),
-            $groupId,
-            GroupPermissionLevel::WRITE)) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to edit this link");
+        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $groupId, GroupPermissionLevel::WRITE)) {
+            return new Json("User is not authorized to edit this link", HttpStatusCode::UNAUTHORIZED);
         }
 
         $linkData = $this->getRequestBody();
-        $this->validationResponse($linkData, UpdateLinkValidator::class);
+        $validationResult = $this->getValidationResult($linkData, UpdateLinkValidator::class);
+
+        if (!$validationResult->isSuccess()) {
+            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+        }
 
         $link->title = $linkData['title'] ?? $link->title;
         $link->url = $linkData['url'] ?? $link->title;
-        $this->response(HttpStatusCode::OK, $this->linkRepo->update($link));
+
+        return new Json($this->linkRepo->update($link), HttpStatusCode::OK);
     }
 
-    #[HttpPut]
+    #[HttpDelete]
     #[Route("link-group/{groupId}/link/{linkId}")]
-    public function deleteLink(string $groupId, string $linkId): void
+    public function deleteLink(string $groupId, string $linkId): Json
     {
         $link = $this->findLink($groupId, $linkId);
 
         if (!$link) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No link with such id");
+            return new Json("No link with such id", HttpStatusCode::NOT_FOUND);
         }
 
-        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(),
-            $link->link_group_id,
-            GroupPermissionLevel::WRITE)) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to delete this link");
+        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $link->link_group_id, GroupPermissionLevel::WRITE)) {
+            return new Json("User is not authorized to delete this link", HttpStatusCode::UNAUTHORIZED);
         }
 
-        $this->response(HttpStatusCode::OK, $this->linkRepo->delete($linkId));
+        return new Json($this->linkRepo->delete($linkId), HttpStatusCode::OK);
     }
 
     #[HttpGet]
     #[Route("link-groups")]
-    public function getAllLinkGroups(): void
+    public function getAllLinkGroups(): Json
     {
         $linkGroups = $this->linkGroupRepo->findAllUserGroups($this->sessionHandler->getUserId());
-        $this->response(HttpStatusCode::OK, $linkGroups);
+        return new Json($linkGroups, HttpStatusCode::OK);
     }
 
     #[HttpGet]
     #[Route("link-groups/shared")]
-    public function getAllSharedLinkGroups(): void
+    public function getAllSharedLinkGroups(): Json
     {
         $linkGroups = $this->linkGroupRepo->findAllUserSharedGroups($this->sessionHandler->getUserId());
-        $this->response(HttpStatusCode::OK, $linkGroups);
+        return new Json($linkGroups, HttpStatusCode::OK);
     }
 
     #[HttpGet]
     #[Route("link-group/{groupId}")]
-    public function getLinkGroup(string $groupId): void
+    public function getLinkGroup(string $groupId): Json
     {
         $linkGroup = $this->linkGroupRepo->findById($groupId);
 
         if (!$linkGroup) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No link group with such id");
+            return new Json("No link group with such id", HttpStatusCode::NOT_FOUND);
         }
 
-        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(),
-            $groupId,
-            GroupPermissionLevel::READ)) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to access this group");
+        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $groupId, GroupPermissionLevel::READ)) {
+            return new Json("User is not authorized to access this group", HttpStatusCode::UNAUTHORIZED);
         }
 
-        $this->response(HttpStatusCode::OK, $linkGroup);
+        return new Json($linkGroup, HttpStatusCode::OK);
     }
 
     #[HttpPost]
     #[Route("link-group")]
-    public function addLinkGroup(): void
+    public function addLinkGroup(): Json
     {
         $linkGroupData = $this->getRequestBody();
-        $this->validationResponse($linkGroupData, AddLinkGroupValidator::class);
+        $validationResult = $this->getValidationResult($linkGroupData, AddLinkGroupValidator::class);
+
+        if (!$validationResult->isSuccess()) {
+            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+        }
 
         $linkGroup = new LinkGroup($this->sessionHandler->getUserId(), $linkGroupData['name']);
-        $this->response(HttpStatusCode::CREATED, $this->linkGroupRepo->insert($linkGroup));
+        return new Json($this->linkGroupRepo->insert($linkGroup), HttpStatusCode::CREATED);
     }
 
     #[HttpPut]
     #[Route("link-group/{groupId}")]
-    public function updateLinkGroup(string $groupId): void
+    public function updateLinkGroup(string $groupId): Json
     {
         $linkGroup = $this->linkGroupRepo->findById($groupId);
 
         if (!$linkGroup) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No link group with such id");
+            return new Json("No link group with such id", HttpStatusCode::NOT_FOUND);
         }
 
-        if (!$this->checkGroupAccess(
-            $this->sessionHandler->getUserId(),
-            $groupId,
-            GroupPermissionLevel::WRITE)) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to edit this link group");
+        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $groupId, GroupPermissionLevel::WRITE)) {
+            return new Json("User is not authorized to edit this link group", HttpStatusCode::UNAUTHORIZED);
         }
 
         // Update link group data based on request body
         $linkGroupData = $this->getRequestBody();
-        $this->validationResponse($linkGroupData, UpdateLinkGroupValidator::class);
+        $validationResult = $this->getValidationResult($linkGroupData, UpdateLinkGroupValidator::class);
+
+        if (!$validationResult->isSuccess()) {
+            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+        }
 
         $linkGroup->name = $linkGroupData['name'] ?? $linkGroup->name;
-        $this->response(HttpStatusCode::OK, $this->linkGroupRepo->update($linkGroup));
+
+        return new Json($this->linkGroupRepo->update($linkGroup), HttpStatusCode::OK);
     }
 
     #[HttpDelete]
     #[Route("link-group/{groupId}")]
-    public function deleteLinkGroup(string $groupId): void
+    public function deleteLinkGroup(string $groupId): Json
     {
         $linkGroup = $this->linkGroupRepo->findById($groupId);
 
         if (!$linkGroup) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No link group with such id");
+            return new Json("No link group with such id", HttpStatusCode::NOT_FOUND);
         }
 
         if ($linkGroup->user_id !== $this->sessionHandler->getUserId()) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to delete this link group");
+            return new Json("User is not authorized to delete this link group", HttpStatusCode::UNAUTHORIZED);
         }
 
-        $this->response(HttpStatusCode::OK, $this->linkGroupRepo->delete($groupId));
+        return new Json($this->linkGroupRepo->delete($groupId), HttpStatusCode::OK);
     }
 
     #[HttpPost]
     #[Route("link-group/{groupId}/share")]
-    public function addGroupShare(string $groupId): void
+    public function addGroupShare(string $groupId): Json
     {
         // Find group
         $group = $this->linkGroupRepo->findById($groupId);
 
         if (!$group) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No group with such id");
+            return new Json("No group with such id", HttpStatusCode::NOT_FOUND);
         }
 
         // Check access
         if ($group->user_id !== $this->sessionHandler->getUserId()) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to share this group.");
+            return new Json("User is not authorized to share this group.", HttpStatusCode::UNAUTHORIZED);
         }
 
         // Validate body
         $shareData = $this->getRequestBody();
-        $this->validationResponse($shareData, AddLinkGroupShareValidator::class);
+        $validationResult = $this->getValidationResult($shareData, AddLinkGroupShareValidator::class);
+
+        if (!$validationResult->isSuccess()) {
+            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+        }
 
         // Find user by email
         $shareToUser = $this->userRepo->findByEmail($shareData['email']);
 
-        if ($shareToUser === null)
-            $this->response(HttpStatusCode::BAD_REQUEST, "User with this email not found");
+        if ($shareToUser === null) {
+            return new Json("User with this email not found", HttpStatusCode::BAD_REQUEST);
+        }
 
         // Check if group is already shared to target user
         $permissionLevel = GroupPermissionLevel::from($shareData['permission']);
 
         if ($this->sessionHandler->getUserId() === $shareToUser->user_id ||
             $this->checkGroupAccess($shareToUser->user_id, $groupId, $permissionLevel)) {
-            $this->response(HttpStatusCode::BAD_REQUEST, "Group is already shared to this user");
+            return new Json("Group is already shared to this user", HttpStatusCode::BAD_REQUEST);
         }
 
         $share = new LinkGroupShare($shareToUser->user_id, $groupId, new DateTime(), $permissionLevel);
-        $this->response(HttpStatusCode::CREATED, $this->linkGroupShareRepo->insert($share));
+        return new Json($this->linkGroupShareRepo->insert($share), HttpStatusCode::CREATED);
     }
 
     #[HttpPut]
     #[Route("link-group/{groupId}/share/{shareId}")]
-    public function updateGroupShare(string $groupId, string $shareId): void
+    public function updateGroupShare(string $groupId, string $shareId): Json
     {
         // Find group from share
         $group = $this->linkGroupRepo->findById($groupId);
 
         if (!$group) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No group with such id");
+            return new Json("No group with such id", HttpStatusCode::NOT_FOUND);
         }
 
         // Check access
         if ($group->user_id !== $this->sessionHandler->getUserId()) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to edit this share");
+            return new Json("User is not authorized to edit this share", HttpStatusCode::UNAUTHORIZED);
         }
 
         // Find share 
         $share = $this->findGroupShare($groupId, $shareId);
 
         if (!$share) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No group share with such id");
+            return new Json("No group share with such id", HttpStatusCode::NOT_FOUND);
         }
 
         // Find user from share
         $shareToUser = $this->userRepo->findById($share->user_id);
 
-        if ($shareToUser === null)
-            $this->response(HttpStatusCode::BAD_REQUEST, "User with this id not found");
+        if ($shareToUser === null) {
+            return new Json("User with this id not found", HttpStatusCode::BAD_REQUEST);
+        }
 
         // Validate and update
         $shareData = $this->getRequestBody();
-        $this->validationResponse($shareData, UpdateLinkGroupShareValidator::class);
+        $validationResult = $this->getValidationResult($shareData, UpdateLinkGroupShareValidator::class);
+
+        if (!$validationResult->isSuccess()) {
+            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+        }
 
         $share->permission = GroupPermissionLevel::from($shareData['permission']) ?? $share->permission;
-        $this->response(HttpStatusCode::CREATED, $this->linkGroupShareRepo->update($share));
+        return new Json($this->linkGroupShareRepo->update($share), HttpStatusCode::CREATED);
     }
 
     #[HttpDelete]
     #[Route("link-group/{groupId}/shares/{shareId}")]
-    public function deleteGroupShare(string $groupId, string $shareId): void
+    public function deleteGroupShare(string $groupId, string $shareId): Json
     {
         $group = $this->linkGroupRepo->findById($groupId);
 
         if (!$group) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No group with such id");
+            return new Json("No group with such id", HttpStatusCode::NOT_FOUND);
         }
 
         if ($group->user_id !== $this->sessionHandler->getUserId()) {
-            $this->response(HttpStatusCode::UNAUTHORIZED, "User is not authorized to delete this share");
+            return new Json("User is not authorized to delete this share", HttpStatusCode::UNAUTHORIZED);
         }
 
         $share = $this->findGroupShare($groupId, $shareId);
 
         if (!$share) {
-            $this->response(HttpStatusCode::NOT_FOUND, "No group share with such id");
+            return new Json("No group share with such id", HttpStatusCode::NOT_FOUND);
         }
 
-        $this->response(HttpStatusCode::OK, $this->linkGroupRepo->delete($shareId));
+        return new Json($this->linkGroupRepo->delete($shareId), HttpStatusCode::OK);
     }
 
     private function findLink($groupId, $linkId): ?Link
@@ -359,10 +375,8 @@ class LinkController extends AppController
             if ($permissionLevel === GroupPermissionLevel::READ || $share->permission === $permissionLevel) {
                 return true;
             }
-
         }
 
         return false;
     }
-
 }

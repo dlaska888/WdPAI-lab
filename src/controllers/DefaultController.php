@@ -2,17 +2,18 @@
 
 namespace src\Controllers;
 
-use src\attributes\controller\MvcController;
-use src\Attributes\httpMethod\HttpGet;
-use src\Attributes\Route;
+use src\routing\attributes\controller\Controller;
+use src\routing\attributes\httpMethod\HttpGet;
+use src\routing\attributes\Route;
+use src\routing\responses\View;
 
-#[MvcController]
+#[Controller]
 class DefaultController extends AppController
 {
     #[HttpGet]
     #[Route("index")]
-    public function index(): void
+    public function index(): View
     {
-        $this->render("index");
+        return new View('index');
     }
 }

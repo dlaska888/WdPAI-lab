@@ -2,24 +2,25 @@
 
 namespace src\Controllers;
 
-use src\Attributes\authorization\Authorize;
-use src\Attributes\controller\ApiController;
-use src\Attributes\httpMethod\HttpDelete;
-use src\Attributes\httpMethod\HttpGet;
-use src\Attributes\httpMethod\HttpPost;
-use src\Attributes\httpMethod\HttpPut;
-use src\Attributes\Route;
-use src\Enums\HttpStatusCode;
 use src\Enums\UserRole;
 use src\Handlers\UserSessionHandler;
 use src\Models\Entities\File;
 use src\Repos\FileRepo;
 use src\Repos\UserRepo;
+use src\routing\attributes\authorization\Authorize;
+use src\routing\attributes\controller\Controller;
+use src\routing\attributes\httpMethod\HttpDelete;
+use src\routing\attributes\httpMethod\HttpGet;
+use src\routing\attributes\httpMethod\HttpPost;
+use src\routing\attributes\httpMethod\HttpPut;
+use src\routing\attributes\Route;
+use src\routing\enums\HttpStatusCode;
+use src\routing\responses\Json; // Assuming you have a Json class for responses
 use src\Validators\FileValidator;
 use src\Validators\UpdatePasswordValidator;
 use src\Validators\UpdateUserNameValidator;
 
-#[ApiController]
+#[Controller]
 #[Authorize(UserRole::NORMAL)]
 class AccountController extends AppController
 {
@@ -27,7 +28,6 @@ class AccountController extends AppController
     private UserSessionHandler $sessionHandler;
     private FileRepo $fileRepo;
 
-    // TODO implement better way of keeping files securely
     private const UPLOAD_DIRECTORY = 'uploads/';
 
     public function __construct()
@@ -40,65 +40,69 @@ class AccountController extends AppController
 
     #[HttpGet]
     #[Route("account")]
-    public function getAccountDetails(): void
+    public function getAccountDetails(): Json
     {
         $userId = $this->sessionHandler->getUserId();
         $user = $this->userRepo->findById($userId);
 
         if (!$user) {
-            $this->response(HttpStatusCode::NOT_FOUND, "User not found");
+            return new Json("User not found", HttpStatusCode::NOT_FOUND);
         }
 
-        // You might want to exclude sensitive information like password hash before responding
-        $this->response(HttpStatusCode::OK, $user);
+        return new Json($user);
     }
 
     #[HttpGet]
     #[Route("account/profile-picture")]
-    public function getProfilePicture(): void
+    public function getProfilePicture(): Json
     {
         $user = $this->userRepo->findById($this->sessionHandler->getUserId());
 
         if (!$user) {
-            $this->response(HttpStatusCode::NOT_FOUND, "User not found");
+            return new Json("User not found", HttpStatusCode::NOT_FOUND);
         }
 
         $file = $this->findProfilePicture($user);
-        if($file === null){
-            $this->response(HttpStatusCode::NOT_FOUND, "User picture not found");
+
+        if ($file === null) {
+            return new Json("User picture not found", HttpStatusCode::NOT_FOUND);
         }
-        
+
         $filePath = self::UPLOAD_DIRECTORY . $file->name;
 
-        // Set appropriate headers for file download
         header("Content-Type: application/octet-stream");
         header("Content-Disposition: attachment; filename=" . $file->name);
         header("Content-Length: " . filesize($filePath));
 
-        // Output the file content
         readfile($filePath);
-    }
 
+        return new Json(); // Return an empty JSON response after serving the file.
+    }
 
     #[HttpPost]
     #[Route("account/profile-picture")]
-    public function uploadProfilePicture(): void
+    public function uploadProfilePicture(): Json
     {
-        if (!array_key_exists("file", $_FILES))
-            $this->response(HttpStatusCode::BAD_REQUEST, "No file uploaded");
+        if (!array_key_exists("file", $_FILES)) {
+            return new Json("No file uploaded", HttpStatusCode::BAD_REQUEST);
+        }
 
-        $this->validationResponse($_FILES['file'], FileValidator::class);
-
-        if (!is_uploaded_file($_FILES['file']['tmp_name']))
-            $this->response(HttpStatusCode::BAD_REQUEST, "No file uploaded");
+        $validationResult = $this->getValidationResult($_FILES['file'], FileValidator::class);
+        if(!$validationResult->isSuccess())
+            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+            
+        if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
+            return new Json("No file uploaded", HttpStatusCode::BAD_REQUEST);
+        }
 
         $userId = $this->sessionHandler->getUserId();
         $user = $this->userRepo->findById($userId);
         $oldPicture = $this->findProfilePicture($user);
+
         if ($oldPicture !== null) {
             $this->removeProfilePicture($oldPicture);
         }
-        
+
         $fileName = $userId . "_" . $_FILES['file']['name'];
         $file = new File($fileName);
         $this->fileRepo->insert($file);
@@ -109,64 +113,74 @@ class AccountController extends AppController
         );
 
         $user->profile_picture_id = $file->file_id;
-        $this->response(HttpStatusCode::OK, $this->userRepo->update($user));
+
+        return new Json($this->userRepo->update($user));
     }
 
     #[HttpDelete]
     #[Route("account/profile-picture")]
-    public function deleteProfilePicture(): void
+    public function deleteProfilePicture(): Json
     {
         $user = $this->userRepo->findById($this->sessionHandler->getUserId());
 
         if (!$user) {
-            $this->response(HttpStatusCode::NOT_FOUND, "User not found");
+            return new Json("User not found", HttpStatusCode::NOT_FOUND);
         }
 
         $file = $this->findProfilePicture($user);
-        if($file === null){
-            $this->response(HttpStatusCode::NOT_FOUND, "User picture not found");
+
+        if ($file === null) {
+            return new Json("User picture not found", HttpStatusCode::NOT_FOUND);
         }
-        
-        $this->response(HttpStatusCode::OK, $this->removeProfilePicture($file));
+
+        return new Json($this->removeProfilePicture($file));
     }
 
     #[HttpPut]
     #[Route("account/change-username")]
-    public function changeUsername(): void
+    public function changeUsername(): Json
     {
         $userId = $this->sessionHandler->getUserId();
         $user = $this->userRepo->findById($userId);
-
+        
         $requestData = $this->getRequestBody();
-        $this->validationResponse($requestData, UpdateUserNameValidator::class);
 
-        if ($this->userRepo->findByUserName($requestData['userName']))
-            $this->response(HttpStatusCode::BAD_REQUEST, "This username is already taken");
+        $validationResult = $this->getValidationResult($requestData, UpdateUserNameValidator::class);
+        if(!$validationResult->isSuccess())
+            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+
+        if ($this->userRepo->findByUserName($requestData['userName'])) {
+            return new Json("This username is already taken", HttpStatusCode::BAD_REQUEST);
+        }
 
         $user->user_name = $requestData['userName'];
 
-        $this->response(HttpStatusCode::OK, $this->userRepo->update($user));
+        return new Json($this->userRepo->update($user));
     }
 
     #[HttpPut]
     #[Route("account/change-password")]
-    public function changePassword(): void
+    public function changePassword(): Json
     {
         $userId = $this->sessionHandler->getUserId();
         $user = $this->userRepo->findById($userId);
 
         $requestData = $this->getRequestBody();
-        $this->validationResponse($requestData, UpdatePasswordValidator::class);
+
+        $validationResult = $this->getValidationResult($requestData, UpdatePasswordValidator::class);
+        if(!$validationResult->isSuccess())
+            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
 
         $password = $requestData['password'];
-        $newPassword = $requestData['newPassword']; // Checking passwordConfirm is done in validator
+        $newPassword = $requestData['newPassword'];
 
-        if (!password_verify($password, $user->password_hash))
-            $this->response(HttpStatusCode::UNAUTHORIZED, "Invalid password");
+        if (!password_verify($password, $user->password_hash)) {
+            return new Json("Invalid password", HttpStatusCode::UNAUTHORIZED);
+        }
 
         $user->password_hash = password_hash($newPassword, PASSWORD_BCRYPT);
 
-        $this->response(HttpStatusCode::OK, $this->userRepo->update($user));
+        return new Json($this->userRepo->update($user));
     }
 
     private function findProfilePicture($user): ?File
@@ -192,16 +206,12 @@ class AccountController extends AppController
 
     private function removeProfilePicture(File $file): bool
     {
-        // Remove the file from the server
         $filePath = self::UPLOAD_DIRECTORY . $file->name;
 
         if (file_exists($filePath)) {
             unlink($filePath);
         }
 
-        // Remove the file record from the database
         return $this->fileRepo->delete($file->file_id);
     }
-
 }
-

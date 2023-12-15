@@ -1,6 +1,6 @@
 <?php
 
-namespace src\attributes\authorization;
+namespace src\routing\attributes\authorization;
 
 use Attribute;
 use src\Enums\UserRole;

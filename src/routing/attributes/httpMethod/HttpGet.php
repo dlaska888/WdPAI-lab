@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Attributes\httpMethod;
+namespace src\routing\attributes\httpMethod;
 
 use Attribute;
 

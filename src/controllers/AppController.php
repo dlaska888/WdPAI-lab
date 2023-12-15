@@ -2,7 +2,8 @@
 
 namespace src\Controllers;
 
-use src\Enums\HttpStatusCode;
+use src\routing\enums\HttpStatusCode;
+use src\Validators\ValidationResult;
 
 class AppController
 {
@@ -18,55 +19,16 @@ class AppController
         return $this->requestBody;
     }
 
-    protected function getValidationResult(?array $data, string $validatorClass): array
+    protected function getValidationResult(?array $data, string $validatorClass): ValidationResult
     {
         if ($data === null) {
-            return ['success' => false, 'errors' => 'Invalid request data'];
+            return new ValidationResult(false, ['Invalid request data']);
         }
 
         return (new $validatorClass($data))->validate();
     }
 
-    public function render(string $template = null, array $variables = [], HttpStatusCode $code = HttpStatusCode::OK):
-    void
-    {
-        $templatePath = 'src/views/' . $template . '.php';
-        $output = 'File not found';
-
-        if (file_exists($templatePath)) {
-            extract($variables);
-
-            ob_start();
-            include $templatePath;
-            $output = ob_get_clean();
-        }
-
-        http_response_code($code->value);
-        echo $output;
-        exit();
-    }
-
-    public function response(HttpStatusCode $code, mixed $data = null): void
-    {
-        header('Content-type: application/json');
-        http_response_code($code->value);
-
-        if ($data) {
-            echo json_encode($data);
-        }
-
-        exit();
-    }
-
-    protected function validationResponse(?array $data, string $validatorClass): void
-    {
-        $result = $this->getValidationResult($data, $validatorClass);
-
-        if (!$result['success']) {
-            $this->response(HttpStatusCode::BAD_REQUEST, $result);
-        }
-    }
-
+    //TODO is there any better way to handle this?
     protected function redirect($url): void
     {
         header('Location: ' . $url);

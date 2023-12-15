@@ -3,20 +3,21 @@
 namespace src\Controllers;
 
 use DateTime;
-use src\attributes\controller\MvcController;
-use src\Attributes\httpMethod\HttpGet;
-use src\Attributes\httpMethod\HttpPost;
-use src\Attributes\Route;
-use src\Enums\HttpStatusCode;
 use src\Handlers\UserSessionHandler;
 use src\Models\Entities\LinkGroup;
 use src\Models\Entities\LinkyUser;
 use src\Repos\LinkGroupRepo;
 use src\Repos\UserRepo;
+use src\routing\attributes\controller\Controller;
+use src\routing\attributes\httpMethod\HttpGet;
+use src\routing\attributes\httpMethod\HttpPost;
+use src\routing\attributes\Route;
+use src\routing\enums\HttpStatusCode;
+use src\routing\responses\View;
 use src\Validators\LoginValidator;
 use src\Validators\RegisterValidator;
 
-#[MvcController]
+#[Controller]
 class SecurityController extends AppController
 {
     private UserRepo $userRepo;
@@ -31,25 +32,24 @@ class SecurityController extends AppController
         $this->linkGroupRepo = new LinkGroupRepo();
     }
 
-
     #[HttpGet]
     #[Route("login")]
-    public function getLoginPage(): void
+    public function getLoginPage(): View
     {
         if ($this->sessionHandler->isSessionSet()) {
             $this->redirect("dashboard");
         }
 
-        $this->render('login');
+        return new View('login');
     }
 
     #[HttpPost]
     #[Route("login")]
-    public function login(): void
+    public function login(): ?View
     {
         $validationResult = $this->getValidationResult($_POST, LoginValidator::class);
-        if (!$validationResult['success']) {
-            $this->render( 'login', ['messages' => $validationResult['errors']], HttpStatusCode::BAD_REQUEST);
+        if (!$validationResult->isSuccess()) {
+            return new View('login', ['messages' => $validationResult->getErrors()], HttpStatusCode::BAD_REQUEST);
         }
 
         $email = $_POST['email'];
@@ -58,27 +58,29 @@ class SecurityController extends AppController
         $user = $this->userRepo->findByEmail($email) ?? $this->userRepo->findByUserName($email);
 
         if (!$user || !password_verify($password, $user->password_hash)) {
-            $this->render('login', ['messages' => ['Invalid credentials']], HttpStatusCode::UNAUTHORIZED);
+            return new View('login', ['messages' => ['Invalid credentials']], HttpStatusCode::UNAUTHORIZED);
         }
 
         $this->sessionHandler->setSession($user);
         $this->redirect('dashboard');
+        
+        return null;
     }
 
     #[HttpGet]
     #[Route("register")]
-    public function getRegisterPage(): void
+    public function getRegisterPage(): View
     {
-        $this->render('register');
+        return new View('register');
     }
 
     #[HttpPost]
     #[Route("register")]
-    public function register(): void
+    public function register(): ?View
     {
         $validationResult = $this->getValidationResult($_POST, RegisterValidator::class);
-        if (!$validationResult['success']) {
-            $this->render('register', ['messages' => $validationResult['errors']], HttpStatusCode::BAD_REQUEST);
+        if (!$validationResult->isSuccess()) {
+            return new View('register', ['messages' => $validationResult->getErrors()], HttpStatusCode::BAD_REQUEST);
         }
 
         $email = $_POST['email'];
@@ -87,7 +89,7 @@ class SecurityController extends AppController
 
         // Check if user already exists
         if ($this->userRepo->findByEmail($email) || $this->userRepo->findByUserName($userName)) {
-            $this->render('register', ['messages' => ['User already exists']], HttpStatusCode::BAD_REQUEST);
+            return new View('register', ['messages' => ['User already exists']], HttpStatusCode::BAD_REQUEST);
         }
 
         $user = new LinkyUser(
@@ -108,6 +110,8 @@ class SecurityController extends AppController
         $this->sessionHandler->setSession($user);
 
         $this->redirect('dashboard');
+        
+        return null;
     }
 
     #[HttpGet]
@@ -117,5 +121,4 @@ class SecurityController extends AppController
         $this->sessionHandler->unsetSession();
         $this->redirect('login');
     }
-
 }

@@ -1,18 +1,16 @@
 <?php
 
-namespace src\Helpers;
+namespace src\routing\helpers;
 
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
-use src\attributes\authorization\Authorize;
-use src\attributes\authorization\SkipAuthorization;
-use src\attributes\controller\ApiController;
-use src\attributes\controller\MvcController;
-use src\Attributes\httpMethod\HttpMethod;
-use src\Enums\ControllerType;
 use src\Enums\UserRole;
-use src\Route;
+use src\routing\attributes\authorization\Authorize;
+use src\routing\attributes\authorization\SkipAuthorization;
+use src\routing\attributes\controller\Controller;
+use src\routing\attributes\httpMethod\HttpMethod;
+use src\routing\Route;
 
 class AttributeResolver
 {
@@ -20,14 +18,13 @@ class AttributeResolver
     {
         $controllerReflection = $this->getReflectionClass($controllerName);
         $routes = array();
-        $controllerType = $this->getControllerType($controllerName);
-
-        if($controllerType == null)
-            return [];
         
+        if(!$this->isController($controllerName))
+            return [];
+
         foreach ($controllerReflection->getMethods() as $method) {
             $methodName = $method->getName();
-            $routeAttributes = $method->getAttributes(\src\attributes\Route::class);
+            $routeAttributes = $method->getAttributes(\src\routing\attributes\Route::class);
 
             if (empty($routeAttributes)) {
                 continue;
@@ -38,7 +35,7 @@ class AttributeResolver
             $auth = $this->resolveAuthorization($controllerName, $methodName);
 
             foreach ($httpMethods as $httpMethod) {
-                $route = new Route($path, $httpMethod, $controllerName, $controllerType, $methodName, $auth);
+                $route = new Route($path, $httpMethod, $controllerName, $methodName, $auth);
                 $routes[] = $route;
             }
         }
@@ -88,19 +85,17 @@ class AttributeResolver
         return $classAttributes[0]->newInstance()->role;
     }
 
-    private function getControllerType(string $className): ?ControllerType
+    private function isController(string $className): bool
     {
         $reflection = $this->getReflectionClass($className);
         if ($reflection === null)
-            return null;
+            return false;
 
-        if (!empty($reflection->getAttributes(ApiController::class))) {
-            return ControllerType::API;
-        } else if (!empty($reflection->getAttributes(MvcController::class))) {
-            return ControllerType::API;
-        } else {
-            return null;
+        if (empty($reflection->getAttributes(Controller::class))) {
+            return false;
         }
+
+        return true;
     }
 
     private function getReflectionClass(string $className): ?ReflectionClass

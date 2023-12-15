@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Enums;
+namespace src\routing\enums;
 
 enum HttpStatusCode : int
 {

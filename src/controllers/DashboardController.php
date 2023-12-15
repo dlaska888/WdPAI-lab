@@ -2,12 +2,13 @@
 
 namespace src\Controllers;
 
-use src\attributes\controller\MvcController;
-use src\Attributes\httpMethod\HttpGet;
-use src\Attributes\Route;
 use src\Handlers\UserSessionHandler;
+use src\routing\attributes\controller\Controller;
+use src\routing\attributes\httpMethod\HttpGet;
+use src\routing\attributes\Route;
+use src\routing\responses\View;
 
-#[MvcController]
+#[Controller]
 class DashboardController extends DefaultController
 {
     private UserSessionHandler $sessionHandler;
@@ -20,12 +21,12 @@ class DashboardController extends DefaultController
 
     #[HttpGet]
     #[Route("dashboard")]
-    public function dashboard(): void
+    public function dashboard(): View
     {
         if (!$this->sessionHandler->isSessionSet()) {
             $this->redirect("login");
         }
 
-        $this->render("dashboard");
+        return new View('dashboard');
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace src\Helpers;
+namespace src\routing\helpers;
 
 use src\Handlers\UserSessionHandler;
 use src\Repos\UserRepo;
-use src\Route;
+use src\routing\Route;
 
 class RouteResolver
 {

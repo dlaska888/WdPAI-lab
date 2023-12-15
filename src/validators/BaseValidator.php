@@ -14,15 +14,15 @@ abstract class BaseValidator
         $this->data = $data;
     }
 
-    public function validate(): array
+    public function validate(): ValidationResult
     {
         $this->addValidation();
 
         if (!empty($this->errors)) {
-            return ['success' => false, 'errors' => $this->errors];
+            return new ValidationResult(false, $this->errors);
         }
 
-        return ['success' => true, 'errors' => []];
+        return new ValidationResult(true, []);
     }
 
     protected abstract function addValidation(): void;

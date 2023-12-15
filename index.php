@@ -8,12 +8,21 @@ const DEBUG = true;
 error_reporting(E_ALL);
 ini_set('display_errors', DEBUG ? '1' : '0');
 
-use src\Router;
+use src\middlewares\ErrorHandlingMiddleware;
+use src\routing\RouterBuilder;
+
+$builder = new RouterBuilder();
+
+$builder->setViewsPath('src/views');
+$builder->setControllersPath('src/controllers');
+$builder->addMiddleware(new ErrorHandlingMiddleware());
+$builder->useAuthorization();
+$builder->mapControllers();
+
+$router = $builder->build();
 
 $path = trim($_SERVER['REQUEST_URI'], '/');
 $path = parse_url($path, PHP_URL_PATH);
 
-$router = new Router();
-$router->mapControllers();
 $router->run($path);
 

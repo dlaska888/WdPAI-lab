@@ -1,23 +1,22 @@
 <?php
 
-namespace src\Helpers;
+namespace src\routing\helpers;
 
 class ControllerMapper
 {
+    private string $controllersPath;
     private AttributeResolver $attributeResolver;
 
-    public function __construct()
+    public function __construct(string $controllersPath)
     {
+        $this->controllersPath = $controllersPath;
         $this->attributeResolver = new AttributeResolver();
     }
 
     public function mapControllers(): array
     {
-        // Specify the directory where your controllers are located
-        $controllersDirectory = 'src/controllers';
-
         // Get all PHP files in the controllers directory
-        $phpFiles = glob($controllersDirectory . '/*.php');
+        $phpFiles = glob($this->controllersPath . '/*.php');
 
         $routes = array();
 
