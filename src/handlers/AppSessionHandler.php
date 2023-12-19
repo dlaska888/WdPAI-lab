@@ -2,7 +2,9 @@
 
 namespace src\Handlers;
 
-class AppSessionHandler
+use src\LinkyRouting\Interfaces\ISessionHandler;
+
+abstract class AppSessionHandler implements ISessionHandler
 {
     public function __construct()
     {

@@ -8,14 +8,16 @@ const DEBUG = true;
 error_reporting(E_ALL);
 ini_set('display_errors', DEBUG ? '1' : '0');
 
+use src\Handlers\UserSessionHandler;
 use src\middlewares\ErrorHandlingMiddleware;
-use src\routing\RouterBuilder;
+use src\LinkyRouting\RouterBuilder;
 
 $builder = new RouterBuilder();
 
 $builder->setViewsPath('src/views');
 $builder->setControllersPath('src/controllers');
-$builder->addMiddleware(new ErrorHandlingMiddleware());
+$builder->setSessionHandler(new UserSessionHandler());
+//$builder->addMiddleware(new ErrorHandlingMiddleware());
 $builder->useAuthorization();
 $builder->mapControllers();
 

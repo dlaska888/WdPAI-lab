@@ -3,9 +3,9 @@
 namespace src\middlewares;
 
 use PDOException;
-use src\routing\middleware\BaseMiddleware;
-use src\routing\Request;
-use src\routing\responses\Response;
+use src\LinkyRouting\middleware\BaseMiddleware;
+use src\LinkyRouting\Request;
+use src\LinkyRouting\Responses\Response;
 use Throwable;
 
 class ErrorHandlingMiddleware extends BaseMiddleware
@@ -18,7 +18,7 @@ class ErrorHandlingMiddleware extends BaseMiddleware
         } catch (PDOException $e) {
             die("PDO exception:" . $e->getMessage());
         } catch (Throwable $e) {
-            die("Error" . $e->getMessage());
+            die("Error " . $e->getMessage());
         }
     }
 }

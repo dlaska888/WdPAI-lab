@@ -13,15 +13,15 @@ use src\Repos\LinkGroupRepo;
 use src\Repos\LinkGroupShareRepo;
 use src\Repos\LinkRepo;
 use src\Repos\UserRepo;
-use src\routing\attributes\authorization\Authorize;
-use src\routing\attributes\controller\Controller;
-use src\routing\attributes\httpMethod\HttpDelete;
-use src\routing\attributes\httpMethod\HttpGet;
-use src\routing\attributes\httpMethod\HttpPost;
-use src\routing\attributes\httpMethod\HttpPut;
-use src\routing\attributes\Route;
-use src\routing\enums\HttpStatusCode;
-use src\routing\responses\Json;
+use src\LinkyRouting\attributes\authorization\Authorize;
+use src\LinkyRouting\attributes\controller\Controller;
+use src\LinkyRouting\attributes\httpMethod\HttpDelete;
+use src\LinkyRouting\attributes\httpMethod\HttpGet;
+use src\LinkyRouting\attributes\httpMethod\HttpPost;
+use src\LinkyRouting\attributes\httpMethod\HttpPut;
+use src\LinkyRouting\attributes\Route;
+use src\LinkyRouting\enums\HttpStatusCode;
+use src\LinkyRouting\Responses\Json;
 use src\Validators\AddLinkGroupShareValidator;
 use src\Validators\AddLinkGroupValidator;
 use src\Validators\AddLinkValidator;
@@ -30,7 +30,7 @@ use src\Validators\UpdateLinkGroupValidator;
 use src\Validators\UpdateLinkValidator;
 
 #[Controller]
-#[Authorize(UserRole::NORMAL)]
+#[Authorize([UserRole::NORMAL->value, UserRole::ADMIN->value])]
 class LinkController extends AppController
 {
     private LinkRepo $linkRepo;

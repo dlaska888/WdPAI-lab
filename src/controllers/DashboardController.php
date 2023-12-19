@@ -3,10 +3,10 @@
 namespace src\Controllers;
 
 use src\Handlers\UserSessionHandler;
-use src\routing\attributes\controller\Controller;
-use src\routing\attributes\httpMethod\HttpGet;
-use src\routing\attributes\Route;
-use src\routing\responses\View;
+use src\LinkyRouting\attributes\controller\Controller;
+use src\LinkyRouting\attributes\httpMethod\HttpGet;
+use src\LinkyRouting\attributes\Route;
+use src\LinkyRouting\Responses\View;
 
 #[Controller]
 class DashboardController extends DefaultController

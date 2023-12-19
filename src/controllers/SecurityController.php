@@ -8,12 +8,12 @@ use src\Models\Entities\LinkGroup;
 use src\Models\Entities\LinkyUser;
 use src\Repos\LinkGroupRepo;
 use src\Repos\UserRepo;
-use src\routing\attributes\controller\Controller;
-use src\routing\attributes\httpMethod\HttpGet;
-use src\routing\attributes\httpMethod\HttpPost;
-use src\routing\attributes\Route;
-use src\routing\enums\HttpStatusCode;
-use src\routing\responses\View;
+use src\LinkyRouting\attributes\controller\Controller;
+use src\LinkyRouting\attributes\httpMethod\HttpGet;
+use src\LinkyRouting\attributes\httpMethod\HttpPost;
+use src\LinkyRouting\attributes\Route;
+use src\LinkyRouting\enums\HttpStatusCode;
+use src\LinkyRouting\Responses\View;
 use src\Validators\LoginValidator;
 use src\Validators\RegisterValidator;
 

@@ -7,21 +7,21 @@ use src\Handlers\UserSessionHandler;
 use src\Models\Entities\File;
 use src\Repos\FileRepo;
 use src\Repos\UserRepo;
-use src\routing\attributes\authorization\Authorize;
-use src\routing\attributes\controller\Controller;
-use src\routing\attributes\httpMethod\HttpDelete;
-use src\routing\attributes\httpMethod\HttpGet;
-use src\routing\attributes\httpMethod\HttpPost;
-use src\routing\attributes\httpMethod\HttpPut;
-use src\routing\attributes\Route;
-use src\routing\enums\HttpStatusCode;
-use src\routing\responses\Json; // Assuming you have a Json class for responses
+use src\LinkyRouting\attributes\authorization\Authorize;
+use src\LinkyRouting\attributes\controller\Controller;
+use src\LinkyRouting\attributes\httpMethod\HttpDelete;
+use src\LinkyRouting\attributes\httpMethod\HttpGet;
+use src\LinkyRouting\attributes\httpMethod\HttpPost;
+use src\LinkyRouting\attributes\httpMethod\HttpPut;
+use src\LinkyRouting\attributes\Route;
+use src\LinkyRouting\enums\HttpStatusCode;
+use src\LinkyRouting\Responses\Json; // Assuming you have a Json class for responses
 use src\Validators\FileValidator;
 use src\Validators\UpdatePasswordValidator;
 use src\Validators\UpdateUserNameValidator;
 
 #[Controller]
-#[Authorize(UserRole::NORMAL)]
+#[Authorize([UserRole::NORMAL->value, UserRole::ADMIN->value])]
 class AccountController extends AppController
 {
     private UserRepo $userRepo;

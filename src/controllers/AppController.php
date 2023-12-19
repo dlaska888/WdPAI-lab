@@ -2,7 +2,7 @@
 
 namespace src\Controllers;
 
-use src\routing\enums\HttpStatusCode;
+use src\LinkyRouting\enums\HttpStatusCode;
 use src\Validators\ValidationResult;
 
 class AppController
