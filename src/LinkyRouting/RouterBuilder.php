@@ -15,7 +15,7 @@ class RouterBuilder
 {
     private array $routes = [];
     private MiddlewareChain $middlewareChain;
-    private RouteResolver $routeResolver;
+    private ISessionHandler $sessionHandler;
     private string $viewsPath;
     private string $controllersPath;
 
@@ -23,20 +23,11 @@ class RouterBuilder
     {
         $this->middlewareChain = new MiddlewareChain();
     }
-
-    /**
-     * @throws RouterBuilderException
-     */
+    
     public function build(): Router
     {
         $router = new Router();
 
-        if (empty($this->routeResolver)) {
-            throw new RouterBuilderException("Session handler was not set, define session handler and pass 
-            it by setSessionHandler() in router builder");
-        }
-
-        $router->setRouteResolver($this->routeResolver);
         $router->setRoutes($this->routes);
         $router->setMiddlewareChain($this->middlewareChain);
         $router->setResponseHandler(new HttpResponseHandler($this->viewsPath ?? ""));
@@ -55,19 +46,27 @@ class RouterBuilder
         $this->routes = $controllerMapper->mapControllers();
     }
 
+    /**
+     * @throws RouterBuilderException
+     */
     public function useAuthorization(IMiddleware $authMiddleware = null): void
     {
-        if($authMiddleware === null){
-            $this->addMiddleware(new AuthorizationMiddleware($this->routeResolver));
+        if ($authMiddleware === null) {
+            if (empty($this->sessionHandler)) {
+                throw new RouterBuilderException("Session handler was not set for default authorization, 
+                define session handler and pass it by setSessionHandler() in RouterBuilder");
+            }
+
+            $this->addMiddleware(new AuthorizationMiddleware($this->sessionHandler));
             return;
         }
-        
+
         $this->addMiddleware($authMiddleware);
     }
 
     public function setSessionHandler(ISessionHandler $sessionHandler): void
     {
-        $this->routeResolver = new RouteResolver($sessionHandler);
+        $this->sessionHandler = $sessionHandler;
     }
 
     public function setViewsPath(string $path): void

@@ -8,13 +8,14 @@ class MiddlewareChain extends BaseMiddleware
 {
     private ?IMiddleware $last = null;
 
-    public function add(IMiddleware $middleware) : void
+    public function add(IMiddleware $middleware): void
     {
-        if ($this->last === null){
-            $this->setNext($middleware);            
-        }else{
-            $this->last = $this->last->setNext($middleware);
+        if ($this->last === null) {
+            $this->setNext($middleware);
+        } else {
+            $this->last->setNext($middleware);
         }
-    }
 
+        $this->last = $middleware;
+    }
 }

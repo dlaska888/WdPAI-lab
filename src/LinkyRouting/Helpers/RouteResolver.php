@@ -7,12 +7,6 @@ use src\LinkyRouting\Route;
 
 class RouteResolver
 {
-    private ISessionHandler $sessionHandler;
-
-    public function __construct(ISessionHandler $sessionHandler)
-    {
-        $this->sessionHandler = $sessionHandler;
-    }
 
     public function matchHttpMethod(Route $route): bool
     {
@@ -36,23 +30,6 @@ class RouteResolver
                 return false;
             }
         }
-
-        return true;
-    }
-
-    public function checkAuthorization(Route $route): bool
-    {
-        $roles = $route->getRoles();
-
-        // No authentication needed
-        if (empty($roles)) {
-            return true;
-        }
-
-        // No session 
-        $userRole = $this->sessionHandler->getUserRole();
-        if (empty($userRole) || !in_array($userRole, $roles))
-            return false;
 
         return true;
     }

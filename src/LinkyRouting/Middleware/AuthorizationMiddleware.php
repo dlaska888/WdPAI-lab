@@ -8,22 +8,40 @@ use src\LinkyRouting\Interfaces\ISessionHandler;
 use src\LinkyRouting\Request;
 use src\LinkyRouting\Responses\ErrorView;
 use src\LinkyRouting\Responses\Response;
+use src\LinkyRouting\Route;
 
 class AuthorizationMiddleware extends BaseMiddleware
 {
-    private RouteResolver $routeResolver;
+    private ISessionHandler $sessionHandler;
 
-    public function __construct(RouteResolver $routeResolver)
+    public function __construct(ISessionHandler $sessionHandler)
     {
-        $this->routeResolver = $routeResolver;
+        $this->sessionHandler = $sessionHandler;
     }
 
     public function invoke(Request $request): Response
     {
-        if (!$this->routeResolver->checkAuthorization($request->getRoute())) {
+        if (!$this->checkAuthorization($request->getRoute())) {
             return new ErrorView(HttpStatusCode::UNAUTHORIZED, "You are not authorized to access this resource");
         }
 
         return parent::invoke($request);
+    }
+
+    private function checkAuthorization(Route $route): bool
+    {
+        $roles = $route->getRoles();
+
+        // No authentication needed
+        if (empty($roles)) {
+            return true;
+        }
+
+        // No session 
+        $userRole = $this->sessionHandler->getUserRole();
+        if (empty($userRole) || !in_array($userRole, $roles))
+            return false;
+
+        return true;
     }
 }

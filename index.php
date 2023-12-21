@@ -16,9 +16,11 @@ $builder = new RouterBuilder();
 
 $builder->setViewsPath('src/views');
 $builder->setControllersPath('src/controllers');
+
 $builder->setSessionHandler(new UserSessionHandler());
-//$builder->addMiddleware(new ErrorHandlingMiddleware());
 $builder->useAuthorization();
+
+$builder->addMiddleware(new ErrorHandlingMiddleware());
 $builder->mapControllers();
 
 $router = $builder->build();

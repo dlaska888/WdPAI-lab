@@ -17,6 +17,11 @@ class Router
     private IMiddleware $middlewareChain;
     private RouteResolver $routeResolver;
     private HttpResponseHandler $responseHandler;
+    
+    public function __construct()
+    {
+        $this->routeResolver = new RouteResolver();
+    }
 
     public function run($url): void
     {
@@ -87,8 +92,4 @@ class Router
         $this->responseHandler = $responseHandler;
     }
 
-    public function setRouteResolver(RouteResolver $routeResolver): void
-    {
-        $this->routeResolver = $routeResolver;
-    }
 }

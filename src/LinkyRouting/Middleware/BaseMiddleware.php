@@ -10,10 +10,9 @@ abstract class BaseMiddleware implements IMiddleware
 {
     protected ?IMiddleware $next = null;
 
-    function setNext(IMiddleware $next): IMiddleware
+    function setNext(IMiddleware $next): void
     {
         $this->next = $next;
-        return $next;
     }
 
     function invoke(Request $request): Response
