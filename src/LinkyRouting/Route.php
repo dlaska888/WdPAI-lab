@@ -2,7 +2,7 @@
 
 namespace src\LinkyRouting;
 
-class Route
+readonly class Route
 {
     private string $path;
     private string $httpMethod;
@@ -11,9 +11,7 @@ class Route
     private array $roles;
     private string $controllerType;
 
-    public function __construct(string $path, string $httpMethod, string $controller, string $controllerType, 
-string 
-$action, array $auth)
+    public function __construct(string $path, string $httpMethod, string $controller, string $controllerType, string $action, array $auth)
     {
         $this->path = $path;
         $this->httpMethod = $httpMethod;
@@ -51,12 +49,6 @@ $action, array $auth)
     public function getRoles(): array
     {
         return $this->roles;
-    }
-
-    // TODO decide whether keys are better for optimisation
-    public function getKey(): string
-    {
-        return $this->httpMethod . "::" . $this->path;
     }
 
 }

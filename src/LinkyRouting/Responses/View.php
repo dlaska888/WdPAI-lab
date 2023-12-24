@@ -9,8 +9,7 @@ class View extends Response
     private ?string $template;
     private array $variables;
 
-    public function __construct(string $template = null, array $variables = [], HttpStatusCode $code = 
-    HttpStatusCode::OK)
+    public function __construct(string $template = null, array $variables = [], HttpStatusCode $code = HttpStatusCode::OK)
     {
         parent::__construct($code);
         $this->template = $template;

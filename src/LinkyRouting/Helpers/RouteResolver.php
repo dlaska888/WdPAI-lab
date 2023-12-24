@@ -2,15 +2,14 @@
 
 namespace src\LinkyRouting\helpers;
 
-use src\LinkyRouting\Interfaces\ISessionHandler;
 use src\LinkyRouting\Route;
 
 class RouteResolver
 {
 
-    public function matchHttpMethod(Route $route): bool
+    public function matchHttpMethod(string $method, Route $route): bool
     {
-        if ($_SERVER['REQUEST_METHOD'] !== $route->getHttpMethod()) {
+        if ($method !== $route->getHttpMethod()) {
             return false;
         }
 
@@ -21,12 +20,13 @@ class RouteResolver
     {
         $urlParts = explode("/", $url);
         $routeParts = explode("/", $route->getPath());
-        
-        if(count($urlParts) !== count($routeParts))
+
+        if (count($urlParts) !== count($routeParts)) {
             return false;
+        }
 
         foreach ($routeParts as $index => $part) {
-            if ($part !== $urlParts[$index] && !str_starts_with($part, '{')) {
+            if ($part !== $urlParts[$index] && !str_starts_with($part, "{")) {
                 return false;
             }
         }

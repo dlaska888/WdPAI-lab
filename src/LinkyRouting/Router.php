@@ -41,14 +41,25 @@ class Router
                 "error", HttpStatusCode::NOT_FOUND));
         }
 
-        $matchedByMethod = current(array_filter($matchedByPath, fn(Route $route) => $this->routeResolver->matchHttpMethod($route)));
+        $matchedByMethod = $this->findByMethod($matchedByPath);
 
-        if (!$matchedByMethod) {
+        if (empty($matchedByMethod)) {
             $this->responseHandler->handleResponse(new Error(MvcController::class, "Method not allowed",
                 "error", HttpStatusCode::METHOD_NOT_ALLOWED));
         }
 
         return $matchedByMethod;
+    }
+
+    private function findByMethod(array $routes) : ?Route
+    {
+        foreach ($routes as $route) {
+            if ($this->routeResolver->matchHttpMethod($_SERVER["REQUEST_METHOD"], $route)) {
+                return $route;
+            }
+        }
+
+        return null;
     }
 
     private function extractDynamicParameters($url, $route): array

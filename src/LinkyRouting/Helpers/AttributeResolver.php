@@ -37,7 +37,7 @@ class AttributeResolver
 
             foreach ($httpMethods as $httpMethod) {
                 $route = new Route($path, $httpMethod, $controllerName, $controllerType, $methodName, $auth);
-                $routes[$route->getKey()] = $route;
+                $routes[] = $route;
             }
         }
 

@@ -36,7 +36,7 @@ class HttpResponseHandler
     {
         $templatePath = $this->viewsPath . '/' . $view->getTemplate() . '.php';
         $output = 'View not found';
-        $variables = $view->getVariables();
+        
         extract($view->getVariables());
         ob_start();
 
