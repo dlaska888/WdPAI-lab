@@ -2,9 +2,12 @@
 
 namespace src\middlewares;
 
-use PDOException;
+use BadRequestException;
+use NotFoundException;
+use src\LinkyRouting\enums\HttpStatusCode;
 use src\LinkyRouting\middleware\BaseMiddleware;
 use src\LinkyRouting\Request;
+use src\LinkyRouting\Responses\Error;
 use src\LinkyRouting\Responses\Response;
 use Throwable;
 
@@ -15,10 +18,13 @@ class ErrorHandlingMiddleware extends BaseMiddleware
     {
         try {
             return parent::invoke($request);
-        } catch (PDOException $e) {
-            die("PDO exception:" . $e->getMessage());
+        } catch (NotFoundException $e) {
+            return new Error($request->getRoute()->getControllerType(), $e->getMessage(), 'error', HttpStatusCode::NOT_FOUND);
+        } catch (BadRequestException $e) {
+            return new Error($request->getRoute()->getControllerType(), $e->getMessage(), 'error', HttpStatusCode::BAD_REQUEST);
         } catch (Throwable $e) {
-            die("Error " . $e->getMessage());
+            return new Error($request->getRoute()->getControllerType(), $e->getMessage(), 'error', 
+                HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
 }

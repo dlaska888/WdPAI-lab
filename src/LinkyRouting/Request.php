@@ -6,7 +6,6 @@ use src\LinkyRouting\enums\HttpStatusCode;
 use src\LinkyRouting\Responses\Response;
 
 
-//TODO add body and query
 readonly class Request
 {
     private Route $route;

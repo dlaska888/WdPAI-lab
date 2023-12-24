@@ -2,6 +2,9 @@
 
 namespace src\Repos;
 
+use BadRequestException;
+use NotFoundException;
+use PDOException;
 use src\models\Database;
 use src\Repos\Interfaces\IRepo;
 
@@ -40,12 +43,14 @@ abstract class BaseRepo implements IRepo
 
     public function findById(string $id): ?object
     {
-        $stmt = $this->db->connect()->prepare("SELECT * FROM {$this->getTableName()} WHERE {$this->getIdName()} = :id");
-        $stmt->execute(['id' => $id]);
-        $result = $stmt->fetch();
+        $sql = "SELECT * FROM {$this->getTableName()} WHERE {$this->getIdName()} = :id";
 
-        if (!$result) {
-            return null;
+        try {
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute(['id' => $id]);
+            $result = $stmt->fetch();
+        } catch (PDOException $e) {
+            throw new NotFoundException($e->getMessage());
         }
 
         return $this->mapToObject($result);
@@ -58,8 +63,12 @@ abstract class BaseRepo implements IRepo
 
         $sql = "INSERT INTO {$this->getTableName()} ($columns) VALUES ($values)";
 
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute($this->mapToArray($entity));
+        try {
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute($this->mapToArray($entity));
+        } catch (PDOException $e) {
+            throw new BadRequestException($e->getMessage());
+        }
 
         return $this->findById($entity->{$this->getIdName()});
     }
@@ -70,15 +79,29 @@ abstract class BaseRepo implements IRepo
 
         $sql = "UPDATE {$this->getTableName()} SET $updates WHERE {$this->getIdName()} = :{$this->getIdName()}";
 
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute($this->mapToArray($entity));
+
+        try {
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute($this->mapToArray($entity));
+        } catch (PDOException $e) {
+            throw new NotFoundException($e->getMessage());
+        }
 
         return $this->findById($entity->{$this->getIdName()});
     }
 
     public function delete(string $id): bool
     {
-        $stmt = $this->db->connect()->prepare("DELETE FROM {$this->getTableName()} WHERE {$this->getIdName()} = :id");
-        return $stmt->execute(['id' => $id]);
+        $sql = "DELETE FROM {$this->getTableName()} WHERE {$this->getIdName()} = :id";
+
+
+        try {
+            $stmt = $this->db->connect()->prepare($sql);
+            $result = $stmt->execute(['id' => $id]);
+        } catch (PDOException $e) {
+            throw new NotFoundException($e->getMessage());
+        }
+        
+        return $result;
     }
 }

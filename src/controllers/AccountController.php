@@ -4,6 +4,7 @@ namespace src\Controllers;
 
 use src\Enums\UserRole;
 use src\Handlers\UserSessionHandler;
+use src\LinkyRouting\attributes\controller\ApiController;
 use src\Models\Entities\File;
 use src\Repos\FileRepo;
 use src\Repos\UserRepo;
@@ -20,7 +21,7 @@ use src\Validators\FileValidator;
 use src\Validators\UpdatePasswordValidator;
 use src\Validators\UpdateUserNameValidator;
 
-#[Controller]
+#[ApiController]
 #[Authorize([UserRole::NORMAL->value, UserRole::ADMIN->value])]
 class AccountController extends AppController
 {

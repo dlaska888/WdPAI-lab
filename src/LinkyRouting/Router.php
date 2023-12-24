@@ -2,14 +2,12 @@
 
 namespace src\LinkyRouting;
 
+use src\LinkyRouting\attributes\controller\MvcController;
 use src\LinkyRouting\enums\HttpStatusCode;
 use src\LinkyRouting\helpers\HttpResponseHandler;
 use src\LinkyRouting\helpers\RouteResolver;
 use src\LinkyRouting\middleware\interfaces\IMiddleware;
-use src\LinkyRouting\Responses\ErrorView;
-use src\LinkyRouting\Responses\Json;
-use src\LinkyRouting\Responses\Response;
-use src\LinkyRouting\Responses\View;
+use src\LinkyRouting\Responses\Error;
 
 class Router
 {
@@ -17,7 +15,7 @@ class Router
     private IMiddleware $middlewareChain;
     private RouteResolver $routeResolver;
     private HttpResponseHandler $responseHandler;
-    
+
     public function __construct()
     {
         $this->routeResolver = new RouteResolver();
@@ -31,7 +29,7 @@ class Router
         $request = new Request($route, $params);
         $response = $this->middlewareChain->invoke($request);
 
-        $this->generateResponse($response);
+        $this->responseHandler->handleResponse($response);
     }
 
     private function matchRoute(string $url): Route
@@ -39,13 +37,15 @@ class Router
         $matchedByPath = array_filter($this->routes, fn(Route $route) => $this->routeResolver->matchUrlParts($url, $route));
 
         if (empty($matchedByPath)) {
-            $this->responseHandler->view(new ErrorView(HttpStatusCode::NOT_FOUND, "Not found"));
+            $this->responseHandler->handleResponse(new Error(MvcController::class, "Page not found",
+                "error", HttpStatusCode::NOT_FOUND));
         }
 
         $matchedByMethod = current(array_filter($matchedByPath, fn(Route $route) => $this->routeResolver->matchHttpMethod($route)));
 
         if (!$matchedByMethod) {
-            $this->responseHandler->view(new ErrorView(HttpStatusCode::METHOD_NOT_ALLOWED, "Method not allowed"));
+            $this->responseHandler->handleResponse(new Error(MvcController::class, "Method not allowed",
+                "error", HttpStatusCode::METHOD_NOT_ALLOWED));
         }
 
         return $matchedByMethod;
@@ -53,7 +53,7 @@ class Router
 
     private function extractDynamicParameters($url, $route): array
     {
-        $urlParts = explode("/", $url ?: "index");
+        $urlParts = explode("/", $url);
         $routeParts = explode("/", $route);
         $params = [];
 
@@ -66,15 +66,6 @@ class Router
         }
 
         return $params;
-    }
-
-    private function generateResponse(Response $response): void
-    {
-        if ($response instanceof View) {
-            $this->responseHandler->view($response);
-        } elseif ($response instanceof Json) {
-            $this->responseHandler->json($response);
-        }
     }
 
     public function setRoutes(array $routes): void

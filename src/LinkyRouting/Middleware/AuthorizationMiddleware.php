@@ -3,10 +3,9 @@
 namespace src\LinkyRouting\middleware;
 
 use src\LinkyRouting\enums\HttpStatusCode;
-use src\LinkyRouting\helpers\RouteResolver;
 use src\LinkyRouting\Interfaces\ISessionHandler;
 use src\LinkyRouting\Request;
-use src\LinkyRouting\Responses\ErrorView;
+use src\LinkyRouting\Responses\Error;
 use src\LinkyRouting\Responses\Response;
 use src\LinkyRouting\Route;
 
@@ -22,7 +21,8 @@ class AuthorizationMiddleware extends BaseMiddleware
     public function invoke(Request $request): Response
     {
         if (!$this->checkAuthorization($request->getRoute())) {
-            return new ErrorView(HttpStatusCode::UNAUTHORIZED, "You are not authorized to access this resource");
+            return new Error($request->getRoute()->getControllerType(), "You are not authorized to access this resource", 
+                'error', HttpStatusCode::UNAUTHORIZED);
         }
 
         return parent::invoke($request);

@@ -9,12 +9,16 @@ class Route
     private string $controller;
     private string $action;
     private array $roles;
+    private string $controllerType;
 
-    public function __construct(string $path, string $httpMethod, string $controller, string $action, array $auth)
+    public function __construct(string $path, string $httpMethod, string $controller, string $controllerType, 
+string 
+$action, array $auth)
     {
         $this->path = $path;
         $this->httpMethod = $httpMethod;
         $this->controller = $controller;
+        $this->controllerType = $controllerType;
         $this->action = $action;
         $this->roles = $auth;
     }
@@ -32,6 +36,11 @@ class Route
     public function getController(): string
     {
         return $this->controller;
+    }
+
+    public function getControllerType(): string
+    {
+        return $this->controllerType;
     }
 
     public function getAction(): string

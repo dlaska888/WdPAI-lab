@@ -4,6 +4,8 @@ namespace src\Controllers;
 
 use DateTime;
 use src\Handlers\UserSessionHandler;
+use src\LinkyRouting\attributes\controller\MvcController;
+use src\LinkyRouting\Responses\Redirect;
 use src\Models\Entities\LinkGroup;
 use src\Models\Entities\LinkyUser;
 use src\Repos\LinkGroupRepo;
@@ -17,7 +19,7 @@ use src\LinkyRouting\Responses\View;
 use src\Validators\LoginValidator;
 use src\Validators\RegisterValidator;
 
-#[Controller]
+#[MvcController]
 class SecurityController extends AppController
 {
     private UserRepo $userRepo;
@@ -34,10 +36,10 @@ class SecurityController extends AppController
 
     #[HttpGet]
     #[Route("login")]
-    public function getLoginPage(): View
+    public function getLoginPage(): View | Redirect
     {
         if ($this->sessionHandler->isSessionSet()) {
-            $this->redirect("dashboard");
+            return new Redirect('dashboard');
         }
 
         return new View('login');
@@ -45,7 +47,7 @@ class SecurityController extends AppController
 
     #[HttpPost]
     #[Route("login")]
-    public function login(): ?View
+    public function login(): View | Redirect
     {
         $validationResult = $this->getValidationResult($_POST, LoginValidator::class);
         if (!$validationResult->isSuccess()) {
@@ -62,9 +64,7 @@ class SecurityController extends AppController
         }
 
         $this->sessionHandler->setSession($user);
-        $this->redirect('dashboard');
-        
-        return null;
+        return new Redirect('dashboard');
     }
 
     #[HttpGet]
@@ -76,7 +76,7 @@ class SecurityController extends AppController
 
     #[HttpPost]
     #[Route("register")]
-    public function register(): ?View
+    public function register(): View | Redirect
     {
         $validationResult = $this->getValidationResult($_POST, RegisterValidator::class);
         if (!$validationResult->isSuccess()) {
@@ -109,16 +109,14 @@ class SecurityController extends AppController
 
         $this->sessionHandler->setSession($user);
 
-        $this->redirect('dashboard');
-        
-        return null;
+        return new Redirect('dashboard');
     }
 
     #[HttpGet]
     #[Route('logout')]
-    public function logout(): void
+    public function logout(): Redirect
     {
         $this->sessionHandler->unsetSession();
-        $this->redirect('login');
+        return new Redirect('login');
     }
 }

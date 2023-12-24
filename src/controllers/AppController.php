@@ -5,7 +5,7 @@ namespace src\Controllers;
 use src\LinkyRouting\enums\HttpStatusCode;
 use src\Validators\ValidationResult;
 
-class AppController
+abstract class AppController
 {
     private array|null $requestBody;
 
@@ -27,13 +27,4 @@ class AppController
 
         return (new $validatorClass($data))->validate();
     }
-
-    //TODO is there any better way to handle this?
-    protected function redirect($url): void
-    {
-        header('Location: ' . $url);
-        exit();
-    }
-
-
 }

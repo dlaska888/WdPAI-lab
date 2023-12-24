@@ -4,11 +4,13 @@ namespace src\Controllers;
 
 use src\Handlers\UserSessionHandler;
 use src\LinkyRouting\attributes\controller\Controller;
+use src\LinkyRouting\attributes\controller\MvcController;
 use src\LinkyRouting\attributes\httpMethod\HttpGet;
 use src\LinkyRouting\attributes\Route;
+use src\LinkyRouting\Responses\Redirect;
 use src\LinkyRouting\Responses\View;
 
-#[Controller]
+#[MvcController]
 class DashboardController extends DefaultController
 {
     private UserSessionHandler $sessionHandler;
@@ -21,10 +23,10 @@ class DashboardController extends DefaultController
 
     #[HttpGet]
     #[Route("dashboard")]
-    public function dashboard(): View
+    public function dashboard(): View | Redirect
     {
         if (!$this->sessionHandler->isSessionSet()) {
-            $this->redirect("login");
+            return new Redirect("login");
         }
 
         return new View('dashboard');

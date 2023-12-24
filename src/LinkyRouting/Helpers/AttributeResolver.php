@@ -17,8 +17,10 @@ class AttributeResolver
     {
         $controllerReflection = $this->getReflectionClass($controllerName);
         $routes = array();
-        
-        if(!$this->isController($controllerName))
+
+        $controllerType = $this->resolveControllerType($controllerName);
+
+        if ($controllerType === null)
             return [];
 
         foreach ($controllerReflection->getMethods() as $method) {
@@ -34,15 +36,31 @@ class AttributeResolver
             $auth = $this->resolveAuthorization($controllerName, $methodName);
 
             foreach ($httpMethods as $httpMethod) {
-                $route = new Route($path, $httpMethod, $controllerName, $methodName, $auth);
-                $routes[] = $route;
+                $route = new Route($path, $httpMethod, $controllerName, $controllerType, $methodName, $auth);
+                $routes[$route->getKey()] = $route;
             }
         }
 
         return $routes;
     }
 
-    public function resolveHttpMethods(string $controllerName, string $methodName): array
+    private function resolveControllerType(string $className): ?string
+    {
+        $reflection = $this->getReflectionClass($className);
+        if ($reflection === null)
+            return null;
+
+        $controllerTypes = array_filter($reflection->getAttributes(),
+            fn($attribute) => is_subclass_of($attribute->getName(), Controller::class));
+
+        if (empty($controllerTypes)) {
+            return null;
+        }
+
+        return get_class($controllerTypes[0]->newInstance());
+    }
+
+    private function resolveHttpMethods(string $controllerName, string $methodName): array
     {
         $reflection = $this->getReflectionMethod($controllerName, $methodName);
         if ($reflection === null)
@@ -65,7 +83,7 @@ class AttributeResolver
         return $httpMethods;
     }
 
-    public function resolveAuthorization(string $controllerName, string $methodName): array
+    private function resolveAuthorization(string $controllerName, string $methodName): array
     {
         $reflection = $this->getReflectionMethod($controllerName, $methodName);
         if ($reflection === null)
@@ -82,19 +100,6 @@ class AttributeResolver
             return [];
 
         return $classAttributes[0]->newInstance()->roles;
-    }
-
-    private function isController(string $className): bool
-    {
-        $reflection = $this->getReflectionClass($className);
-        if ($reflection === null)
-            return false;
-
-        if (empty($reflection->getAttributes(Controller::class))) {
-            return false;
-        }
-
-        return true;
     }
 
     private function getReflectionClass(string $className): ?ReflectionClass

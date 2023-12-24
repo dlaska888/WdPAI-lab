@@ -2,12 +2,12 @@
 
 namespace src\Controllers;
 
-use src\LinkyRouting\attributes\controller\Controller;
+use src\LinkyRouting\attributes\controller\MvcController;
 use src\LinkyRouting\attributes\httpMethod\HttpGet;
 use src\LinkyRouting\attributes\Route;
 use src\LinkyRouting\Responses\View;
 
-#[Controller]
+#[MvcController]
 class DefaultController extends AppController
 {
     #[HttpGet]

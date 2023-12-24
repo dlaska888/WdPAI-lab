@@ -6,6 +6,7 @@ use DateTime;
 use src\Enums\GroupPermissionLevel;
 use src\Enums\UserRole;
 use src\Handlers\UserSessionHandler;
+use src\LinkyRouting\attributes\controller\ApiController;
 use src\Models\Entities\Link;
 use src\Models\Entities\LinkGroup;
 use src\Models\Entities\LinkGroupShare;
@@ -29,7 +30,7 @@ use src\Validators\UpdateLinkGroupShareValidator;
 use src\Validators\UpdateLinkGroupValidator;
 use src\Validators\UpdateLinkValidator;
 
-#[Controller]
+#[ApiController]
 #[Authorize([UserRole::NORMAL->value, UserRole::ADMIN->value])]
 class LinkController extends AppController
 {
