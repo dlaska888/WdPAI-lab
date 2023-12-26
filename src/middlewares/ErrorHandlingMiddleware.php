@@ -2,8 +2,8 @@
 
 namespace src\middlewares;
 
-use BadRequestException;
-use NotFoundException;
+use src\exceptions\BadRequestException;
+use src\exceptions\NotFoundException;
 use src\LinkyRouting\enums\HttpStatusCode;
 use src\LinkyRouting\middleware\BaseMiddleware;
 use src\LinkyRouting\Request;

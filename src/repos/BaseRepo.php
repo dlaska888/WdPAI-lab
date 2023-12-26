@@ -2,8 +2,8 @@
 
 namespace src\Repos;
 
-use BadRequestException;
-use NotFoundException;
+use src\exceptions\BadRequestException;
+use src\exceptions\NotFoundException;
 use PDOException;
 use src\models\Database;
 use src\Repos\Interfaces\IRepo;
@@ -41,7 +41,7 @@ abstract class BaseRepo implements IRepo
         return $entities;
     }
 
-    public function findById(string $id): ?object
+    public function findById(string $id): object
     {
         $sql = "SELECT * FROM {$this->getTableName()} WHERE {$this->getIdName()} = :id";
 
@@ -51,6 +51,10 @@ abstract class BaseRepo implements IRepo
             $result = $stmt->fetch();
         } catch (PDOException $e) {
             throw new NotFoundException($e->getMessage());
+        }
+        
+        if(!$result){
+            throw new NotFoundException("{$this->getTableName()} not found");
         }
 
         return $this->mapToObject($result);

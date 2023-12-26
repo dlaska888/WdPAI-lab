@@ -52,18 +52,9 @@ class LinkGroupRepo extends BaseRepo
         ];
     }
 
-    public function findById(string $id): ?object
+    public function findById(string $id): object
     {
-        $stmt = $this->db->connect()->prepare("SELECT * FROM {$this->getTableName()} WHERE {$this->getIdName()} = :id");
-        $stmt->execute(['id' => $id]);
-        $result = $stmt->fetch();
-
-        if (!$result) {
-            return null;
-        }
-
-        $linkGroup = $this->mapToObject($result);
-        return $this->joinTables($linkGroup);
+        return $this->joinTables(parent::findById($id));
     }
 
     public function findAllUserGroups(string $userId): array
@@ -95,7 +86,7 @@ class LinkGroupRepo extends BaseRepo
         return $linkGroups;
     }
 
-    private function joinTables(LinkGroup $linkGroup): LinkGroup
+    private function joinTables(object $linkGroup): object
     {
         $linkGroup->links = $this->linkRepo->findGroupLinks($linkGroup->link_group_id);
         $linkGroup->groupShares = $this->groupShareRepo->findLinkGroupShares($linkGroup->link_group_id);
