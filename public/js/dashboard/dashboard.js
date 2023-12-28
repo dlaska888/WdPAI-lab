@@ -1,3 +1,5 @@
+import {fetchAllGroups} from "/public/js/dashboard/home.js";
+
 // --- SPA navigation ---
 
 function showPage(pageId) {
@@ -92,35 +94,12 @@ window.addEventListener("scroll", function () {
     lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
 });
 
-// --- Link groups ---
 
 // collapse on click
-const btnLinks = document.querySelectorAll(".btn-group-collapse");
 
-btnLinks.forEach((btn) => {
-    btn.addEventListener("click", () => {
-        const links = btn.closest(".group").querySelector(".group-links");
-        links.classList.toggle("collapse");
-        btn.classList.toggle("active");
-    });
-});
 
 // --- Fetching Data ---
 
-async function getResponse(){
-    try {
-        const response = await fetch('http://localhost:8080/dashboard', {method: "POST"});
-        // network error in the 4xx–5xx range
-        if (!response.ok) {
-            throw new Error(`${response.status} ${response.statusText}`);
-        }
-        // use response here if we didn't throw above
-        console.log('AHUSDFHUSDFUSDFZADSXDDDDD')
-    } catch (error) {
-        console.log(error);
-    }    
-}
-
-getResponse();
+fetchAllGroups();
 
 

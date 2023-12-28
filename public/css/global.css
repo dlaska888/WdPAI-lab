@@ -13,6 +13,21 @@ a:visited {
 	color: inherit;
 }
 
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+	appearance: none;
+	background-color: transparent;
+	border: none;
+	margin: 0;
+	padding: 0;
+	outline: none;
+	font-family: inherit;
+	font-size: inherit;
+	cursor: pointer;
+}
+
 :root {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 16px;
@@ -130,6 +145,12 @@ a:visited {
 .btn-primary:active .btn-primary-top {
 	/* Push the button downwards when pressed */
 	transform: translateY(0);
+}
+
+.btn-hover-dim{
+	&:hover {
+		background-color: rgba(0, 0, 0, .05);
+	}
 }
 
 .input {

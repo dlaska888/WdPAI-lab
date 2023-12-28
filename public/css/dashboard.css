@@ -133,22 +133,11 @@ main {
 			gap: 1rem;
 
 			& .btn-menu {
-				border-radius: 2rem;
+				border-radius: 0.75rem;
 				padding: 0.25rem;
-
-				& .fill-grey {
-					fill: var(--grey);
-				}
-
-				&:hover {
-					background-color: var(--primary);
-					& path {
-						fill: var(--secondary);
-					}
-
-					& .fill-grey {
-						fill: var(--primary);
-					}
+				
+				& path{
+					fill: var(--tertiary);
 				}
 			}
 
@@ -213,6 +202,10 @@ main {
 				& .btn-group-collapse.active {
 					transform: rotate(-90deg);
 				}
+
+				& path {
+					fill: var(--tertiary);
+				}
 			}
 
 			& .group-links {
@@ -249,6 +242,10 @@ main {
 
 				& .link-buttons {
 					gap: 1rem;
+					
+					& path{
+						fill: var(--primary);
+					}
 				}
 
 				&.collapse {

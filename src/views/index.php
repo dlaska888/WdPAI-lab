@@ -1,3 +1,8 @@
+<?php
+
+use src\Helpers\ModuleRenderer;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,7 +40,7 @@
 	</main>
 	<footer class="footer-logo flex-column flex-center">
 		<a href="index" title="LinkyApp" class="logo-text flex">
-			<img src="/public/assets/svg/logo1.svg" alt="LinkyApp">
+			<?= ModuleRenderer::renderIcon('logo') ?>
 			<p>LinkyApp</p>
 		</a>
 		<div class="footer-policy flex">
