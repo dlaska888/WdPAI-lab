@@ -1,4 +1,4 @@
-import IconModule from "./IconModule.js";
+import ButtonModule from "./ButtonModule.js";
 
 const LinkModule = (function () {
     async function render(link) {
@@ -15,21 +15,10 @@ const LinkModule = (function () {
             <div class="link-buttons flex"></div>
           </div>`;
 
-        linkElement.querySelector(".link-info").prepend(imgElement);
-        linkElement.querySelector(".link-buttons").appendChild(await getButton('edit', editLink))
-        linkElement.querySelector(".link-buttons").appendChild(await getButton('delete', deleteLink))
+        linkElement.querySelector(".link-buttons").appendChild(await ButtonModule.render('edit', editLink))
+        linkElement.querySelector(".link-buttons").appendChild(await ButtonModule.render('delete', deleteLink))
 
         return linkElement.firstElementChild;
-    }
-
-    async function getButton(icon, callback) {
-        const button = document.createElement("button");
-
-        button.className = "flex flex-center";
-        button.innerHTML = await IconModule.render(icon);
-        button.addEventListener('click', callback);
-
-        return button;
     }
 
     function editLink() {

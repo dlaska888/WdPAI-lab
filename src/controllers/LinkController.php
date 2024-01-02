@@ -72,6 +72,7 @@ class LinkController extends AppController
     public function addLink(string $groupId): Json
     {
         $linkData = $this->getRequestBody();
+        
         $validationResult = $this->getValidationResult($linkData, AddLinkValidator::class);
 
         if (!$validationResult->isSuccess()) {
