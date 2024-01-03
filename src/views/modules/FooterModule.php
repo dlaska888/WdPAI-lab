@@ -13,12 +13,12 @@ class FooterModule
             <<<HTML
             <footer class="flex bg-secondary hide-desktop hide-on-scroll">
               <div class="footer-container flex">
-                 <div id="btn-mobile-home" class="page-home btn-container btn-footer btn-page active">
+                 <button id="btn-mobile-home" class="page-home btn-container btn-footer btn-page active">
                      {$homeIcon}
-                 </div>
-                 <div id="btn-mobile-shared" class="page-shared btn-container btn-footer btn-page">
+                 </button>
+                 <button id="btn-mobile-shared" class="page-shared btn-container btn-footer btn-page">
                      {$shareIcon}
-                 </div>
+                 </button>
               </div>
            </footer>
         HTML;

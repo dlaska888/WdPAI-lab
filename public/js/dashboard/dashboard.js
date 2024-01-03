@@ -1,4 +1,4 @@
-import {fetchAllGroups} from "/public/js/dashboard/home.js";
+import {addGroupButtons, fetchAllGroups} from "./home.js";
 
 // --- SPA navigation ---
 
@@ -77,7 +77,7 @@ collapseButtons.forEach((btn) =>
 let lastScrollTop = 0;
 const scrollHideEls = document.querySelectorAll(".hide-on-scroll");
 
-window.addEventListener("scroll", function () {
+window.addEventListener("scroll", () => {
     let currentScroll =
         window.pageYOffset || document.documentElement.scrollTop;
 
@@ -99,7 +99,7 @@ window.addEventListener("scroll", function () {
 
 
 // --- Fetching Data ---
-
+addGroupButtons();
 fetchAllGroups();
 
 

@@ -21,15 +21,15 @@ use modules\LinkPageModule;
 <nav id="nav-mobile" class="flex-column hide-desktop hide-on-scroll collapse">
     <div class="nav-container flex-column">
         <div class="nav-menu flex">
-            <div id="btn-mobile-menu" class="btn-nav btn-hamburger">
+            <button id="btn-mobile-menu" class="btn-nav btn-hamburger">
                 <div class="bar"></div>
-            </div>
-            <div class="search-container flex flex-center btn-nav-collapse">
+            </button>
+            <button class="search-container flex flex-center btn-nav-collapse">
                 <input type="text" name="search" class="input" placeholder="Search">
-            </div>
-            <div id="btn-mobile-search" class="flex flex-center btn-nav-collapse">
+            </button>
+            <button id="btn-mobile-search" class="flex flex-center btn-nav-collapse">
                 <?= IconModule::render('search') ?>
-            </div>
+            </button>
         </div>
         <div id="nav-content" class="nav-content flex-column flex-center">
             <?= IconModule::render('account') ?>
@@ -100,18 +100,18 @@ use modules\LinkPageModule;
         </div>
         <div class="line-vertical-primary hide-mobile"></div>
         <div class="settings-container flex-column">
-            <div id="btn-change-username" class="btn-primary" title="Change Username">
+            <button id="btn-change-username" class="btn-primary" title="Change Username">
                 <span class="btn-primary-top">Change Username</span>
-            </div>
-            <div id="btn-change-password" class="btn-primary" title="Change Password">
+            </button>
+            <button id="btn-change-password" class="btn-primary" title="Change Password">
                 <span class="btn-primary-top">Change Password</span>
-            </div>
-            <div id="btn-resend-verification" class="btn-primary" title="Resend Verification">
+            </button>
+            <button id="btn-resend-verification" class="btn-primary" title="Resend Verification">
                 <span class="btn-primary-top">Resend Verification Email</span>
-            </div>
-            <div id="btn-enable-2fa" class="btn-primary" title="Enable 2FA">
+            </button>
+            <button id="btn-enable-2fa" class="btn-primary" title="Enable 2FA">
                 <span class="btn-primary-top">Enable 2FA</span>
-            </div>
+            </button>
             <div id="btn-delete-account" class="btn-primary" title="Delete Account">
                 <span class="btn-primary-top">Delete Account</span>
             </div>

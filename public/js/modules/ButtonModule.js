@@ -4,9 +4,9 @@ const ButtonModule = (function () {
     async function render(icon, callback, classes = null) {
         const button = document.createElement("button");
 
-        button.className = "flex flex-center" + classes;
+        button.className = "flex flex-center " + classes || " ";
         button.innerHTML = await IconModule.render(icon);
-        button.addEventListener("click", callback, true);
+        button.addEventListener("click", callback);
         
         return button;
     }

@@ -1,24 +1,39 @@
 import ButtonModule from "./ButtonModule.js";
 
 const ModalModule = (function () {
+    let modal;
+
     async function render(content, classes = null) {
-        const modal = document.createElement("div");
-        modal.className = "modal" + classes;
+        modal = document.createElement("div");
+        modal.className = "modal flex flex-center " + classes || " ";
 
         const modalContent = document.createElement("div");
-        modalContent.className = "modal-content";
+        modalContent.className = "modal-content flex flex-column";
         modalContent.appendChild(content);
 
-        const closeButton = await ButtonModule.render("cancel", close);
+        const closeButton = await ButtonModule.render("cancel", close, "cancel-btn");
+        modalContent.prepend(closeButton);
+
+        // form submission should close the modal
+        const form = modalContent.querySelector("form");
+        if (form) {
+            form.addEventListener("submit", close);
+        }
 
         modal.appendChild(modalContent);
-        modal.appendChild(closeButton);
+
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                close();
+            }
+        });
 
         return modal;
     }
-    
-    function close(e){
-        e.target.classList.toggle("show");
+
+    function close() {
+        // Remove modal from the DOM
+        modal.remove();
     }
 
     return {
@@ -27,4 +42,3 @@ const ModalModule = (function () {
 }());
 
 export default ModalModule;
-

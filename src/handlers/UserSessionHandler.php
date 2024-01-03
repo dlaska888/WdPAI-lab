@@ -45,7 +45,7 @@ class UserSessionHandler extends AppSessionHandler
     public function unsetSession(): void
     {
         if ($this->isSessionSet()) {
-            $_SESSION['expiry_time'] = time(); // session is invalid after 1 second
+            $_SESSION['expiry_time'] = time();
         }
     }
 

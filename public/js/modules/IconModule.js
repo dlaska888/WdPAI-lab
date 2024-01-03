@@ -1,18 +1,18 @@
 const IconModule = (function () {
-    async function render(iconName) {
+    function render(iconName) {
         const svgFilePath = `public/assets/svg/${iconName}.svg`;
 
-        try {
-            const response = await fetch(svgFilePath);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch SVG file: ${response.statusText}`);
-            }
-
-            return response.text();
-        } catch (error) {
-            console.error(`Error reading SVG file: ${error.message}`);
-            return "";
-        }
+        return fetch(svgFilePath)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch SVG file: ${response.statusText}`);
+                }
+                return response.text();
+            })
+            .catch(error => {
+                console.error(`Error reading SVG file: ${error.message}`);
+                return "";
+            });
     }
 
     return {

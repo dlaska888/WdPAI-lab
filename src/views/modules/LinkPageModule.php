@@ -15,12 +15,12 @@ class LinkPageModule
             <section id="{$pageId}" class="page-links flex-column {$hidden}">
                 <div class="search-container flex flex-center hide-mobile">
                     <input type="text" name="search" class="input" placeholder="Search">
-                    <div id="btn-search" class="btn-menu flex flex-center">
+                    <button class="btn-search btn-menu flex flex-center">
                         {$searchIcon}
-                    </div>
-                    <div id="btn-add" class="btn-menu flex flex-center">
+                    </button>
+                    <button class="btn-add btn-menu flex flex-center">
                         {$addIcon}
-                    </div>
+                    </button>
                 </div>
                 <div class="groups-container"></div>
             </section>

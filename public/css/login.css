@@ -1,3 +1,5 @@
+@import "modules/form.css";
+
 body {
 	height: 100vh;
 	display: grid;
@@ -21,25 +23,9 @@ main {
 
 	justify-self: center;
 	align-self: center;
-
-	& .main-form {
-		height: 100%;
-		width: 100%;
-		gap: 2rem;
-		padding: 2rem 0;
-		justify-content: space-evenly;
-
-		border-radius: 1rem;
+	
+	& .main-form{
 		background-color: var(--primary-light);
-	}
-
-	& .input-container {
-		width: 75%;
-		gap: 1rem;
-	}
-
-	& .input {
-		width: 100%;
 	}
 }
 
@@ -47,11 +33,8 @@ main {
 	main {
 		max-width: 80vw;
 	}
-	main .main-form {
+	.main-form {
 		background-color: var(--primary);
-	}
-	main .input-container {
-		width: 100%;
 	}
 }
 
