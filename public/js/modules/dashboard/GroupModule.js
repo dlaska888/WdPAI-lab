@@ -45,7 +45,7 @@ const GroupModule = (function () {
                 return response.json();
             })
             .then(async updatedGroup => {
-                const groupElement = document.querySelector(`[id="${groupId}" ]`);
+                const groupElement = document.querySelector(`[id="${groupId}"]`);
                 if (groupElement) {
                     groupElement.replaceWith(await GroupModule.render(updatedGroup));
                 } else {

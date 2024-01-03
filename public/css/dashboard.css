@@ -46,6 +46,9 @@ body {
 
 			& .search-container {
 				justify-content: center;
+				& .input{
+					font-size: 0.8rem;
+				}
 			}
 		}
 
@@ -130,6 +133,11 @@ main {
 		height: 100%;
 		align-items: center;
 		gap: 1rem;
+
+		& button{
+			padding: 0.25rem;
+			border-radius: 0.75rem;
+		}
 
 		& .search-container {
 			gap: 1rem;
@@ -422,6 +430,7 @@ footer {
 			height: var(--bar-height);
 			width: var(--width);
 			top: calc(-1 * var(--bar-gap));
+			left: 0;
 			background-color: var(--color);
 			content: "";
 		}
@@ -432,6 +441,7 @@ footer {
 			height: var(--bar-height);
 			width: var(--width);
 			top: var(--bar-gap);
+			left: 0;
 			background-color: var(--color);
 			content: "";
 		}

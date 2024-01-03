@@ -7,7 +7,7 @@ const LinkModule = (function () {
     async function render(link) {
         let linkElement = document.createElement("div");
         linkElement.innerHTML = `
-          <div id="${link.link_id}" class="link-container flex">
+          <a id="${link.link_id}" href="${link.url}" class="link-container flex">
             <div class="link-info flex flex-center">
               <img src="https://www.google.com/s2/favicons?domain=${link.url}&sz=64" width="32" height="32" alt="Icon">
               <div class="link-text flex-column">
@@ -16,7 +16,7 @@ const LinkModule = (function () {
               </div>
             </div>
             <div class="link-buttons flex"></div>
-          </div>`;
+          </a>`;
 
         linkElement.querySelector(".link-buttons").appendChild(await ButtonModule.render('edit', () => editLinkForm(link)))
         linkElement.querySelector(".link-buttons").appendChild(await ButtonModule.render('delete', () => deleteLinkForm(link)))

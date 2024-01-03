@@ -1,5 +1,5 @@
 import FormModule from "./FormModule.js";
-import {addGroup} from "../../dashboard/home.js";
+import LinkPageModule from "../pages/LinkPageModule.js";
 
 const AddGroupForm = (function () {
     async function render() {
@@ -7,7 +7,7 @@ const AddGroupForm = (function () {
             {type: "text", name: "name", placeholder: "Group Name", required: true}
         ];
 
-        const submitUrl = "link-group"; // Assuming this is the endpoint to add a new group
+        const submitUrl = "link-group"; 
         const method = "POST";
 
         async function submit(e) {
@@ -27,8 +27,8 @@ const AddGroupForm = (function () {
                         return res.json();
                     }
                 })
-                .then(async responseData => {
-                    await addGroup(responseData);
+                .then(async group => {
+                    await LinkPageModule.addGroup(group, "page-home");
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error.message);

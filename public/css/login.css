@@ -33,7 +33,7 @@ main {
 	main {
 		max-width: 80vw;
 	}
-	.main-form {
+	main .main-form {
 		background-color: var(--primary);
 	}
 }
