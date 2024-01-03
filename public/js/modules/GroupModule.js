@@ -3,6 +3,7 @@ import ButtonModule from "./ButtonModule.js";
 import AddLinkForm from "./forms/AddLinkForm.js";
 import ModalModule from "./ModalModule.js";
 import DeleteGroupForm from "./forms/DeleteGroupForm.js";
+import EditGroupForm from "./forms/EditGroupForm.js";
 
 const GroupModule = (function () {
     async function render(group) {
@@ -24,6 +25,7 @@ const GroupModule = (function () {
         groupElement.querySelector(".group-name").prepend(await ButtonModule.render("collapse", collapseGroup, "btn-group-collapse"));
 
         groupElement.querySelector(".group-buttons").appendChild(await ButtonModule.render("add", () => addLinkForm(group)));
+        groupElement.querySelector(".group-buttons").appendChild(await ButtonModule.render("edit", () => editGroupForm(group)));
         groupElement.querySelector(".group-buttons").appendChild(await ButtonModule.render("share", null));
         groupElement.querySelector(".group-buttons").appendChild(await ButtonModule.render("delete", () => deleteGroupForm(group)));
 
@@ -34,22 +36,33 @@ const GroupModule = (function () {
         return groupElement;
     }
 
-    async function updateGroup(group) {
-        const groupElement = document.querySelector(`[id="${group.link_group_id}" ]`); // escaping forbidden id characters
-        if (groupElement) {
-            const updatedGroupEl = await GroupModule.render(group);
-            groupElement.replaceWith(updatedGroupEl);
-        } else {
-            console.error(`Group with id ${group.link_group_id} to update not found`);
-        }
+    function updateState(groupId) {
+        fetch(`http://localhost:8080/link-group/${groupId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch group with id ${groupId}: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(async updatedGroup => {
+                const groupElement = document.querySelector(`[id="${groupId}" ]`);
+                if (groupElement) {
+                    groupElement.replaceWith(await GroupModule.render(updatedGroup));
+                } else {
+                    throw new Error(`Group with id ${groupId} to update not found on the website`);
+                }
+            })
+            .catch(error => {
+                console.error(`Error updating group with id ${groupId}: ${error.message}`);
+            });
     }
 
-    async function deleteGroup(group) {
-        const groupElement = document.querySelector(`[id="${group.link_group_id}" ]`); // escaping forbidden id characters
+    function removeElement(groupId) {
+        const groupElement = document.querySelector(`[id="${groupId}"]`); // escaping forbidden id characters
         if (groupElement) {
             groupElement.remove();
         } else {
-            console.error(`Group with id ${group.link_group_id} to delete not found`);
+            console.error(`Group with id ${groupId} to delete not found`);
         }
     }
 
@@ -61,17 +74,21 @@ const GroupModule = (function () {
     }
 
     async function addLinkForm(group) {
-        document.body.prepend(await ModalModule.render(await AddLinkForm.render(group)));
+        document.body.appendChild(await ModalModule.render(await AddLinkForm.render(group)));
+    }
+
+    async function editGroupForm(group) {
+        document.body.appendChild(await ModalModule.render(await EditGroupForm.render(group)));
     }
 
     async function deleteGroupForm(group) {
-        document.body.prepend(await ModalModule.render(await DeleteGroupForm.render(group)));
+        document.body.appendChild(await ModalModule.render(await DeleteGroupForm.render(group)));
     }
-    
+
     return {
-        render: render, 
-        updateGroup: updateGroup, 
-        deleteGroup: deleteGroup
+        render: render,
+        updateState: updateState,
+        removeElement: removeElement
     }
 })();
 

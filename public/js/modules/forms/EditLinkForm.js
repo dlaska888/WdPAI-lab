@@ -1,15 +1,15 @@
 import FormModule from "./FormModule.js";
-import GroupModule from "../GroupModule.js";
+import LinkModule from "../LinkModule.js";
 
-const AddLinkForm = (function () {
-    async function render(group) {
+const EditLinkForm = (function () {
+    async function render(link) {
         const formFields = [
-            {type: "text", name: "url", placeholder: "Url", required: true},
-            {type: "text", name: "title", placeholder: "Title", }
+            { type: "text", name: "url", placeholder: "Url", required: true, value: link.url || "" },
+            { type: "text", name: "title", placeholder: "Title", value: link.title || "" }
         ];
 
-        const submitUrl = `link-group/${group.link_group_id}/link`;
-        const method = "POST";
+        const submitUrl = `link-group/${link.link_group_id}/link/${link.link_id}`;
+        const method = "PUT";
 
         async function submit(e) {
             const form = e.currentTarget;
@@ -26,7 +26,7 @@ const AddLinkForm = (function () {
                             throw new Error(text);
                         });
                     } else {
-                        await GroupModule.updateState(group.link_group_id);
+                        await LinkModule.updateState(link.link_id, link.link_group_id)
                     }
                 })
                 .catch(error => {
@@ -34,12 +34,12 @@ const AddLinkForm = (function () {
                 });
         }
 
-        return await FormModule.render(submit, "Add link",  formFields);
+        return await FormModule.render(submit, "Update link", formFields);
     }
-    
+
     return {
         render: render
     };
 }());
 
-export default AddLinkForm;
+export default EditLinkForm;

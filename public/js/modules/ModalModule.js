@@ -8,11 +8,11 @@ const ModalModule = (function () {
         modal.className = "modal flex flex-center " + classes || " ";
 
         const modalContent = document.createElement("div");
+        const closeButton = await ButtonModule.render("cancel", close, "cancel-btn");
+
+        modalContent.appendChild(closeButton);
         modalContent.className = "modal-content flex flex-column";
         modalContent.appendChild(content);
-
-        const closeButton = await ButtonModule.render("cancel", close, "cancel-btn");
-        modalContent.prepend(closeButton);
 
         // form submission should close the modal
         const form = modalContent.querySelector("form");

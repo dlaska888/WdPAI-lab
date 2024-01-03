@@ -1,6 +1,6 @@
 import ButtonModule from "./ButtonModule.js";
 import ModalModule from "./ModalModule.js";
-import UpdateLinkForm from "./forms/UpdateLinkForm.js";
+import EditLinkForm from "./forms/EditLinkForm.js";
 import DeleteLinkForm from "./forms/DeleteLinkForm.js";
 
 const LinkModule = (function () {
@@ -24,30 +24,38 @@ const LinkModule = (function () {
         return linkElement.firstElementChild;
     }
 
-    async function updateLink(link) {
-        const linkElement = document.querySelector(`[id="${link.link_id}" ]`); // escaping forbidden id characters
-        if (linkElement) {
-            const updatedLinkEl = await LinkModule.render(link);
-            linkElement.replaceWith(updatedLinkEl);
-        } else {
-            console.error(`Link with id ${link.link_id} to update not found`);
-        }
+    function updateState(linkId, groupId) {
+        fetch(`http://localhost:8080/link-group/${groupId}/link/${linkId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch link with id ${linkId}: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(async updatedLink => {
+                const linkElement = document.querySelector(`[id="${linkId}" ]`);
+                if (linkElement) {
+                    linkElement.replaceWith(await LinkModule.render(updatedLink));
+                } else {
+                    throw new Error(`Link with id ${linkId} to update not found on the website`);
+                }
+            })
+            .catch(error => {
+                console.error(`Error updating link with id ${linkId}: ${error.message}`);
+            });
     }
     
-    // TODO refactor
-    async function deleteLink(link){
-        const linkElement = document.querySelector(`[id="${link.link_id}" ]`); // escaping forbidden id characters
+    async function removeElement(linkId){
+        const linkElement = document.querySelector(`[id="${linkId}" ]`); // escaping forbidden id characters
         if (linkElement) {
             linkElement.remove();
-            let links = link.group.links; 
-            links.splice(links.findIndex(a => a.link_id === link.link_id) , 1)
         } else {
-            console.error(`Link with id ${link.link_id} to remove not found`);
+            console.error(`Link with id ${link_id} to remove not found`);
         }
     }
 
     async function editLinkForm(link) {
-        document.body.appendChild(await ModalModule.render(await UpdateLinkForm.render(link)));
+        document.body.appendChild(await ModalModule.render(await EditLinkForm.render(link)));
     }
 
     async function deleteLinkForm(link) {
@@ -56,8 +64,8 @@ const LinkModule = (function () {
 
     return {
         render: render,
-        updateLink : updateLink,
-        deleteLink : deleteLink
+        updateState : updateState,
+        removeElement : removeElement
     };
 })();
 

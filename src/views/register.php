@@ -38,7 +38,7 @@
 </main>
 <footer class="footer-logo flex-column flex-center">
     <a href="index" title="LinkyApp" class="logo-text flex">
-        <img src="/public/assets/svg/logo1.svg" alt="LinkyApp">
+        <img src="/public/assets/svg/logo.svg" alt="LinkyApp">
         <p>LinkyApp</p>
     </a>
     <div class="footer-policy flex">

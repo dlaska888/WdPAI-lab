@@ -14,7 +14,7 @@ const DeleteGroupForm = (function () {
                             throw new Error(text);
                         });
                     } else {
-                        await GroupModule.deleteGroup(group);
+                        await GroupModule.removeElement(group.link_group_id);
                     }
                 })
                 .catch(error => {

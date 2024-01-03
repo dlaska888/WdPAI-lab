@@ -15,7 +15,7 @@ const DeleteLinkForm = (function () {
                             throw new Error(text);
                         });
                     } else {
-                        await LinkModule.deleteLink(link);
+                        await LinkModule.removeElement(link.link_id);
                     }
                 })
                 .catch(error => {
