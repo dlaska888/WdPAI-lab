@@ -21,12 +21,9 @@ const ModalModule = (function () {
         }
 
         modal.appendChild(modalContent);
-
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) {
-                close();
-            }
-        });
+        
+        modal.addEventListener("click", closeOnModalClick);
+        document.body.addEventListener("keydown", closeOnEscape);
 
         return modal;
     }
@@ -34,6 +31,18 @@ const ModalModule = (function () {
     function close() {
         // Remove modal from the DOM
         modal.remove();
+    }
+
+    function closeOnModalClick(e) {
+        if (e.target === modal) {
+            close();
+        }
+    }
+
+    function closeOnEscape(e) {
+        if (e.key === "Escape") {
+            close();
+        }
     }
 
     return {
