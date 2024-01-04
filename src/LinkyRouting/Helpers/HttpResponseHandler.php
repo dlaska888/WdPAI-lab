@@ -5,6 +5,7 @@ namespace src\LinkyRouting\helpers;
 use src\LinkyRouting\attributes\controller\ApiController;
 use src\LinkyRouting\attributes\controller\MvcController;
 use src\LinkyRouting\enums\HttpStatusCode;
+use src\LinkyRouting\Responses\BinaryFileResponse;
 use src\LinkyRouting\Responses\Error;
 use src\LinkyRouting\Responses\Json;
 use src\LinkyRouting\Responses\Redirect;
@@ -26,6 +27,7 @@ class HttpResponseHandler
             View::class => $this->view($response),
             Json::class => $this->json($response),
             Redirect::class => $this->redirect($response),
+            BinaryFileResponse::class => $this->binaryFile($response), // Add this line
             Error::class => $this->error($response),
             default => $this->error(new Error(MvcController::class, "Invalid controller return type",
                 "error", HttpStatusCode::INTERNAL_SERVER_ERROR))
@@ -70,6 +72,17 @@ class HttpResponseHandler
         header('Location: ' . $redirect->getUrl());
         http_response_code($redirect->getCode()->value);
 
+        exit();
+    }
+
+    private function binaryFile(BinaryFileResponse $response): void // Add this method
+    {
+        $filePath = $response->getFilePath();
+
+        header('Content-Type: ' . mime_content_type($filePath));
+        header('Content-Disposition: inline; filename="' . basename($filePath) . '"');
+
+        readfile($filePath);
         exit();
     }
 

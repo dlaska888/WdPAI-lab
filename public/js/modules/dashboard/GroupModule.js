@@ -4,6 +4,7 @@ import AddLinkForm from "./forms/AddLinkForm.js";
 import ModalModule from "./ModalModule.js";
 import DeleteGroupForm from "./forms/DeleteGroupForm.js";
 import EditGroupForm from "./forms/EditGroupForm.js";
+import ShareGroupForm from "./forms/ShareGroupForm.js";
 
 const GroupModule = (function () {
     async function render(group) {
@@ -26,7 +27,7 @@ const GroupModule = (function () {
 
         groupElement.querySelector(".group-buttons").appendChild(await ButtonModule.render("add", () => addLinkForm(group)));
         groupElement.querySelector(".group-buttons").appendChild(await ButtonModule.render("edit", () => editGroupForm(group)));
-        groupElement.querySelector(".group-buttons").appendChild(await ButtonModule.render("share", null));
+        groupElement.querySelector(".group-buttons").appendChild(await ButtonModule.render("share", () => shareGroupForm(group)));
         groupElement.querySelector(".group-buttons").appendChild(await ButtonModule.render("delete", () => deleteGroupForm(group)));
 
         for (const link of group.links) {
@@ -75,6 +76,10 @@ const GroupModule = (function () {
 
     async function addLinkForm(group) {
         document.body.appendChild(await ModalModule.render(await AddLinkForm.render(group)));
+    }
+    
+    async function shareGroupForm(group){
+        document.body.appendChild(await ModalModule.render(await ShareGroupForm.render(group)));
     }
 
     async function editGroupForm(group) {
