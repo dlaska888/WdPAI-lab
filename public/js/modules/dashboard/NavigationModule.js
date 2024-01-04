@@ -1,43 +1,53 @@
-import LinkPageModule from "./pages/LinkPageModule.js";
-import SettingsPageModule from "./pages/SettingsPageModule.js";
-
-// TODO fix loading multiple pages at once (cancel async tasks?)
+import LinksPage from "./pages/LinksPage.js";
+import SettingsPage from "./pages/SettingsPage.js";
 
 const NavigationModule = (function () {
+
+    const pages = {
+        "page-home": {module: LinksPage, args: ["link-groups", true]},
+        "page-shared": {module: LinksPage, args: ["link-groups/shared"]},
+        "page-settings": {module: SettingsPage, args: []},
+    };
+
     async function initNavigation() {
         initButtonsHighlight();
 
-        document.querySelectorAll(".page-home").forEach(btn => {
-            btn.addEventListener("click", async () => 
-                await renderPage(LinkPageModule.render("page-home", "link-groups", true)));
-        });
-        
-        document.querySelectorAll(".page-shared").forEach(btn => {
-            btn.addEventListener("click", async () =>
-                await renderPage(LinkPageModule.render("page-shared", "link-groups/shared")));
-        });
-        
-        document.querySelectorAll(".page-settings").forEach(btn => {
-            btn.addEventListener("click", async () =>
-                await renderPage(SettingsPageModule.render()));
+        document.querySelectorAll(".btn-page").forEach(btn => {
+            btn.addEventListener("click", async () => await navigateToPage(findPageClass(btn)));
         });
 
         // Initial page load
-        await renderPage(LinkPageModule.render("page-home", "link-groups", true));
+        await navigateToPage("page-home");
     }
-    
-    async function renderPage(contentPromise){
-        toggleSpinner();
-        const page = document.querySelector("#page-container");
-        while (page.lastElementChild) {
-            page.removeChild(page.lastElementChild);
+
+    async function navigateToPage(pageId) {
+        toggleSpinner(true);
+        clearPage();
+        await renderPage(pageId);
+        toggleSpinner(false);
+    }
+
+    async function renderPage(pageId) {
+        const page = document.querySelector(".page");
+        const module = pages[pageId].module;
+        const args = pages[pageId].args;
+        
+        const content = await module.render(pageId, ...args);
+        
+        page.replaceWith(content);
+    }
+
+    function clearPage() {
+        document.querySelector(".page").innerHTML = '';
+    }
+
+    function toggleSpinner(show) {
+        const spinner = document.querySelector("#page-spinner");
+        if (show) {
+            spinner.classList.remove("hidden");
+        } else {
+            spinner.classList.add("hidden");
         }
-        page.appendChild(await contentPromise);
-        toggleSpinner();
-    }
-    
-    function toggleSpinner(){
-        document.querySelector("#page-spinner").classList.toggle("hidden");
     }
 
     function initButtonsHighlight() {
@@ -70,7 +80,7 @@ const NavigationModule = (function () {
     }
 
     return {
-        initNavigation: initNavigation
+        initNavigation: initNavigation,
     };
 }());
 

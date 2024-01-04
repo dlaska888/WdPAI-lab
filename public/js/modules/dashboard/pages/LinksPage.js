@@ -3,11 +3,11 @@ import GroupModule from "../GroupModule.js";
 import AddGroupForm from "../forms/AddGroupForm.js";
 import ModalModule from "../ModalModule.js";
 
-const LinkPageModule = (function () {
+const LinksPage = (function () {
     async function render(pageId, groupsEndpoint, addBtn = false) {
         let page = document.createElement("div");
         page.innerHTML = `
-            <section id="${pageId}" class="page-links flex-column">
+            <section id="${pageId}" class="page page-links flex-column">
                 <div class="search-container flex flex-center hide-mobile">
                     <input type="text" name="search" class="input" placeholder="Search">
                 </div>
@@ -58,4 +58,4 @@ const LinkPageModule = (function () {
     };
 }());
 
-export default LinkPageModule;
+export default LinksPage;

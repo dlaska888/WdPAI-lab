@@ -2,11 +2,11 @@
 
 import IconModule from "../IconModule.js";
 
-const LinkPageModule = (function () {
+const SettingsPage = (function () {
     async function render() {
         let page = document.createElement("div");
         page.innerHTML = `
-            <section id="page-settings" class="flex flex-center">
+            <section id="page-settings" class="page flex flex-center">
                 <div class="profile-container flex-column flex-center hide-mobile">
                     <div class="profile-photo">
                         ${await IconModule.render("account")}
@@ -44,4 +44,4 @@ const LinkPageModule = (function () {
     };
 }());
 
-export default LinkPageModule;
+export default SettingsPage;

@@ -1,5 +1,5 @@
 import FormModule from "./FormModule.js";
-import LinkPageModule from "../pages/LinkPageModule.js";
+import LinksPage from "../pages/LinksPage.js";
 
 const AddGroupForm = (function () {
     async function render() {
@@ -28,7 +28,7 @@ const AddGroupForm = (function () {
                     }
                 })
                 .then(async group => {
-                    await LinkPageModule.addGroup(group, "page-home");
+                    await LinksPage.addGroup(group, "page-home");
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error.message);

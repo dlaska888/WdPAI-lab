@@ -85,7 +85,7 @@ use modules\IconModule;
 </aside>
 <main>
     <div id='page-spinner' class="flex flex-center hidden"><span class='loader'></span></div>
-    <div id="page-container"></div>
+    <div class="page"></div>
 </main>
 <?= FooterModule::render(); ?>
 </body>
