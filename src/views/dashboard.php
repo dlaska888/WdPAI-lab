@@ -2,7 +2,6 @@
 
 use modules\FooterModule;
 use modules\IconModule;
-use modules\LinkPageModule;
 
 ?>
 <!DOCTYPE html>
@@ -84,7 +83,10 @@ use modules\LinkPageModule;
         </a>
     </nav>
 </aside>
-<main></main>
+<main>
+    <div id='page-spinner' class="flex flex-center hidden"><span class='loader'></span></div>
+    <div id="page-container"></div>
+</main>
 <?= FooterModule::render(); ?>
 </body>
 
