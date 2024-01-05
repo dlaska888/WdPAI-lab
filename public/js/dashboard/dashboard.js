@@ -1,7 +1,7 @@
-import NavigationModule from "./modules/NavigationModule.js";
-import ScrollModule from "./modules/ScrollModule.js";
-import MobileNavigationModule from "./modules/MobileNavigationModule.js";
+import NavigationHandler from "./NavigationHandler.js";
+import ScrollHandler from "./ScrollHandler.js";
+import MobileNavigationHandler from "./MobileNavigationHandler.js";
 
-MobileNavigationModule.initMobileNavigation();
-ScrollModule.initScrollEvents();
-await NavigationModule.initNavigation();
+MobileNavigationHandler.initMobileNavigation();
+ScrollHandler.initScrollEvents();
+await NavigationHandler.initNavigation();

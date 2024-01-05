@@ -1,4 +1,4 @@
-const ScrollModule = (function () {
+const ScrollHandler = (function () {
 
     function initScrollEvents(){
         let lastScrollTop = 0;
@@ -26,4 +26,4 @@ const ScrollModule = (function () {
     };
 }());
 
-export default ScrollModule;
+export default ScrollHandler;

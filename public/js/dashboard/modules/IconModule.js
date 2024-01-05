@@ -1,13 +1,24 @@
 const IconModule = (function () {
+    let iconCache = {}; //TODO is this a good practice?
+    
     function render(iconName) {
         const svgFilePath = `public/assets/svg/${iconName}.svg`;
+        
+        if (iconCache[iconName]){
+            return iconCache[iconName];
+        }
 
         return fetch(svgFilePath)
-            .then(response => {
+            .then(async response => {
                 if (!response.ok) {
                     throw new Error(`Failed to fetch SVG file: ${response.statusText}`);
                 }
-                return response.text();
+                
+                const icon = response.text();
+                iconCache[iconName] = await icon;
+                console.log("fetched!");
+                
+                return icon;
             })
             .catch(error => {
                 console.error(`Error reading SVG file: ${error.message}`);

@@ -1,8 +1,8 @@
-import LinksPage from "./pages/LinksPage.js";
-import SettingsPage from "./pages/SettingsPage.js";
-import NotificationService from "../NotificationService.js";
+import LinksPage from "./modules/pages/LinksPage.js";
+import SettingsPage from "./modules/pages/SettingsPage.js";
+import NotificationService from "./NotificationService.js";
 
-const NavigationModule = (function () {
+const NavigationHandler = (function () {
 
     const pages = {
         "page-home": {module: LinksPage, args: ["link-groups", true]},
@@ -86,4 +86,4 @@ const NavigationModule = (function () {
     };
 }());
 
-export default NavigationModule;
+export default NavigationHandler;

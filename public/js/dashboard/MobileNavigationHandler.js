@@ -1,4 +1,4 @@
-const MobileNavigationModule = (function () {
+const MobileNavigationHandler = (function () {
     function initMobileNavigation() {
         const navButtons = document.querySelectorAll(".btn-nav");
         const menuBtn = document.querySelector("#btn-mobile-menu");
@@ -34,4 +34,4 @@ const MobileNavigationModule = (function () {
     };
 }());
 
-export default MobileNavigationModule;
+export default MobileNavigationHandler;
