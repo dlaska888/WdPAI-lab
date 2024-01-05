@@ -1,5 +1,6 @@
 import FormModule from "./FormModule.js";
 import GroupModule from "../GroupModule.js";
+import NotificationService from "../../NotificationService.js";
 
 const ShareGroupForm = (function () {
     async function render(group) {
@@ -29,10 +30,12 @@ const ShareGroupForm = (function () {
                         });
                     } else {
                         await GroupModule.updateState(group.link_group_id);
+                        NotificationService.notify("Group shared!", "okay");
                     }
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error.message);
+                    NotificationService.notify(error.message, "error");
                 });
         }
 

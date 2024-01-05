@@ -1,45 +1,49 @@
 import FormModule from "./FormModule.js";
-import GroupModule from "../GroupModule.js";
+import LinksPage from "../pages/LinksPage.js";
+import NotificationService from "../../NotificationService.js";
 
-const AddLinkForm = (function () {
-    async function render(group) {
+const AddGroupForm = (function () {
+    async function render() {
         const formFields = [
-            {type: "text", name: "url", placeholder: "Url", required: true},
-            {type: "text", name: "title", placeholder: "Title", }
+            {type: "text", name: "name", placeholder: "Group Name", required: true}
         ];
 
-        const submitUrl = `link-group/${group.link_group_id}/link`;
+        const submitUrl = "link-group"; 
         const method = "POST";
 
         async function submit(e) {
             const form = e.currentTarget;
             const formData = new FormData(form);
-            formData.get("title") || formData.set("title", "Link");
 
             fetch(submitUrl, {
                 method,
                 body: JSON.stringify(Object.fromEntries(formData)),
             })
-                .then(async res => {
+                .then(res => {
                     if (!res.ok) {
                         return res.text().then(text => {
                             throw new Error(text);
                         });
                     } else {
-                        await GroupModule.updateState(group.link_group_id);
+                        return res.json();
                     }
+                })
+                .then(async group => {
+                    await LinksPage.addGroup(group, "page-home");
+                    NotificationService.notify("Group added!", "okay");
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error.message);
+                    NotificationService.notify(error.message, "error");
                 });
         }
 
-        return await FormModule.render(submit, "Add link",  formFields);
+        return await FormModule.render(submit, "Add Group", formFields);
     }
-    
+
     return {
         render: render
     };
 }());
 
-export default AddLinkForm;
+export default AddGroupForm;

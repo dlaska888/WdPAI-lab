@@ -1,5 +1,6 @@
 import FormModule from "./FormModule.js";
 import GroupModule from "../GroupModule.js";
+import NotificationService from "../../NotificationService.js";
 
 const DeleteGroupForm = (function () {
     async function render(group) {
@@ -15,10 +16,12 @@ const DeleteGroupForm = (function () {
                         });
                     } else {
                         await GroupModule.removeElement(group.link_group_id);
+                        NotificationService.notify("Group deleted!", "okay");
                     }
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error.message);
+                    NotificationService.notify(error.message, "error");
                 });
         }
 

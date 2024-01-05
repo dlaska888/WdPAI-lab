@@ -1,5 +1,7 @@
 import FormModule from "./FormModule.js";
 import LinkModule from "../LinkModule.js";
+import StringHelper from "../../../dashboard/StringHelper.js";
+import NotificationService from "../../NotificationService.js";
 
 const EditLinkForm = (function () {
     async function render(link) {
@@ -14,7 +16,7 @@ const EditLinkForm = (function () {
         async function submit(e) {
             const form = e.currentTarget;
             const formData = new FormData(form);
-            formData.get("title") || formData.set("title", "Link");
+            formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
 
             fetch(submitUrl, {
                 method,
@@ -26,11 +28,13 @@ const EditLinkForm = (function () {
                             throw new Error(text);
                         });
                     } else {
-                        await LinkModule.updateState(link.link_id, link.link_group_id)
+                        await LinkModule.updateState(link.link_id, link.link_group_id);
+                        NotificationService.notify("Link edited!", "okay");
                     }
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error.message);
+                    NotificationService.notify(error.message, "error");
                 });
         }
 

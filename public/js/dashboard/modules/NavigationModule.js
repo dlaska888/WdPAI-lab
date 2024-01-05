@@ -1,5 +1,6 @@
 import LinksPage from "./pages/LinksPage.js";
 import SettingsPage from "./pages/SettingsPage.js";
+import NotificationService from "../NotificationService.js";
 
 const NavigationModule = (function () {
 
@@ -35,6 +36,7 @@ const NavigationModule = (function () {
         const content = await module.render(pageId, ...args);
         
         page.replaceWith(content);
+        NotificationService.notify("Page loaded!");
     }
 
     function clearPage() {

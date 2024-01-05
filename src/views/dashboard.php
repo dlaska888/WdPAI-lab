@@ -13,7 +13,7 @@ use modules\IconModule;
     <title>LinkyApp - Main</title>
     <link rel="stylesheet" href="/public/css/global.css">
     <link rel="stylesheet" href="/public/css/dashboard.css">
-    <script src="/public/js/dashboard.js" type="module"></script>
+    <script src="/public/js/dashboard/dashboard.js" type="module"></script>
 </head>
 
 <body class="flex">

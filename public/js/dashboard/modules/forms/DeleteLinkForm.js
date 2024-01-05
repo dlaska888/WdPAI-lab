@@ -1,5 +1,6 @@
 import FormModule from "./FormModule.js";
 import LinkModule from "../LinkModule.js";
+import NotificationService from "../../NotificationService.js";
 
 const DeleteLinkForm = (function () {
     async function render(link) {
@@ -16,10 +17,12 @@ const DeleteLinkForm = (function () {
                         });
                     } else {
                         await LinkModule.removeElement(link.link_id);
+                        NotificationService.notify("Link deleted!", "okay");
                     }
                 })
                 .catch(error => {
                     console.error('Error submitting form:', error.message);
+                    NotificationService.notify(error.message, "error");
                 });
         }
 
