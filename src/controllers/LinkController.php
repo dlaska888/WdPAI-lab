@@ -135,7 +135,6 @@ class LinkController extends AppController
     #[Route("link-groups")]
     public function getAllLinkGroups(): Json
     {
-//        sleep(5);
         $linkGroups = $this->linkGroupRepo->findAllUserGroups($this->sessionHandler->getUserId());
         return new Json($linkGroups, HttpStatusCode::OK);
     }

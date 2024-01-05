@@ -60,7 +60,7 @@ class HttpResponseHandler
         header('Content-type: application/json');
         http_response_code($jsonResponse->getCode()->value);
 
-        if ($jsonResponse->getData()) {
+        if ($jsonResponse->getData() !== null) {
             echo json_encode($jsonResponse->getData());
         }
 
