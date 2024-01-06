@@ -3,18 +3,21 @@ import SettingsPage from "./modules/pages/SettingsPage.js";
 import NotificationService from "./NotificationService.js";
 
 const NavigationHandler = (function () {
+    let loading = false;
 
     const pages = {
-        "page-home": {module: LinksPage, args: ["link-groups", true]},
-        "page-shared": {module: LinksPage, args: ["link-groups/shared"]},
-        "page-settings": {module: SettingsPage, args: []},
+        "page-home": () => LinksPage.render("page-home", ["link-groups"], true),
+        "page-shared": () => LinksPage.render("page-shared", ["link-groups/shared"]),
+        "page-settings": () => SettingsPage.render("page-settings", []),
     };
 
     async function initNavigation() {
-        initButtonsHighlight();
-
         document.querySelectorAll(".btn-page").forEach(btn => {
-            btn.addEventListener("click", async () => await navigateToPage(findPageClass(btn)));
+            btn.addEventListener("click", async () => {
+                if (!loading) {
+                    await navigateToPage(findPageClass(btn));
+                }
+            });
         });
 
         // Initial page load
@@ -22,21 +25,30 @@ const NavigationHandler = (function () {
     }
 
     async function navigateToPage(pageId) {
+        if (loading) return;
+
+        loading = true;
         toggleSpinner(true);
+
         clearPage();
         await renderPage(pageId);
+        activatePageBtn(pageId);
+
         toggleSpinner(false);
+        loading = false;
     }
 
     async function renderPage(pageId) {
         const page = document.querySelector(".page");
-        const module = pages[pageId].module;
-        const args = pages[pageId].args;
-        
-        const content = await module.render(pageId, ...args);
-        
-        page.replaceWith(content);
-        NotificationService.notify("Page loaded!");
+        const pageRenderer = pages[pageId];
+
+        if (pageRenderer) {
+            const content = await pageRenderer();
+            page.replaceWith(content);
+            NotificationService.notify("Page loaded!");
+        } else {
+            console.error(`Renderer not found for page: ${pageId}`);
+        }
     }
 
     function clearPage() {
@@ -52,25 +64,14 @@ const NavigationHandler = (function () {
         }
     }
 
-    function initButtonsHighlight() {
+    function activatePageBtn(pageClass) {
         const spaBtns = document.querySelectorAll(".btn-page");
 
-        spaBtns.forEach((spaBtn) => {
-            spaBtn.addEventListener("click", () => {
-                spaBtns.forEach((btn) => {
-                    btn.classList.remove("active");
-                });
-
-                const pageClass = findPageClass(spaBtn);
-                activatePageBtn(pageClass, spaBtns);
-            });
-        });
-    }
-
-    function activatePageBtn(pageClass, spaBtns) {
         spaBtns.forEach((btn) => {
             if (btn.classList.contains(pageClass)) {
                 btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
             }
         });
     }
