@@ -21,8 +21,11 @@ class AuthorizationMiddleware extends BaseMiddleware
     public function invoke(Request $request): Response
     {
         if (!$this->checkAuthorization($request->getRoute())) {
-            return new Error($request->getRoute()->getControllerType(), "You are not authorized to access this resource", 
-                'error', HttpStatusCode::UNAUTHORIZED);
+            return new Error(
+                $request, 
+                "You are not authorized to access this resource", 
+                HttpStatusCode::UNAUTHORIZED
+            );
         }
 
         return parent::invoke($request);

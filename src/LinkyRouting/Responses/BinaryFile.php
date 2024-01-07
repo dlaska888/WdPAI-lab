@@ -4,7 +4,7 @@ namespace src\LinkyRouting\Responses;
 
 use src\LinkyRouting\enums\HttpStatusCode;
 
-class BinaryFileResponse extends Response
+class BinaryFile extends Response
 {
     protected string $filePath;
 

@@ -16,7 +16,6 @@ const IconModule = (function () {
                 
                 const icon = response.text();
                 iconCache[iconName] = await icon;
-                console.log("fetched!");
                 
                 return icon;
             })

@@ -20,9 +20,9 @@
             <input type="text" name="passwordConfirm" class="input" placeholder="Confirm password" required>
         </div>
         
-        <?php if (isset($messages)): ?>
+        <?php if (isset($data)): ?>
             <div class="messages">
-                <?php foreach ($messages as $message): ?>
+                <?php foreach ($data as $message): ?>
                     <p><?= $message; ?></p>
                 <?php endforeach; ?>
             </div>

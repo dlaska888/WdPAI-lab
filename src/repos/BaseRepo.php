@@ -52,9 +52,9 @@ abstract class BaseRepo implements IRepo
         } catch (PDOException $e) {
             throw new NotFoundException($e->getMessage());
         }
-        
-        if(!$result){
-            throw new NotFoundException("{$this->getTableName()} not found");
+
+        if (!$result) {
+            throw new NotFoundException("{$this->getTableName()} with such id not found");
         }
 
         return $this->mapToObject($result);
@@ -105,7 +105,7 @@ abstract class BaseRepo implements IRepo
         } catch (PDOException $e) {
             throw new NotFoundException($e->getMessage());
         }
-        
+
         return $result;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace src\LinkyRouting;
 
-use src\LinkyRouting\enums\HttpStatusCode;
 use src\LinkyRouting\Responses\Response;
 
 

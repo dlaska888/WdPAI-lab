@@ -1,46 +1,42 @@
 import FormModule from "./FormModule.js";
 import GroupModule from "../GroupModule.js";
 import NotificationService from "../../NotificationService.js";
+import ApiClient from "../../ApiClient.js";
 
 const EditGroupForm = (function () {
+    async function submit(group, formData) {
+        const submitUrl = `link-group/${group.link_group_id}`;
+        const method = "PUT";
+
+        try {
+            const response = await ApiClient.fetchData(submitUrl, {
+                method,
+                body: JSON.stringify(Object.fromEntries(formData)),
+            });
+
+            if (response.success) {
+                await GroupModule.updateState(group.link_group_id);
+                NotificationService.notify("Group edited!", "okay");
+            } else {
+                NotificationService.notify(response.message, "error", response.data);
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            NotificationService.notify("An error occurred while updating the group", "error");
+        }
+    }
+
     async function render(group) {
         const formFields = [
             { type: "text", name: "name", placeholder: "Group Name", required: true, value: group.name || " " },
         ];
 
-        const submitUrl = `link-group/${group.link_group_id}`;
-        const method = "PUT";
-
-        async function submit(e) {
-            const form = e.currentTarget;
-            const formData = new FormData(form);
-
-            fetch(submitUrl, {
-                method,
-                body: JSON.stringify(Object.fromEntries(formData)),
-            })
-                .then(async res => {
-                    if (!res.ok) {
-                        return res.text().then(text => {
-                            throw new Error(text);
-                        });
-                    } else {
-                        await GroupModule.updateState(group.link_group_id);
-                        NotificationService.notify("Group edited!", "okay");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error submitting form:', error.message);
-                    NotificationService.notify(error.message, "error");
-                });
-        }
-
-        return await FormModule.render(submit, "Update group", formFields);
+        return await FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Update group", formFields);
     }
 
     return {
         render: render
     };
-}());
+})();
 
 export default EditGroupForm;

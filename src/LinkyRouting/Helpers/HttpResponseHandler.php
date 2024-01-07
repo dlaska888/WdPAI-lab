@@ -5,7 +5,7 @@ namespace src\LinkyRouting\helpers;
 use src\LinkyRouting\attributes\controller\ApiController;
 use src\LinkyRouting\attributes\controller\MvcController;
 use src\LinkyRouting\enums\HttpStatusCode;
-use src\LinkyRouting\Responses\BinaryFileResponse;
+use src\LinkyRouting\Responses\BinaryFile;
 use src\LinkyRouting\Responses\Error;
 use src\LinkyRouting\Responses\Json;
 use src\LinkyRouting\Responses\Redirect;
@@ -27,10 +27,13 @@ class HttpResponseHandler
             View::class => $this->view($response),
             Json::class => $this->json($response),
             Redirect::class => $this->redirect($response),
-            BinaryFileResponse::class => $this->binaryFile($response), // Add this line
+            BinaryFile::class => $this->binaryFile($response),
             Error::class => $this->error($response),
-            default => $this->error(new Error(MvcController::class, "Invalid controller return type",
-                "error", HttpStatusCode::INTERNAL_SERVER_ERROR))
+            default => $this->error(
+                new Error(null,
+                    "Invalid controller return type",
+                    HttpStatusCode::INTERNAL_SERVER_ERROR)
+            )
         };
     }
 
@@ -38,7 +41,7 @@ class HttpResponseHandler
     {
         $templatePath = $this->viewsPath . '/' . $view->getTemplate() . '.php';
         $output = 'View not found';
-        
+
         extract($view->getVariables());
         ob_start();
 
@@ -60,12 +63,11 @@ class HttpResponseHandler
         header('Content-type: application/json');
         http_response_code($jsonResponse->getCode()->value);
 
-        if ($jsonResponse->getData() !== null) {
-            echo json_encode($jsonResponse->getData());
-        }
+        echo json_encode($jsonResponse);
 
         exit();
     }
+
 
     private function redirect(Redirect $redirect): void
     {
@@ -75,7 +77,7 @@ class HttpResponseHandler
         exit();
     }
 
-    private function binaryFile(BinaryFileResponse $response): void // Add this method
+    private function binaryFile(BinaryFile $response): void // Add this method
     {
         $filePath = $response->getFilePath();
 
@@ -89,11 +91,20 @@ class HttpResponseHandler
     private function error(Error $response): void
     {
         $code = empty($response->getCode()) ? HttpStatusCode::INTERNAL_SERVER_ERROR : $response->getCode();
-        $message = empty($response->getData()) ? "Something went wrong" : $response->getData();
+        $message = $response->getMessage();
+        $data = $response->getData();
+        $controllerType = $response->getRequest() ?
+            $response->getRequest()->getRoute()->getControllerType() :
+            MvcController::class;
 
-        match ($response->getControllerType()) {
-            ApiController::class => $this->json(new Json($message, $code)),
-            default => $this->view(new View($response->getTemplate(), ['code' => $code, 'description' => $message], $response->getCode()))
+        match ($controllerType) {
+            ApiController::class => $this->json(new Json($data, $code, $message)),
+            default => $this->view(
+                new View(
+                    $response->getTemplate(),
+                    ['code' => $code, 'message' => $message, 'data' => $data ?? [$message]],
+                    $code)
+            )
         };
     }
 }

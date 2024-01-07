@@ -17,9 +17,9 @@
             <input type="text" name="email" class="input" placeholder="Email or username" required>
             <input type="password" name="password" class="input" placeholder="Password" required>
         </div>
-        <?php if (isset($messages)): ?>
+        <?php if (isset($data)): ?>
             <div class="messages">
-                <?php foreach ($messages as $message): ?>
+                <?php foreach ($data as $message): ?>
                     <p><?= $message; ?></p>
                 <?php endforeach; ?>
             </div>

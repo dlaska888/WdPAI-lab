@@ -3,7 +3,6 @@
 namespace src\Controllers;
 
 use src\Handlers\UserSessionHandler;
-use src\LinkyRouting\attributes\controller\Controller;
 use src\LinkyRouting\attributes\controller\MvcController;
 use src\LinkyRouting\attributes\httpMethod\HttpGet;
 use src\LinkyRouting\attributes\Route;

@@ -2,7 +2,7 @@
 
 namespace src\Controllers;
 
-use src\LinkyRouting\enums\HttpStatusCode;
+use src\exceptions\ValidationException;
 use src\Validators\ValidationResult;
 
 abstract class AppController
@@ -19,12 +19,14 @@ abstract class AppController
         return $this->requestBody;
     }
 
-    protected function getValidationResult(?array $data, string $validatorClass): ValidationResult
+    protected function validateRequestData(?array $data, string $validatorClass): void
     {
         if ($data === null) {
-            return new ValidationResult(false, ['Invalid request data']);
+            throw new ValidationException(new ValidationResult(false, ["Empty request body"]));
         }
-
-        return (new $validatorClass($data))->validate();
+        
+        $validationResult = (new $validatorClass($data))->validate();
+        if(!$validationResult->isSuccess())
+            throw new ValidationException($validationResult);
     }
 }

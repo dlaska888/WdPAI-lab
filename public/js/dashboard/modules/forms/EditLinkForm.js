@@ -2,43 +2,40 @@ import FormModule from "./FormModule.js";
 import LinkModule from "../LinkModule.js";
 import StringHelper from "../../../dashboard/StringHelper.js";
 import NotificationService from "../../NotificationService.js";
+import ApiClient from "../../ApiClient.js";
 
 const EditLinkForm = (function () {
+    async function submit(link, formData) {
+        const submitUrl = `link-group/${link.link_group_id}/link/${link.link_id}`;
+        const method = "PUT";
+
+        formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
+
+        try {
+            const response = await ApiClient.fetchData(submitUrl, {
+                method,
+                body: JSON.stringify(Object.fromEntries(formData)),
+            });
+
+            if (response.success) {
+                await LinkModule.updateState(link.link_id, link.link_group_id);
+                NotificationService.notify("Link edited!", "okay");
+            } else {
+                NotificationService.notify(response.message, "error", response.data);
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            NotificationService.notify("An error occurred while updating the link", "error");
+        }
+    }
+
     async function render(link) {
         const formFields = [
             { type: "text", name: "url", placeholder: "Url", required: true, value: link.url || "" },
             { type: "text", name: "title", placeholder: "Title", value: link.title || "" }
         ];
 
-        const submitUrl = `link-group/${link.link_group_id}/link/${link.link_id}`;
-        const method = "PUT";
-
-        async function submit(e) {
-            const form = e.currentTarget;
-            const formData = new FormData(form);
-            formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
-
-            fetch(submitUrl, {
-                method,
-                body: JSON.stringify(Object.fromEntries(formData)),
-            })
-                .then(async res => {
-                    if (!res.ok) {
-                        return res.text().then(text => {
-                            throw new Error(text);
-                        });
-                    } else {
-                        await LinkModule.updateState(link.link_id, link.link_group_id);
-                        NotificationService.notify("Link edited!", "okay");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error submitting form:', error.message);
-                    NotificationService.notify(error.message, "error");
-                });
-        }
-
-        return await FormModule.render(submit, "Update link", formFields);
+        return await FormModule.render((e) => submit(link, new FormData(e.currentTarget)), "Update link", formFields);
     }
 
     return {

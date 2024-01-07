@@ -3,20 +3,28 @@
 namespace src\LinkyRouting\Responses;
 
 use src\LinkyRouting\enums\HttpStatusCode;
+use src\LinkyRouting\Request;
 
 class Error extends Response
 {
+    private string $message;
     private mixed $data;
     private ?string $template;
-    private string $controllerType;
+    private ?Request $request;
 
-    public function __construct(string $controllerType, mixed $data = [], string $template = null, HttpStatusCode $code =
-    HttpStatusCode::INTERNAL_SERVER_ERROR)
+    public function __construct(?Request $request, string $message, HttpStatusCode $code = 
+    HttpStatusCode::INTERNAL_SERVER_ERROR, mixed $data = null, string $template = "error")
     {
         parent::__construct($code);
-        $this->controllerType = $controllerType;
+        $this->request = $request;
+        $this->message = $message;
         $this->data = $data;
         $this->template = $template;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
     }
 
     public function getData(): mixed
@@ -29,8 +37,8 @@ class Error extends Response
         return $this->template;
     }
 
-    public function getControllerType(): string
+    public function getRequest(): ?Request
     {
-        return $this->controllerType;
+        return $this->request;
     }
 }

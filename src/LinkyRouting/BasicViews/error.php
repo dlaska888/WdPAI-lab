@@ -9,6 +9,6 @@
 </head>
 <body>
 <p><?= 'Error ' . ($code->value ?? 500) ?></p>
-<p><?= $description ?? 'Something went wrong' ?></p>
+<p><?= $message ?? 'Something went wrong' ?></p>
 </body>
 </html>

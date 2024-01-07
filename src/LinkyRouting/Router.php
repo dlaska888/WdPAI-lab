@@ -2,7 +2,6 @@
 
 namespace src\LinkyRouting;
 
-use src\LinkyRouting\attributes\controller\MvcController;
 use src\LinkyRouting\enums\HttpStatusCode;
 use src\LinkyRouting\helpers\HttpResponseHandler;
 use src\LinkyRouting\helpers\RouteResolver;
@@ -37,15 +36,17 @@ class Router
         $matchedByPath = array_filter($this->routes, fn(Route $route) => $this->routeResolver->matchUrlParts($url, $route));
 
         if (empty($matchedByPath)) {
-            $this->responseHandler->handleResponse(new Error(MvcController::class, "Page not found",
-                "error", HttpStatusCode::NOT_FOUND));
+            $this->responseHandler->handleResponse(
+                new Error(null, "Page not found", HttpStatusCode::NOT_FOUND)
+            );
         }
 
         $matchedByMethod = $this->findByMethod($matchedByPath);
 
         if (empty($matchedByMethod)) {
-            $this->responseHandler->handleResponse(new Error(MvcController::class, "Method not allowed",
-                "error", HttpStatusCode::METHOD_NOT_ALLOWED));
+            $this->responseHandler->handleResponse(
+                new Error(null, "Method not allowed", HttpStatusCode::METHOD_NOT_ALLOWED)
+            );
         }
 
         return $matchedByMethod;

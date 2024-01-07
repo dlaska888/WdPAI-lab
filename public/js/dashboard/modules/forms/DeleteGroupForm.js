@@ -1,36 +1,37 @@
 import FormModule from "./FormModule.js";
 import GroupModule from "../GroupModule.js";
 import NotificationService from "../../NotificationService.js";
+import ApiClient from "../../ApiClient.js";
 
 const DeleteGroupForm = (function () {
-    async function render(group) {
+    async function submit(group) {
         const submitUrl = `link-group/${group.link_group_id}`;
         const method = "DELETE";
 
-        async function submit() {
-            fetch(submitUrl, {method})
-                .then(async res => {
-                    if (!res.ok) {
-                        return res.text().then(text => {
-                            throw new Error(text);
-                        });
-                    } else {
-                        await GroupModule.removeElement(group.link_group_id);
-                        NotificationService.notify("Group deleted!", "okay");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error submitting form:', error.message);
-                    NotificationService.notify(error.message, "error");
-                });
-        }
+        try {
+            const response = await ApiClient.fetchData(submitUrl, {
+                method,
+            });
 
-        return await FormModule.render(submit, "Delete group?");
+            if (response.success) {
+                await GroupModule.removeElement(group.link_group_id);
+                NotificationService.notify("Group deleted!", "okay");
+            } else {
+                NotificationService.notify(response.message, "error", response.data);
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            NotificationService.notify("An error occurred while deleting the group", "error");
+        }
+    }
+
+    async function render(group) {
+        return await FormModule.render(() => submit(group), "Delete group?");
     }
 
     return {
-        render: render
+        render: render,
     };
-}());
+})();
 
 export default DeleteGroupForm;

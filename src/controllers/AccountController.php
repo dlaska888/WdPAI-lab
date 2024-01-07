@@ -9,14 +9,13 @@ use src\Models\Entities\File;
 use src\Repos\FileRepo;
 use src\Repos\UserRepo;
 use src\LinkyRouting\attributes\authorization\Authorize;
-use src\LinkyRouting\attributes\controller\Controller;
 use src\LinkyRouting\attributes\httpMethod\HttpDelete;
 use src\LinkyRouting\attributes\httpMethod\HttpGet;
 use src\LinkyRouting\attributes\httpMethod\HttpPost;
 use src\LinkyRouting\attributes\httpMethod\HttpPut;
 use src\LinkyRouting\attributes\Route;
 use src\LinkyRouting\enums\HttpStatusCode;
-use src\LinkyRouting\Responses\Json; // Assuming you have a Json class for responses
+use src\LinkyRouting\Responses\Json;
 use src\Validators\FileValidator;
 use src\Validators\UpdatePasswordValidator;
 use src\Validators\UpdateUserNameValidator;
@@ -88,9 +87,7 @@ class AccountController extends AppController
             return new Json("No file uploaded", HttpStatusCode::BAD_REQUEST);
         }
 
-        $validationResult = $this->getValidationResult($_FILES['file'], FileValidator::class);
-        if(!$validationResult->isSuccess())
-            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+        $this->validateRequestData($_FILES['file'], FileValidator::class);
             
         if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
             return new Json("No file uploaded", HttpStatusCode::BAD_REQUEST);
@@ -145,10 +142,7 @@ class AccountController extends AppController
         $user = $this->userRepo->findById($userId);
         
         $requestData = $this->getRequestBody();
-
-        $validationResult = $this->getValidationResult($requestData, UpdateUserNameValidator::class);
-        if(!$validationResult->isSuccess())
-            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+        $this->validateRequestData($requestData, UpdateUserNameValidator::class);
 
         if ($this->userRepo->findByUserName($requestData['userName'])) {
             return new Json("This username is already taken", HttpStatusCode::BAD_REQUEST);
@@ -167,10 +161,7 @@ class AccountController extends AppController
         $user = $this->userRepo->findById($userId);
 
         $requestData = $this->getRequestBody();
-
-        $validationResult = $this->getValidationResult($requestData, UpdatePasswordValidator::class);
-        if(!$validationResult->isSuccess())
-            return new Json($validationResult, HttpStatusCode::BAD_REQUEST);
+        $this->validateRequestData($requestData, UpdatePasswordValidator::class);
 
         $password = $requestData['password'];
         $newPassword = $requestData['newPassword'];

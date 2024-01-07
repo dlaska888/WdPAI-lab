@@ -4,6 +4,7 @@ namespace src\Repos;
 
 use DateTime;
 use src\Enums\UserRole;
+use src\exceptions\NotFoundException;
 use src\Models\Entities\LinkyUser;
 
 class UserRepo extends BaseRepo
@@ -55,7 +56,7 @@ class UserRepo extends BaseRepo
         $result = $stmt->fetch();
 
         if (!$result) {
-            return null;
+            throw new NotFoundException("User with this username not found");
         }
 
         return $this->mapToObject($result);
@@ -68,7 +69,7 @@ class UserRepo extends BaseRepo
         $result = $stmt->fetch();
 
         if (!$result) {
-            return null;
+            throw new NotFoundException("User with this email not found");
         }
 
         return $this->mapToObject($result);

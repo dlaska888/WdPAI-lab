@@ -1,37 +1,37 @@
 import FormModule from "./FormModule.js";
 import LinkModule from "../LinkModule.js";
 import NotificationService from "../../NotificationService.js";
+import ApiClient from "../../ApiClient.js";
 
 const DeleteLinkForm = (function () {
-    async function render(link) {
-
+    async function submit(link) {
         const submitUrl = `link-group/${link.link_group_id}/link/${link.link_id}`;
         const method = "DELETE";
 
-        async function submit() {
-            fetch(submitUrl, {method})
-                .then(async res => {
-                    if (!res.ok) {
-                        return res.text().then(text => {
-                            throw new Error(text);
-                        });
-                    } else {
-                        await LinkModule.removeElement(link.link_id);
-                        NotificationService.notify("Link deleted!", "okay");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error submitting form:', error.message);
-                    NotificationService.notify(error.message, "error");
-                });
-        }
+        try {
+            const response = await ApiClient.fetchData(submitUrl, {
+                method,
+            });
 
-        return await FormModule.render(submit, "Delete link?");
+            if (response.success) {
+                await LinkModule.removeElement(link.link_id);
+                NotificationService.notify("Link deleted!", "okay");
+            } else {
+                NotificationService.notify(response.message, "error", response.data);
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            NotificationService.notify("An error occurred while deleting the link", "error");
+        }
+    }
+
+    async function render(link) {
+        return await FormModule.render(() => submit(link), "Delete link?");
     }
 
     return {
-        render: render
+        render: render,
     };
-}());
+})();
 
 export default DeleteLinkForm;

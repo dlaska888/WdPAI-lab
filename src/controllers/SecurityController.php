@@ -10,7 +10,6 @@ use src\Models\Entities\LinkGroup;
 use src\Models\Entities\LinkyUser;
 use src\Repos\LinkGroupRepo;
 use src\Repos\UserRepo;
-use src\LinkyRouting\attributes\controller\Controller;
 use src\LinkyRouting\attributes\httpMethod\HttpGet;
 use src\LinkyRouting\attributes\httpMethod\HttpPost;
 use src\LinkyRouting\attributes\Route;
@@ -49,10 +48,7 @@ class SecurityController extends AppController
     #[Route("login")]
     public function login(): View | Redirect
     {
-        $validationResult = $this->getValidationResult($_POST, LoginValidator::class);
-        if (!$validationResult->isSuccess()) {
-            return new View('login', ['messages' => $validationResult->getErrors()], HttpStatusCode::BAD_REQUEST);
-        }
+        $this->validateRequestData($_POST, LoginValidator::class);
 
         $email = $_POST['email'];
         $password = $_POST['password'];
@@ -60,7 +56,7 @@ class SecurityController extends AppController
         $user = $this->userRepo->findByEmail($email) ?? $this->userRepo->findByUserName($email);
 
         if (!$user || !password_verify($password, $user->password_hash)) {
-            return new View('login', ['messages' => ['Invalid credentials']], HttpStatusCode::UNAUTHORIZED);
+            return new View('login', ['data' => ['Invalid credentials']], HttpStatusCode::UNAUTHORIZED);
         }
 
         $this->sessionHandler->setSession($user);
@@ -78,10 +74,7 @@ class SecurityController extends AppController
     #[Route("register")]
     public function register(): View | Redirect
     {
-        $validationResult = $this->getValidationResult($_POST, RegisterValidator::class);
-        if (!$validationResult->isSuccess()) {
-            return new View('register', ['messages' => $validationResult->getErrors()], HttpStatusCode::BAD_REQUEST);
-        }
+        $this->validateRequestData($_POST, RegisterValidator::class);
 
         $email = $_POST['email'];
         $userName = $_POST['userName'];

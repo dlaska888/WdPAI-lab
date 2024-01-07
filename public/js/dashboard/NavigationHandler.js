@@ -1,13 +1,12 @@
 import LinksPage from "./modules/pages/LinksPage.js";
 import SettingsPage from "./modules/pages/SettingsPage.js";
-import NotificationService from "./NotificationService.js";
 
 const NavigationHandler = (function () {
     let loading = false;
 
     const pages = {
-        "page-home": () => LinksPage.render("page-home", ["link-groups"], true),
-        "page-shared": () => LinksPage.render("page-shared", ["link-groups/shared"]),
+        "page-home": () => LinksPage.render("page-home", "link-groups", true),
+        "page-shared": () => LinksPage.render("page-shared", "link-groups/shared"),
         "page-settings": () => SettingsPage.render("page-settings", []),
     };
 
@@ -45,7 +44,6 @@ const NavigationHandler = (function () {
         if (pageRenderer) {
             const content = await pageRenderer();
             page.replaceWith(content);
-            NotificationService.notify("Page loaded!");
         } else {
             console.error(`Renderer not found for page: ${pageId}`);
         }
