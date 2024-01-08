@@ -28,6 +28,7 @@ use src\LinkyRouting\Responses\Json;
 use src\Validators\AddLinkGroupShareValidator;
 use src\Validators\AddLinkGroupValidator;
 use src\Validators\AddLinkValidator;
+use src\Validators\SearchLinkGroupsValidator;
 use src\Validators\UpdateLinkGroupShareValidator;
 use src\Validators\UpdateLinkGroupValidator;
 use src\Validators\UpdateLinkValidator;
@@ -136,6 +137,44 @@ class LinkController extends AppController
         }
         
         return new Json($linkGroups, HttpStatusCode::OK);
+    }
+
+    #[HttpGet]
+    #[Route("link-groups/search")]
+    public function getLinkGroupsByName(): Json
+    {
+        $this->validateRequestData($_GET, SearchLinkGroupsValidator::class);
+        $name = $_GET['name'];
+        
+        $matchingLinkGroups = $this->linkGroupRepo->findLinkGroupsByName(
+            $this->sessionHandler->getUserId(),
+            $name
+        );
+
+        foreach ($matchingLinkGroups as &$linkGroup) {
+            $linkGroup = $this->mapEditable($linkGroup);
+        }
+
+        return new Json($matchingLinkGroups, HttpStatusCode::OK);
+    }
+
+    #[HttpGet]
+    #[Route("link-groups/shared/search")]
+    public function getSharedLinkGroupsByName(): Json
+    {
+        $this->validateRequestData($_GET, SearchLinkGroupsValidator::class);
+        $name = $_GET['name'];
+
+        $matchingLinkGroups = $this->linkGroupRepo->findSharedLinkGroupsByName(
+            $this->sessionHandler->getUserId(),
+            $name
+        );
+
+        foreach ($matchingLinkGroups as &$linkGroup) {
+            $linkGroup = $this->mapEditable($linkGroup);
+        }
+
+        return new Json($matchingLinkGroups, HttpStatusCode::OK);
     }
 
     #[HttpGet]

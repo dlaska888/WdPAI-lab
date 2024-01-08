@@ -7,6 +7,10 @@ const ButtonModule = (function () {
         button.className = "flex flex-center btn-hover-dim " + classes || " ";
         button.innerHTML = await IconModule.render(icon);
         
+        if (callback === null){
+            return button;
+        }
+        
         button.addEventListener("click", (e) => {
             e.preventDefault();
             callback(e);

@@ -24,7 +24,7 @@ class ApiClient {
             const jsonResponse = await response.json();
             return this.handleApiResponse(jsonResponse);
         } catch (error) {
-            const result = this.createResultObject(false, null, 'Unknown error occurred.');
+            const result = this.createResultObject(false, null, error.message);
             console.error('API error:', result.message, result.data);
             return result;
         }

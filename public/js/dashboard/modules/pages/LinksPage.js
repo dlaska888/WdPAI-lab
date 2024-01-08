@@ -15,7 +15,7 @@ const LinksPage = (function () {
             </section>`;
         page = page.firstElementChild;
 
-        page.prepend(await SearchBarModule.render(searchGroup));
+        page.prepend(await SearchBarModule.render(pageId, groupsEndpoint));
 
         if (groupAdd) {
             page.querySelector(".search-container")
@@ -36,10 +36,6 @@ const LinksPage = (function () {
         }
 
         return page;
-    }
-
-    async function searchGroup(group, pageId) {
-
     }
 
     async function addGroup(group, pageId) {

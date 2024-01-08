@@ -30,12 +30,27 @@ class LinkGroupRepo extends BaseRepo
 
     protected function mapToObject(array $data): LinkGroup
     {
-        return new LinkGroup(
+        $linkGroup = new LinkGroup(
             user_id: $data['user_id'],
             name: $data['name'],
             date_created: new DateTime($data['date_created']),
             link_group_id: $data['link_group_id']
         );
+        
+        return $this->joinTables($linkGroup);
+    }
+    
+    private function mapToObjectAll(array $data) : array
+    {
+        return array_map(fn ($linkGroup) => $this->mapToObject($linkGroup), $data);
+    }
+
+    private function joinTables(LinkGroup $linkGroup): LinkGroup
+    {
+        $linkGroup->links = $this->linkRepo->findGroupLinks($linkGroup->link_group_id);
+        $linkGroup->groupShares = $this->groupShareRepo->findLinkGroupShares($linkGroup->link_group_id);
+
+        return $linkGroup;
     }
 
     protected function mapToArray(object $entity): array
@@ -52,46 +67,55 @@ class LinkGroupRepo extends BaseRepo
         ];
     }
 
-    public function findById(string $id): object
-    {
-        return $this->joinTables(parent::findById($id));
-    }
-
     public function findAllUserGroups(string $userId): array
     {
-        $linkGroups = array();
-
         $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroup WHERE user_id = :user_id');
         $stmt->execute(['user_id' => $userId]);
         $results = $stmt->fetchAll();
 
-        foreach ($results as $result) {
-            $linkGroup = $this->mapToObject($result);
-            $linkGroup = $this->joinTables($linkGroup);
-            $linkGroups[] = $linkGroup;
-        }
-
-        return $linkGroups;
+        return $this->mapToObjectAll($results);
     }
 
     public function findAllUserSharedGroups(string $userId): array
     {
-        $shares = $this->groupShareRepo->findUserGroupShares($userId);
-        $linkGroups = array();
+        $stmt = $this->db->connect()->prepare(
+            "SELECT LinkGroup.*
+                    FROM LinkGroup
+                    JOIN LinkGroupShare ON LinkGroup.link_group_id = LinkGroupShare.link_group_id
+                    WHERE LinkGroupShare.user_id = :userId");
+        $stmt->execute(['userId' => $userId]);
+        $results = $stmt->fetchAll();
 
-        foreach ($shares as $share) {
-            $linkGroups[] = $this->findById($share->link_group_id);
-        }
-
-        return $linkGroups;
+        return $this->mapToObjectAll($results);
     }
 
-    private function joinTables(object $linkGroup): object
+
+    public function findLinkGroupsByName($userId, $name) : array
     {
-        $linkGroup->links = $this->linkRepo->findGroupLinks($linkGroup->link_group_id);
-        $linkGroup->groupShares = $this->groupShareRepo->findLinkGroupShares($linkGroup->link_group_id);
+        $stmt = $this->db->connect()->prepare("SELECT * FROM LinkGroup WHERE user_id = :userId AND name LIKE :name");
+        $stmt->execute([
+            'userId' => $userId,
+            'name' => '%' . $name . '%'
+        ]);
+        $results = $stmt->fetchAll();
 
-        return $linkGroup;
+        return $this->mapToObjectAll($results);
     }
+
+    public function findSharedLinkGroupsByName($userId, $name) : array
+    {
+        $stmt = $this->db->connect()->prepare(
+            "SELECT LinkGroup.* FROM LinkGroup 
+                    JOIN LinkGroupShare ON LinkGroup.link_group_id = LinkGroupShare.link_group_id 
+                    WHERE LinkGroupShare.user_id = :userId AND LinkGroup.name LIKE :name");
+        $stmt->execute([
+            'userId' => $userId,
+            'name' => '%' . $name . '%'
+        ]);
+        $results = $stmt->fetchAll();
+
+        return $this->mapToObjectAll($results);
+    }
+
 
 }
