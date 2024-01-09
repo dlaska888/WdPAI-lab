@@ -11,21 +11,35 @@ class Database {
     private string $username;
     private string $password;
     private string $host;
+    private string $port;
     private string $database;
+    
+    private static ?Database $instance = null;
 
-    public function __construct()
+    private function __construct()
     {
         $this->username = USERNAME;
         $this->password = PASSWORD;
         $this->host = HOST;
+        $this->port = PORT;
         $this->database = DATABASE;
     }
+    
+    //Singleton design pattern
+    public static function getInstance() : Database{
+        if(self::$instance === null){
+            self::$instance = new Database();
+        }
+        
+        return self::$instance;
+    }
+    
 
     public function connect()
     {
         try {
             $conn = new PDO(
-                "pgsql:host=$this->host;port=5432;dbname=$this->database",
+                "pgsql:host=$this->host;port=$this->port;dbname=$this->database",
                 $this->username,
                 $this->password,
                 ["sslmode"  => "prefer"]
