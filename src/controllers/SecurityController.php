@@ -3,6 +3,8 @@
 namespace src\Controllers;
 
 use DateTime;
+use src\exceptions\BadRequestException;
+use src\exceptions\NotFoundException;
 use src\Handlers\UserSessionHandler;
 use src\LinkyRouting\attributes\controller\MvcController;
 use src\LinkyRouting\Responses\Redirect;
@@ -35,7 +37,7 @@ class SecurityController extends AppController
 
     #[HttpGet]
     #[Route("login")]
-    public function getLoginPage(): View | Redirect
+    public function getLoginPage(): View|Redirect
     {
         if ($this->sessionHandler->isSessionSet()) {
             return new Redirect('dashboard');
@@ -46,7 +48,7 @@ class SecurityController extends AppController
 
     #[HttpPost]
     #[Route("login")]
-    public function login(): View | Redirect
+    public function login(): View|Redirect
     {
         $this->validateRequestData($_POST, LoginValidator::class);
 
@@ -72,7 +74,7 @@ class SecurityController extends AppController
 
     #[HttpPost]
     #[Route("register")]
-    public function register(): View | Redirect
+    public function register(): View|Redirect
     {
         $this->validateRequestData($_POST, RegisterValidator::class);
 
@@ -81,10 +83,14 @@ class SecurityController extends AppController
         $password = $_POST['password'];
 
         // Check if user already exists
-        if ($this->userRepo->findByEmail($email) || $this->userRepo->findByUserName($userName)) {
-            return new View('register', ['messages' => ['User already exists']], HttpStatusCode::BAD_REQUEST);
+        try {
+            if ($this->userRepo->findByEmail($email) || $this->userRepo->findByUserName($userName)) {
+                throw new BadRequestException("User already exists");
+            }    
+        }catch (NotFoundException){
+            // Continue if user is not found
         }
-
+        
         $user = new LinkyUser(
             user_name: $userName,
             email: $email,

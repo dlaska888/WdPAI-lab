@@ -5,9 +5,11 @@ import NotificationService from "../../NotificationService.js";
 import ApiClient from "../../ApiClient.js";
 
 const AddLinkForm = (function () {
-    async function submitLink(group, formData) {
+    async function submit(group, formData) {
         const submitUrl = `link-group/${group.link_group_id}/link`;
         const method = "POST";
+        
+        formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
 
         try {
             const response = await ApiClient.fetchData(submitUrl, {
@@ -18,6 +20,8 @@ const AddLinkForm = (function () {
             if (response.success) {
                 await GroupModule.updateState(group.link_group_id);
                 NotificationService.notify("Link added!", "okay");
+            }else {
+                NotificationService.notify(response.message, "error", response.data);
             }
         } catch (error) {
             console.error("Error submitting link:", error);
@@ -31,16 +35,8 @@ const AddLinkForm = (function () {
             { type: "text", name: "title", placeholder: "Title" }
         ];
 
-        async function submit(e) {
-            const form = e.currentTarget;
-            const formData = new FormData(form);
 
-            formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
-
-            await submitLink(group, formData);
-        }
-
-        return await FormModule.render(submit, "Add link", formFields);
+        return await FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Add link", formFields);
     }
 
     return {

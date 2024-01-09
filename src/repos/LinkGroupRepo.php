@@ -69,7 +69,7 @@ class LinkGroupRepo extends BaseRepo
 
     public function findAllUserGroups(string $userId): array
     {
-        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroup WHERE user_id = :user_id');
+        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroup WHERE user_id = :user_id ORDER BY date_created');
         $stmt->execute(['user_id' => $userId]);
         $results = $stmt->fetchAll();
 

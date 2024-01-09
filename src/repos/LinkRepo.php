@@ -2,6 +2,7 @@
 
 namespace src\Repos;
 
+use DateTime;
 use InvalidArgumentException;
 use src\Models\Entities\Link;
 
@@ -23,6 +24,7 @@ class LinkRepo extends BaseRepo
             link_group_id: $data['link_group_id'],
             title: $data['title'],
             url: $data['url'],
+            date_created: new DateTime($data['date_created']),
             link_id: $data['link_id']
         );
     }
@@ -38,6 +40,7 @@ class LinkRepo extends BaseRepo
             'link_group_id' => $entity->link_group_id,
             'title' => $entity->title,
             'url' => $entity->url,
+            'date_created' => $entity->date_created->format('Y-m-d H:i:s'),
         ];
     }
 

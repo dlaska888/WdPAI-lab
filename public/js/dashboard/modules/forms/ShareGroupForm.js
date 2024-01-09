@@ -8,6 +8,9 @@ const ShareGroupForm = (function () {
         const submitUrl = `link-group/${group.link_group_id}/share`;
         const method = "POST";
 
+        formData.set("permission", formData.get("permission").toUpperCase());
+        
+        
         try {
             const response = await ApiClient.fetchData(submitUrl, {
                 method,
@@ -29,7 +32,7 @@ const ShareGroupForm = (function () {
     async function render(group) {
         const formFields = [
             { type: "email", name: "email", placeholder: "Email", required: true },
-            { type: "select", name: "permission", options: ["READ", "WRITE"], required: true },
+            { type: "select", name: "permission", options: ["Read", "Write"], required: true },
         ];
 
         return await FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Share group", formFields);

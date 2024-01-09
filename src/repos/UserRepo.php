@@ -25,6 +25,7 @@ class UserRepo extends BaseRepo
             user_name: $data['user_name'],
             email: $data['email'],
             password_hash: $data['password_hash'],
+            date_created: new DateTime($data['date_created']),
             user_id: $data['user_id'],
             email_confirmed: (bool)$data['email_confirmed'],
             role: UserRole::from($data['role']),
@@ -46,6 +47,7 @@ class UserRepo extends BaseRepo
             'profile_picture_id' => $entity->profile_picture_id,
             'refresh_token' => $entity->refresh_token,
             'refresh_token_exp' => $entity->refresh_token_exp ? $entity->refresh_token_exp->format('Y-m-d H:i:s') : null,
+            'date_created' => $entity->date_created->format('Y-m-d H:i:s'),
         ];
     }
 

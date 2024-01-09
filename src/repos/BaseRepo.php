@@ -31,7 +31,7 @@ abstract class BaseRepo implements IRepo
 
         $results = $this->db
             ->connect()
-            ->query("SELECT * FROM {$this->getTableName()}")
+            ->query("SELECT * FROM {$this->getTableName()} ORDER BY date_created")
             ->fetchAll();
 
         foreach ($results as $result) {
