@@ -6,7 +6,8 @@ import ApiClient from "../../ApiClient.js";
 
 const EditLinkForm = (function () {
     async function submit(link, formData) {
-        const submitUrl = `link-group/${link.link_group_id}/link/${link.link_id}`;
+        console.log(link);
+        const submitUrl = `link-group/${link.linkGroupId}/link/${link.id}`;
         const method = "PUT";
 
         formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
@@ -18,7 +19,7 @@ const EditLinkForm = (function () {
             });
 
             if (response.success) {
-                await LinkModule.updateState(link.link_id, link.link_group_id);
+                await LinkModule.updateState(link.id, link.linkGroupId);
                 NotificationService.notify("Link edited!", "okay");
             } else {
                 NotificationService.notify(response.message, "error", response.data);

@@ -5,7 +5,7 @@ import ApiClient from "../../ApiClient.js";
 
 const EditGroupForm = (function () {
     async function submit(group, formData) {
-        const submitUrl = `link-group/${group.link_group_id}`;
+        const submitUrl = `link-group/${group.id}`;
         const method = "PUT";
 
         try {
@@ -15,7 +15,7 @@ const EditGroupForm = (function () {
             });
 
             if (response.success) {
-                await GroupModule.updateState(group.link_group_id);
+                await GroupModule.updateState(group.id);
                 NotificationService.notify("Group edited!", "okay");
             } else {
                 NotificationService.notify(response.message, "error", response.data);

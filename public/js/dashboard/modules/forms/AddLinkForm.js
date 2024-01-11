@@ -6,7 +6,7 @@ import ApiClient from "../../ApiClient.js";
 
 const AddLinkForm = (function () {
     async function submit(group, formData) {
-        const submitUrl = `link-group/${group.link_group_id}/link`;
+        const submitUrl = `link-group/${group.id}/link`;
         const method = "POST";
         
         formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
@@ -18,7 +18,7 @@ const AddLinkForm = (function () {
             });
 
             if (response.success) {
-                await GroupModule.updateState(group.link_group_id);
+                await GroupModule.updateState(group.id);
                 NotificationService.notify("Link added!", "okay");
             }else {
                 NotificationService.notify(response.message, "error", response.data);

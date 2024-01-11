@@ -5,7 +5,7 @@ import ApiClient from "../../ApiClient.js";
 
 const ShareGroupForm = (function () {
     async function submit(group, formData) {
-        const submitUrl = `link-group/${group.link_group_id}/share`;
+        const submitUrl = `link-group/${group.id}/share`;
         const method = "POST";
 
         formData.set("permission", formData.get("permission").toUpperCase());
@@ -18,7 +18,7 @@ const ShareGroupForm = (function () {
             });
 
             if (response.success) {
-                await GroupModule.updateState(group.link_group_id);
+                await GroupModule.updateState(group.id);
                 NotificationService.notify("Group shared!", "okay");
             } else {
                 NotificationService.notify(response.message, "error", response.data);

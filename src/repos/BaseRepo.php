@@ -2,110 +2,158 @@
 
 namespace src\Repos;
 
-use src\exceptions\BadRequestException;
+use InvalidArgumentException;
+use PDO;
+use ReflectionClass;
+use ReflectionException;
 use src\exceptions\NotFoundException;
-use PDOException;
+use src\Helpers\StringHelper;
+use src\hydrators\EntityHydrator;
 use src\models\Database;
+use src\Models\Entities\Entity;
 use src\Repos\Interfaces\IRepo;
 
+/**
+ * @template T of Entity
+ */
 abstract class BaseRepo implements IRepo
 {
     protected Database $db;
 
+    protected EntityHydrator $hydrator;
+
     public function __construct()
     {
         $this->db = Database::getInstance();
+        $this->hydrator = new EntityHydrator();
     }
 
-    protected abstract function getTableName(): string;
+    /**
+     * @return class-string<T>
+     */
+    abstract protected function getEntityName(): string;
 
-    protected abstract function mapToObject(array $data): object;
-
-    protected abstract function mapToArray(object $entity): array;
-
-    protected abstract function getIdName(): string;
-
-    public function all(): array
+    /**
+     * @throws ReflectionException
+     */
+    protected function getTableName(): string
     {
-        $entities = array();
+        return StringHelper::pascalToSnake((new ReflectionClass($this->getEntityName()))->getShortName());
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @return T
+     */
+    protected function mapToObject(array $data)
+    {
+        $className = $this->getEntityName();
+        return $this->hydrator->hydrate($data, new $className);
+    }
+
+    /**
+     * @param Entity $model
+     * @return array
+     */
+    protected function mapToArray(Entity $model): array
+    {
+        $className = $this->getEntityName();
+
+        if (!$model instanceof $className) {
+            throw new InvalidArgumentException("Invalid Entity type provided for {$this->getEntityName()}");
+        }
+
+        return $this->hydrator->extract($model);
+    }
+
+    /**
+     * @return list<T>
+     * @throws ReflectionException
+     */
+    public function findAll(): array
+    {
+        $models = array();
 
         $results = $this->db
             ->connect()
             ->query("SELECT * FROM {$this->getTableName()} ORDER BY date_created")
-            ->fetchAll();
+            ->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $result) {
-            $entities[] = $this->mapToObject($result);
+            $models[] = $this->mapToObject($result);
         }
 
-        return $entities;
+        return $models;
     }
 
-    public function findById(string $id): object
+    /**
+     * @param string $id
+     * @return T
+     * @throws ReflectionException
+     * @throws NotFoundException
+     */
+    public function findById(string $id)
     {
-        $sql = "SELECT * FROM {$this->getTableName()} WHERE {$this->getIdName()} = :id";
+        $sql = "SELECT * FROM {$this->getTableName()} WHERE id = :id";
 
-        try {
-            $stmt = $this->db->connect()->prepare($sql);
-            $stmt->execute(['id' => $id]);
-            $result = $stmt->fetch();
-        } catch (PDOException $e) {
-            throw new NotFoundException($e->getMessage());
-        }
-
-        if (!$result) {
-            throw new NotFoundException("{$this->getTableName()} with such id not found");
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if(!$result){
+            throw new NotFoundException("{${$this->getEntityName()}} with this id not found");
         }
 
         return $this->mapToObject($result);
     }
 
-    public function insert(object $entity): object
+    /**
+     * @param T $model
+     * @return T
+     * @throws ReflectionException|NotFoundException
+     */
+    public function insert($model)
     {
-        $columns = implode(', ', array_keys($this->mapToArray($entity)));
-        $values = ':' . implode(', :', array_keys($this->mapToArray($entity)));
+        $data = $this->mapToArray($model);
+        $columns = implode(', ', array_keys($data));
+        $values = ':' . implode(', :', array_keys($data));
 
         $sql = "INSERT INTO {$this->getTableName()} ($columns) VALUES ($values)";
 
-        try {
-            $stmt = $this->db->connect()->prepare($sql);
-            $stmt->execute($this->mapToArray($entity));
-        } catch (PDOException $e) {
-            throw new BadRequestException($e->getMessage());
-        }
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute($data);
 
-        return $this->findById($entity->{$this->getIdName()});
+        return $this->findById($model->id);
     }
 
-    public function update(object $entity): object
+    /**
+     * @param T $model
+     * @return T
+     * @throws ReflectionException|NotFoundException
+     */
+    public function update($model)
     {
-        $updates = implode(', ', array_map(fn($col) => "$col = :$col", array_keys($this->mapToArray($entity))));
+        $data = $this->mapToArray($model);
+        $updates = implode(', ', array_map(fn($col) => "$col = :$col", array_keys($data)));
 
-        $sql = "UPDATE {$this->getTableName()} SET $updates WHERE {$this->getIdName()} = :{$this->getIdName()}";
+        $sql = "UPDATE {$this->getTableName()} SET $updates WHERE id = :id";
 
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute($data);
 
-        try {
-            $stmt = $this->db->connect()->prepare($sql);
-            $stmt->execute($this->mapToArray($entity));
-        } catch (PDOException $e) {
-            throw new NotFoundException($e->getMessage());
-        }
-
-        return $this->findById($entity->{$this->getIdName()});
+        return $this->findById($model->id);
     }
 
+    /**
+     * @param string $id
+     * @return bool
+     * @throws ReflectionException
+     */
     public function delete(string $id): bool
     {
-        $sql = "DELETE FROM {$this->getTableName()} WHERE {$this->getIdName()} = :id";
+        $sql = "DELETE FROM {$this->getTableName()} WHERE id = :id";
 
-
-        try {
-            $stmt = $this->db->connect()->prepare($sql);
-            $result = $stmt->execute(['id' => $id]);
-        } catch (PDOException $e) {
-            throw new NotFoundException($e->getMessage());
-        }
-
-        return $result;
+        $stmt = $this->db->connect()->prepare($sql);
+        return $stmt->execute(['id' => $id]);
     }
 }

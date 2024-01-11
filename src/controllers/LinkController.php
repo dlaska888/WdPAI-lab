@@ -57,7 +57,7 @@ class LinkController extends AppController
     #[Route("link-group/{groupId}/link/{linkId}")]
     public function getLink(string $groupId, string $linkId): Json
     {
-        $link = $this->findLink($groupId, $linkId);
+        $link = $this->linkRepo->findWithGroupId($linkId, $groupId);
 
         if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $groupId, GroupPermissionLevel::READ)) {
             throw new UnauthorizedException("User is not authorized to access this link");
@@ -77,7 +77,11 @@ class LinkController extends AppController
             throw new UnauthorizedException("User is not authorized to create link in this group");
         }
 
-        $link = new Link($groupId, $linkData['title'], $linkData['url']);
+        $link = new Link();
+        $link->linkGroupId = $groupId;
+        $link->title = $linkData['title'];
+        $link->url = $linkData['url'];
+            
         return new Json($this->linkRepo->insert($link), HttpStatusCode::CREATED);
     }
 
@@ -85,7 +89,7 @@ class LinkController extends AppController
     #[Route("link-group/{groupId}/link/{linkId}")]
     public function updateLink(string $groupId, string $linkId): Json
     {
-        $link = $this->findLink($groupId, $linkId);
+        $link = $this->linkRepo->findWithGroupId($linkId, $groupId);
 
         if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $groupId, GroupPermissionLevel::WRITE)) {
             throw new UnauthorizedException("User is not authorized to edit this link");
@@ -95,7 +99,7 @@ class LinkController extends AppController
         $this->validateRequestData($linkData, UpdateLinkValidator::class);
 
         $link->title = $linkData['title'] ?? $link->title;
-        $link->url = $linkData['url'] ?? $link->title;
+        $link->url = $linkData['url'] ?? $link->url;
 
         return new Json($this->linkRepo->update($link), HttpStatusCode::OK);
     }
@@ -104,9 +108,9 @@ class LinkController extends AppController
     #[Route("link-group/{groupId}/link/{linkId}")]
     public function deleteLink(string $groupId, string $linkId): Json
     {
-        $link = $this->findLink($groupId, $linkId);
+        $link = $this->linkRepo->findWithGroupId($linkId, $groupId);
 
-        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $link->link_group_id, GroupPermissionLevel::WRITE)) {
+        if (!$this->checkGroupAccess($this->sessionHandler->getUserId(), $link->linkGroupId, GroupPermissionLevel::WRITE)) {
             throw new UnauthorizedException("User is not authorized to delete this link");
         }
 
@@ -146,7 +150,7 @@ class LinkController extends AppController
         $this->validateRequestData($_GET, SearchLinkGroupsValidator::class);
         $name = $_GET['name'];
         
-        $matchingLinkGroups = $this->linkGroupRepo->findLinkGroupsByName(
+        $matchingLinkGroups = $this->linkGroupRepo->findAllByName(
             $this->sessionHandler->getUserId(),
             $name
         );
@@ -198,7 +202,10 @@ class LinkController extends AppController
         $linkGroupData = $this->getRequestBody();
         $this->validateRequestData($linkGroupData, AddLinkGroupValidator::class);
 
-        $linkGroup = new LinkGroup($this->sessionHandler->getUserId(), $linkGroupData['name']);
+        $linkGroup = new LinkGroup();
+        $linkGroup->userId = $this->sessionHandler->getUserId();
+        $linkGroup->name = $linkGroupData['name'];
+        
         $linkGroup = $this->linkGroupRepo->insert($linkGroup);
 
         $linkGroup->editable = true;
@@ -232,7 +239,7 @@ class LinkController extends AppController
     {
         $linkGroup = $this->linkGroupRepo->findById($groupId);
 
-        if ($linkGroup->user_id !== $this->sessionHandler->getUserId()) {
+        if ($linkGroup->userId !== $this->sessionHandler->getUserId()) {
             throw new UnauthorizedException("User is not authorized to delete this link group");
         }
 
@@ -245,7 +252,7 @@ class LinkController extends AppController
     {
         $group = $this->linkGroupRepo->findById($groupId);
 
-        if ($group->user_id !== $this->sessionHandler->getUserId()) {
+        if ($group->userId !== $this->sessionHandler->getUserId()) {
             throw new UnauthorizedException("User is not authorized to share this group");
         }
 
@@ -253,15 +260,23 @@ class LinkController extends AppController
         $this->validateRequestData($shareData, AddLinkGroupShareValidator::class);
 
         $shareToUser = $this->userRepo->findByEmail($shareData['email']);
+        
+        if(!$shareToUser){
+            throw new BadRequestException("User with this email not found");
+        }
 
         $permissionLevel = GroupPermissionLevel::from($shareData['permission']);
 
-        if ($this->sessionHandler->getUserId() === $shareToUser->user_id ||
-            $this->checkGroupAccess($shareToUser->user_id, $groupId, $permissionLevel)) {
+        if ($this->sessionHandler->getUserId() === $shareToUser->id ||
+            $this->checkGroupAccess($shareToUser->id, $groupId, $permissionLevel)) {
             throw new BadRequestException("Group is already shared to this user");
         }
 
-        $share = new LinkGroupShare($shareToUser->user_id, $groupId, new DateTime(), $permissionLevel);
+        $share = new LinkGroupShare();
+        $share->userId = $shareToUser->id;
+        $share->linkGroupId = $groupId;
+        $share->permission = $permissionLevel;
+        
         return new Json($this->linkGroupShareRepo->insert($share), HttpStatusCode::CREATED);
     }
 
@@ -271,12 +286,12 @@ class LinkController extends AppController
     {
         $group = $this->linkGroupRepo->findById($groupId);
 
-        if ($group->user_id !== $this->sessionHandler->getUserId()) {
+        if ($group->userId !== $this->sessionHandler->getUserId()) {
             throw new UnauthorizedException("User is not authorized to edit this share");
         }
 
         $share = $this->findGroupShare($groupId, $shareId);
-        $this->userRepo->findById($share->user_id); // check if user exists
+        $this->userRepo->findById($share->userId); // check if user exists
 
         $shareData = $this->getRequestBody();
         $this->validateRequestData($shareData, UpdateLinkGroupShareValidator::class);
@@ -291,7 +306,7 @@ class LinkController extends AppController
     {
         $group = $this->linkGroupRepo->findById($groupId);
 
-        if ($group->user_id !== $this->sessionHandler->getUserId()) {
+        if ($group->userId !== $this->sessionHandler->getUserId()) {
             throw new UnauthorizedException("User is not authorized to delete this share");
         }
 
@@ -300,22 +315,11 @@ class LinkController extends AppController
         return new Json($this->linkGroupRepo->delete($shareId), HttpStatusCode::OK);
     }
 
-    private function findLink($groupId, $linkId): ?Link
-    {
-        $link = $this->linkRepo->findById($linkId);
-
-        if ($link->link_group_id !== $groupId) {
-            throw new BadRequestException("No link with such id in this group");
-        }
-
-        return $link;
-    }
-
     private function findGroupShare($groupId, $shareId): ?LinkGroupShare
     {
         $share = $this->linkGroupShareRepo->findById($shareId);
 
-        if ($share->link_group_id !== $groupId) {
+        if ($share->linkGroupId !== $groupId) {
             throw new BadRequestException("No share with such id for this group");
         }
 
@@ -326,12 +330,12 @@ class LinkController extends AppController
     {
         $linkGroup = $this->linkGroupRepo->findById($linkGroupId);
 
-        if ($linkGroup->user_id === $userId) {
+        if ($linkGroup->userId === $userId) {
             return true;
         }
 
         foreach ($linkGroup->groupShares as $share) {
-            if ($share->user_id !== $userId) {
+            if ($share->userId !== $userId) {
                 continue;
             }
 
@@ -346,7 +350,7 @@ class LinkController extends AppController
     //TODO refactor to some kind of mapper
     private function mapEditable(LinkGroup $linkGroup) : LinkGroup
     {
-        if($this->checkGroupAccess($this->sessionHandler->getUserId(), $linkGroup->link_group_id, GroupPermissionLevel::WRITE))
+        if($this->checkGroupAccess($this->sessionHandler->getUserId(), $linkGroup->id, GroupPermissionLevel::WRITE))
             $linkGroup->editable = true;
         else
             $linkGroup->editable = false;

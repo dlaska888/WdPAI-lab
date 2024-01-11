@@ -2,63 +2,30 @@
 
 namespace src\Repos;
 
-use DateTime;
-use src\Enums\UserRole;
+use PDO;
 use src\exceptions\NotFoundException;
 use src\Models\Entities\LinkyUser;
 
 class UserRepo extends BaseRepo
 {
-    protected function getTableName(): string
+    public function __construct()
     {
-        return 'LinkyUser';
+        parent::__construct();
     }
 
-    protected function getIdName(): string
+    protected function getEntityName(): string
     {
-        return 'user_id';
-    }
-
-    protected function mapToObject(array $data): LinkyUser
-    {
-        return new LinkyUser(
-            user_name: $data['user_name'],
-            email: $data['email'],
-            password_hash: $data['password_hash'],
-            date_created: new DateTime($data['date_created']),
-            user_id: $data['user_id'],
-            email_confirmed: (bool)$data['email_confirmed'],
-            role: UserRole::from($data['role']),
-            refresh_token: $data['refresh_token'],
-            refresh_token_exp: $data['refresh_token_exp'] ? new DateTime($data['refresh_token_exp']) : null,
-            profile_picture_id: $data['profile_picture_id']
-        );
-    }
-
-    protected function mapToArray(object $entity): array
-    {
-        return [
-            'user_id' => $entity->user_id,
-            'user_name' => $entity->user_name,
-            'email' => $entity->email,
-            'password_hash' => $entity->password_hash,
-            'email_confirmed' => (int)$entity->email_confirmed,
-            'role' => $entity->role->name,
-            'profile_picture_id' => $entity->profile_picture_id,
-            'refresh_token' => $entity->refresh_token,
-            'refresh_token_exp' => $entity->refresh_token_exp ? $entity->refresh_token_exp->format('Y-m-d H:i:s') : null,
-            'date_created' => $entity->date_created->format('Y-m-d H:i:s'),
-        ];
+        return LinkyUser::class;
     }
 
     public function findByUserName(string $userName): ?LinkyUser
     {
-        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkyUser WHERE user_name = :user_name');
+        $stmt = $this->db->connect()->prepare('SELECT * FROM linky_user WHERE user_name = :user_name');
         $stmt->execute(['user_name' => $userName]);
-        $result = $stmt->fetch();
-
-        if (!$result) {
-            throw new NotFoundException("User with this username not found");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if(!$result){
+            return null;
         }
 
         return $this->mapToObject($result);
@@ -66,12 +33,12 @@ class UserRepo extends BaseRepo
 
     public function findByEmail(string $email): ?LinkyUser
     {
-        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkyUser WHERE email = :email');
+        $stmt = $this->db->connect()->prepare('SELECT * FROM linky_user WHERE email = :email');
         $stmt->execute(['email' => $email]);
-        $result = $stmt->fetch();
-
-        if (!$result) {
-            throw new NotFoundException("User with this email not found");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if(!$result){
+            return null;
         }
 
         return $this->mapToObject($result);

@@ -2,15 +2,17 @@
 
 namespace src\Repos\Interfaces;
 
+use src\Models\Entities\Entity;
+
 interface IRepo
 {
-public function all(): array;
+public function findAll(): array;
 
-public function findById(string $id): ?object;
+public function findById(string $id);
 
-public function insert(object $entity): object;
+public function insert(Entity $model);
 
-public function update(object $entity): object;
+public function update(Entity $model);
 
 public function delete(string $id): bool;
 }

@@ -14,11 +14,11 @@ const GroupModule = (function () {
             return "";
         }
 
-        const {link_group_id, name, editable, links} = group;
+        const {id, name, editable, links} = group;
 
         let groupElement = document.createElement("div");
         groupElement.innerHTML = `
-            <div id=${link_group_id} class="group flex-column">
+            <div id=${id} class="group flex-column">
                 <div class="group-menu flex"> 
                     <div class="group-name flex flex-center">
                         <p class="text-tertiary text-ellipsis">${name}</p>
@@ -55,9 +55,9 @@ const GroupModule = (function () {
             return false;
         }
 
-        const {link_group_id, name, editable, links} = group;
+        const {id, name, editable, links} = group;
 
-        if (!link_group_id || !name || editable === undefined || !Array.isArray(links)) {
+        if (!id || !name || editable === undefined || !Array.isArray(links)) {
             console.error('Missing required fields in group data for rendering.');
             return false;
         }

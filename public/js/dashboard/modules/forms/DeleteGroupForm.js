@@ -5,7 +5,7 @@ import ApiClient from "../../ApiClient.js";
 
 const DeleteGroupForm = (function () {
     async function submit(group) {
-        const submitUrl = `link-group/${group.link_group_id}`;
+        const submitUrl = `link-group/${group.id}`;
         const method = "DELETE";
 
         try {
@@ -14,7 +14,7 @@ const DeleteGroupForm = (function () {
             });
 
             if (response.success) {
-                await GroupModule.removeElement(group.link_group_id);
+                await GroupModule.removeElement(group.id);
                 NotificationService.notify("Group deleted!", "okay");
             } else {
                 NotificationService.notify(response.message, "error", response.data);

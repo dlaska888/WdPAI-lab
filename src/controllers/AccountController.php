@@ -3,9 +3,13 @@
 namespace src\Controllers;
 
 use src\Enums\UserRole;
+use src\exceptions\BadRequestException;
+use src\exceptions\NotFoundException;
 use src\Handlers\UserSessionHandler;
 use src\LinkyRouting\attributes\controller\ApiController;
 use src\Models\Entities\File;
+use src\Models\Entities\Link;
+use src\Models\Entities\LinkyUser;
 use src\Repos\FileRepo;
 use src\Repos\UserRepo;
 use src\LinkyRouting\attributes\authorization\Authorize;
@@ -45,10 +49,6 @@ class AccountController extends AppController
         $userId = $this->sessionHandler->getUserId();
         $user = $this->userRepo->findById($userId);
 
-        if (!$user) {
-            return new Json("User not found", HttpStatusCode::NOT_FOUND);
-        }
-
         return new Json($user);
     }
 
@@ -57,16 +57,7 @@ class AccountController extends AppController
     public function getProfilePicture(): Json
     {
         $user = $this->userRepo->findById($this->sessionHandler->getUserId());
-
-        if (!$user) {
-            return new Json("User not found", HttpStatusCode::NOT_FOUND);
-        }
-
         $file = $this->findProfilePicture($user);
-
-        if ($file === null) {
-            return new Json("User picture not found", HttpStatusCode::NOT_FOUND);
-        }
 
         $filePath = self::UPLOAD_DIRECTORY . $file->name;
 
@@ -76,7 +67,7 @@ class AccountController extends AppController
 
         readfile($filePath);
 
-        return new Json(); // Return an empty JSON response after serving the file.
+        return new Json();
     }
 
     #[HttpPost]
@@ -84,25 +75,28 @@ class AccountController extends AppController
     public function uploadProfilePicture(): Json
     {
         if (!array_key_exists("file", $_FILES)) {
-            return new Json("No file uploaded", HttpStatusCode::BAD_REQUEST);
+            throw new BadRequestException("No file uploaded");
         }
 
         $this->validateRequestData($_FILES['file'], FileValidator::class);
-            
+
         if (!is_uploaded_file($_FILES['file']['tmp_name'])) {
-            return new Json("No file uploaded", HttpStatusCode::BAD_REQUEST);
+            throw new BadRequestException("No file uploaded");
         }
 
         $userId = $this->sessionHandler->getUserId();
         $user = $this->userRepo->findById($userId);
-        $oldPicture = $this->findProfilePicture($user);
-
-        if ($oldPicture !== null) {
+        
+        try{
+            $oldPicture = $this->findProfilePicture($user);
             $this->removeProfilePicture($oldPicture);
+        }catch (NotFoundException){
         }
 
         $fileName = $userId . "_" . $_FILES['file']['name'];
-        $file = new File($fileName);
+        $file = new File();
+        $file->name = $fileName;
+
         $this->fileRepo->insert($file);
 
         move_uploaded_file(
@@ -110,7 +104,7 @@ class AccountController extends AppController
             self::UPLOAD_DIRECTORY . $fileName
         );
 
-        $user->profile_picture_id = $file->file_id;
+        $user->profilePictureId = $file->id;
 
         return new Json($this->userRepo->update($user));
     }
@@ -120,17 +114,8 @@ class AccountController extends AppController
     public function deleteProfilePicture(): Json
     {
         $user = $this->userRepo->findById($this->sessionHandler->getUserId());
-
-        if (!$user) {
-            return new Json("User not found", HttpStatusCode::NOT_FOUND);
-        }
-
         $file = $this->findProfilePicture($user);
-
-        if ($file === null) {
-            return new Json("User picture not found", HttpStatusCode::NOT_FOUND);
-        }
-
+        
         return new Json($this->removeProfilePicture($file));
     }
 
@@ -140,12 +125,15 @@ class AccountController extends AppController
     {
         $userId = $this->sessionHandler->getUserId();
         $user = $this->userRepo->findById($userId);
-        
+
         $requestData = $this->getRequestBody();
         $this->validateRequestData($requestData, UpdateUserNameValidator::class);
 
-        if ($this->userRepo->findByUserName($requestData['userName'])) {
-            return new Json("This username is already taken", HttpStatusCode::BAD_REQUEST);
+        try {
+            $this->userRepo->findByUserName($requestData['userName']);
+            throw new BadRequestException("Username is already taken");
+        }
+        catch (NotFoundException) {
         }
 
         $user->user_name = $requestData['userName'];
@@ -167,7 +155,7 @@ class AccountController extends AppController
         $newPassword = $requestData['newPassword'];
 
         if (!password_verify($password, $user->password_hash)) {
-            return new Json("Invalid password", HttpStatusCode::UNAUTHORIZED);
+            throw new BadRequestException("Invalid password");
         }
 
         $user->password_hash = password_hash($newPassword, PASSWORD_BCRYPT);
@@ -175,25 +163,20 @@ class AccountController extends AppController
         return new Json($this->userRepo->update($user));
     }
 
-    private function findProfilePicture($user): ?File
+    private function findProfilePicture(LinkyUser $user): ?File
     {
-        if ($user->profile_picture_id === null) {
-            return null;
+        if ($user->profilePictureId === null) {
+            throw new NotFoundException("User picture not found");
         }
 
-        $file = $this->fileRepo->findById($user->profile_picture_id);
-
-        if ($file === null) {
-            return null;
-        }
-
+        $file = $this->fileRepo->findById($user->profilePictureId);
         $filePath = self::UPLOAD_DIRECTORY . $file->name;
 
         if (!file_exists($filePath)) {
-            return null;
+            throw new NotFoundException("User picture not found");
         }
 
-        return $file instanceof File ? $file : null;
+        return $file;
     }
 
     private function removeProfilePicture(File $file): bool
@@ -204,6 +187,6 @@ class AccountController extends AppController
             unlink($filePath);
         }
 
-        return $this->fileRepo->delete($file->file_id);
+        return $this->fileRepo->delete($file->id);
     }
 }

@@ -57,8 +57,8 @@ class SecurityController extends AppController
 
         $user = $this->userRepo->findByEmail($email) ?? $this->userRepo->findByUserName($email);
 
-        if (!$user || !password_verify($password, $user->password_hash)) {
-            return new View('login', ['data' => ['Invalid credentials']], HttpStatusCode::UNAUTHORIZED);
+        if (!$user || !password_verify($password, $user->passwordHash)) {
+            throw new BadRequestException("Invalid credentials");
         }
 
         $this->sessionHandler->setSession($user);
@@ -82,28 +82,23 @@ class SecurityController extends AppController
         $userName = $_POST['userName'];
         $password = $_POST['password'];
 
-        // Check if user already exists
-        try {
-            if ($this->userRepo->findByEmail($email) || $this->userRepo->findByUserName($userName)) {
-                throw new BadRequestException("User already exists");
-            }    
-        }catch (NotFoundException){
-            // Continue if user is not found
-        }
+        $user = $this->userRepo->findByEmail($email) ?? $this->userRepo->findByUserName($email);
         
-        $user = new LinkyUser(
-            user_name: $userName,
-            email: $email,
-            password_hash: password_hash($password, PASSWORD_BCRYPT)
-        );
+        if($user){
+            throw new BadRequestException("User already exists");
+        }
 
-        $linkGroup = new LinkGroup(
-            user_id: $user->user_id,
-            name: 'No Group',
-            date_created: new DateTime()
-        );
+        $user = new LinkyUser();
+        $user->email = $email;
+        $user->userName = $userName;
+        $user->passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
         $this->userRepo->insert($user);
+
+        $linkGroup = new LinkGroup();
+        $linkGroup->userId = $user->id;
+        $linkGroup->name = "No group";
+
         $this->linkGroupRepo->insert($linkGroup);
 
         $this->sessionHandler->setSession($user);

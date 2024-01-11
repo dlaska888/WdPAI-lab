@@ -2,54 +2,40 @@
 
 namespace src\Repos;
 
-use DateTime;
-use InvalidArgumentException;
+use PDO;
+use src\exceptions\NotFoundException;
 use src\Models\Entities\Link;
 
 class LinkRepo extends BaseRepo
 {
-    protected function getTableName(): string
+    protected function getEntityName(): string
     {
-        return 'Link';
+        return Link::class;
     }
 
-    protected function getIdName(): string
+    public function findWithGroupId($linkId, $groupId)
     {
-        return 'link_id';
-    }
+        $sql = "SELECT * FROM {$this->getTableName()} WHERE id = :id AND link_group_id = :link_group_id";
 
-    protected function mapToObject(array $data): Link
-    {
-        return new Link(
-            link_group_id: $data['link_group_id'],
-            title: $data['title'],
-            url: $data['url'],
-            date_created: new DateTime($data['date_created']),
-            link_id: $data['link_id']
-        );
-    }
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute(['id' => $linkId, 'link_group_id' => $groupId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    protected function mapToArray(object $entity): array
-    {
-        if (!$entity instanceof Link) {
-            throw new InvalidArgumentException('Invalid entity type.');
+        if (!$result) {
+            throw new NotFoundException("Link with this id not found in this group");
         }
 
-        return [
-            'link_id' => $entity->link_id,
-            'link_group_id' => $entity->link_group_id,
-            'title' => $entity->title,
-            'url' => $entity->url,
-            'date_created' => $entity->date_created->format('Y-m-d H:i:s'),
-        ];
+        return $this->mapToObject($result);
     }
 
-    public function findGroupLinks($groupId) : array{
-        $linkGroups = array();
+    public function findGroupLinks($groupId): array
+    {
+        $linkGroups = [];
 
-        $stmt = $this->db->connect()->prepare('SELECT * FROM Link WHERE link_group_id = :link_group_id');
+        $stmt = $this->db->connect()
+            ->prepare('SELECT * FROM link WHERE link_group_id = :link_group_id ORDER BY date_created');
         $stmt->execute(['link_group_id' => $groupId]);
-        $results = $stmt->fetchAll();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $result) {
             $linkGroups[] = $this->mapToObject($result);

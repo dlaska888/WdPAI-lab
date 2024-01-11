@@ -2,8 +2,9 @@
 
 namespace src\Repos;
 
-use DateTime;
 use InvalidArgumentException;
+use PDO;
+use src\Models\Entities\Entity;
 use src\Models\Entities\LinkGroup;
 
 class LinkGroupRepo extends BaseRepo
@@ -18,60 +19,40 @@ class LinkGroupRepo extends BaseRepo
         $this->groupShareRepo = new LinkGroupShareRepo();
     }
 
-    protected function getTableName(): string
+    protected function getEntityName(): string
     {
-        return 'LinkGroup';
-    }
-
-    protected function getIdName(): string
-    {
-        return 'link_group_id';
+        return LinkGroup::class;
     }
 
     protected function mapToObject(array $data): LinkGroup
     {
-        $linkGroup = new LinkGroup(
-            user_id: $data['user_id'],
-            name: $data['name'],
-            date_created: new DateTime($data['date_created']),
-            link_group_id: $data['link_group_id']
-        );
-        
+        $linkGroup = $this->hydrator->hydrate($data, new LinkGroup());
         return $this->joinTables($linkGroup);
     }
-    
-    private function mapToObjectAll(array $data) : array
+
+    private function mapToObjectAll(array $data): array
     {
-        return array_map(fn ($linkGroup) => $this->mapToObject($linkGroup), $data);
+        return array_map(fn($linkGroup) => $this->mapToObject($linkGroup), $data);
     }
 
-    private function joinTables(LinkGroup $linkGroup): LinkGroup
+    private function joinTables(Entity $linkGroup): LinkGroup
     {
-        $linkGroup->links = $this->linkRepo->findGroupLinks($linkGroup->link_group_id);
-        $linkGroup->groupShares = $this->groupShareRepo->findLinkGroupShares($linkGroup->link_group_id);
+        if (!$linkGroup instanceof LinkGroup) {
+            throw new InvalidArgumentException("Invalid Entity type provided for {${$this->getEntityName()}}");
+        }
+
+        $linkGroup->links = $this->linkRepo->findGroupLinks($linkGroup->id);
+        $linkGroup->groupShares = $this->groupShareRepo->findLinkGroupShares($linkGroup->id);
 
         return $linkGroup;
     }
 
-    protected function mapToArray(object $entity): array
-    {
-        if (!$entity instanceof LinkGroup) {
-            throw new InvalidArgumentException('Invalid entity type.');
-        }
-
-        return [
-            'link_group_id' => $entity->link_group_id,
-            'user_id' => $entity->user_id,
-            'name' => $entity->name,
-            'date_created' => $entity->date_created->format('Y-m-d H:i:s'),
-        ];
-    }
-
     public function findAllUserGroups(string $userId): array
     {
-        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroup WHERE user_id = :user_id ORDER BY date_created');
+        $stmt = $this->db->connect()
+            ->prepare('SELECT * FROM link_group WHERE user_id = :user_id ORDER BY date_created');
         $stmt->execute(['user_id' => $userId]);
-        $results = $stmt->fetchAll();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $this->mapToObjectAll($results);
     }
@@ -79,40 +60,43 @@ class LinkGroupRepo extends BaseRepo
     public function findAllUserSharedGroups(string $userId): array
     {
         $stmt = $this->db->connect()->prepare(
-            "SELECT LinkGroup.*
-                    FROM LinkGroup
-                    JOIN LinkGroupShare ON LinkGroup.link_group_id = LinkGroupShare.link_group_id
-                    WHERE LinkGroupShare.user_id = :userId");
+            "SELECT link_group.*
+                    FROM link_group
+                    JOIN link_group_share ON link_group.id = link_group_share.link_group_id
+                    WHERE link_group_share.user_id = :userId
+                    ORDER BY date_created");
         $stmt->execute(['userId' => $userId]);
-        $results = $stmt->fetchAll();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $this->mapToObjectAll($results);
     }
 
 
-    public function findLinkGroupsByName($userId, $name) : array
+    public function findAllByName(string $userId, string $name): array
     {
-        $stmt = $this->db->connect()->prepare("SELECT * FROM LinkGroup WHERE user_id = :userId AND name LIKE :name");
+        $stmt = $this->db->connect()
+            ->prepare("SELECT * FROM link_group WHERE user_id = :userId AND name LIKE :name ORDER BY date_created");
         $stmt->execute([
             'userId' => $userId,
             'name' => '%' . $name . '%'
         ]);
-        $results = $stmt->fetchAll();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $this->mapToObjectAll($results);
     }
 
-    public function findSharedLinkGroupsByName($userId, $name) : array
+    public function findSharedLinkGroupsByName(string $userId, string $name): array
     {
         $stmt = $this->db->connect()->prepare(
-            "SELECT LinkGroup.* FROM LinkGroup 
-                    JOIN LinkGroupShare ON LinkGroup.link_group_id = LinkGroupShare.link_group_id 
-                    WHERE LinkGroupShare.user_id = :userId AND LinkGroup.name LIKE :name");
+            "SELECT link_group.* FROM link_group 
+                    JOIN link_group_share ON link_group.id = link_group_share.link_group_id 
+                    WHERE link_group_share.user_id = :userId AND link_group.name LIKE :name
+                    ORDER BY date_created");
         $stmt->execute([
             'userId' => $userId,
             'name' => '%' . $name . '%'
         ]);
-        $results = $stmt->fetchAll();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $this->mapToObjectAll($results);
     }

@@ -5,7 +5,7 @@ import ApiClient from "../../ApiClient.js";
 
 const DeleteLinkForm = (function () {
     async function submit(link) {
-        const submitUrl = `link-group/${link.link_group_id}/link/${link.link_id}`;
+        const submitUrl = `link-group/${link.linkGroupId}/link/${link.id}`;
         const method = "DELETE";
 
         try {
@@ -14,7 +14,7 @@ const DeleteLinkForm = (function () {
             });
 
             if (response.success) {
-                await LinkModule.removeElement(link.link_id);
+                await LinkModule.removeElement(link.id);
                 NotificationService.notify("Link deleted!", "okay");
             } else {
                 NotificationService.notify(response.message, "error", response.data);

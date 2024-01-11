@@ -2,51 +2,24 @@
 
 namespace src\Repos;
 
-use DateTime;
-use src\Enums\GroupPermissionLevel;
+use PDO;
 use src\Models\Entities\LinkGroupShare;
 
 class LinkGroupShareRepo extends BaseRepo
 {
-    protected function getTableName(): string
+    protected function getEntityName(): string
     {
-        return 'LinkGroupShare';
-    }
-
-    protected function getIdName(): string
-    {
-        return 'link_group_share_id';
-    }
-
-    protected function mapToObject(array $data): LinkGroupShare
-    {
-        return new LinkGroupShare(
-            user_id: $data['user_id'],
-            link_group_id: $data['link_group_id'],
-            date_created: new DateTime($data['date_created']),
-            permission: GroupPermissionLevel::from($data['permission']),
-            link_group_share_id: $data['link_group_share_id']
-        );
-    }
-
-    protected function mapToArray(object $entity): array
-    {
-        return [
-            'link_group_share_id' => $entity->link_group_share_id,
-            'user_id' => $entity->user_id,
-            'link_group_id' => $entity->link_group_id,
-            'permission' => $entity->permission->value,
-            'date_created' => $entity->date_created->format('Y-m-d H:i:s'),
-        ];
+        return LinkGroupShare::class;
     }
 
     public function findLinkGroupShares(string $linkGroupId): array
     {
         $linkGroupShares = array();
 
-        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroupShare WHERE link_group_id = :link_group_id');
+        $stmt = $this->db->connect()
+            ->prepare('SELECT * FROM link_group_share WHERE link_group_id = :link_group_id ORDER BY date_created');
         $stmt->execute(['link_group_id' => $linkGroupId]);
-        $results = $stmt->fetchAll();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $result) {
             $linkGroupShares[] = $this->mapToObject($result);
@@ -55,13 +28,14 @@ class LinkGroupShareRepo extends BaseRepo
         return $linkGroupShares;
     }
 
-    public function findUserGroupShares(string $userId) : array
+    public function findUserGroupShares(string $userId): array
     {
         $shares = array();
 
-        $stmt = $this->db->connect()->prepare('SELECT * FROM LinkGroupShare WHERE user_id = :user_id');
+        $stmt = $this->db->connect()
+            ->prepare('SELECT * FROM link_group_share WHERE user_id = :user_id ORDER BY date_created');
         $stmt->execute(['user_id' => $userId]);
-        $results = $stmt->fetchAll();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $result) {
             $objectResult = $this->mapToObject($result);

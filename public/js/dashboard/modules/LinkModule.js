@@ -11,11 +11,11 @@ const LinkModule = (function () {
             return "";
         }
 
-        const {link_id, url, title} = link;
+        const {id, url, title} = link;
 
         let linkElement = document.createElement("div");
         linkElement.innerHTML = `
-        <a id="${link_id}" href="${url}" class="link-container flex">
+        <a id="${id}" href="${url}" class="link-container flex">
             <div class="link-info flex flex-center">
                 <img src="https://www.google.com/s2/favicons?domain=${url}&sz=64" width="32" height="32" alt="Icon">
                 <div class="link-text flex-column">
@@ -41,9 +41,9 @@ const LinkModule = (function () {
             return false;
         }
 
-        const {link_id, url, title} = link;
+        const {id, url, title} = link;
 
-        if (!link_id || !url || !title) {
+        if (!id || !url || !title) {
             console.error('Missing required fields in link data for rendering.');
             return false;
         }
@@ -74,7 +74,7 @@ const LinkModule = (function () {
         if (linkElement) {
             linkElement.remove();
         } else {
-            console.error(`Link with id ${link_id} to remove not found`);
+            console.error(`Link with id ${id} to remove not found`);
         }
     }
 
