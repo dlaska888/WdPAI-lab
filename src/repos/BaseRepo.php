@@ -2,6 +2,7 @@
 
 namespace src\Repos;
 
+use Exception;
 use InvalidArgumentException;
 use PDO;
 use ReflectionClass;
@@ -99,11 +100,11 @@ abstract class BaseRepo implements IRepo
         $stmt = $this->db->connect()->prepare($sql);
         $stmt->execute(['id' => $id]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if(!$result){
+
+        if (!$result) {
             throw new NotFoundException("{${$this->getEntityName()}} with this id not found");
         }
-
+        
         return $this->mapToObject($result);
     }
 
@@ -114,16 +115,27 @@ abstract class BaseRepo implements IRepo
      */
     public function insert($model)
     {
-        $data = $this->mapToArray($model);
-        $columns = implode(', ', array_keys($data));
-        $values = ':' . implode(', :', array_keys($data));
+        $this->db->connect()->beginTransaction();
 
-        $sql = "INSERT INTO {$this->getTableName()} ($columns) VALUES ($values)";
+        try {
+            $data = $this->mapToArray($model);
+            $columns = implode(', ', array_keys($data));
+            $values = ':' . implode(', :', array_keys($data));
 
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute($data);
+            $sql = "INSERT INTO {$this->getTableName()} ($columns) VALUES ($values)";
 
-        return $this->findById($model->id);
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute($data);
+            
+            $result = $this->findById($model->id);
+
+            $this->db->connect()->commit();
+
+            return $result;
+        } catch (Exception $e) {
+            $this->db->connect()->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -133,15 +145,27 @@ abstract class BaseRepo implements IRepo
      */
     public function update($model)
     {
-        $data = $this->mapToArray($model);
-        $updates = implode(', ', array_map(fn($col) => "$col = :$col", array_keys($data)));
+        $this->db->connect()->beginTransaction();
 
-        $sql = "UPDATE {$this->getTableName()} SET $updates WHERE id = :id";
+        try {
+            $data = $this->mapToArray($model);
+            $updates = implode(', ', array_map(fn ($col) => "$col = :$col", array_keys($data)));
 
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute($data);
+            $sql = "UPDATE {$this->getTableName()} SET $updates WHERE id = :id";
 
-        return $this->findById($model->id);
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute($data);
+
+            $result = $this->findById($model->id);
+            $result = $this->findById($model->id);
+
+            $this->db->connect()->commit();
+
+            return $result;
+        } catch (Exception $e) {
+            $this->db->connect()->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -151,9 +175,20 @@ abstract class BaseRepo implements IRepo
      */
     public function delete(string $id): bool
     {
-        $sql = "DELETE FROM {$this->getTableName()} WHERE id = :id";
+        $this->db->connect()->beginTransaction();
 
-        $stmt = $this->db->connect()->prepare($sql);
-        return $stmt->execute(['id' => $id]);
+        try {
+            $sql = "DELETE FROM {$this->getTableName()} WHERE id = :id";
+
+            $stmt = $this->db->connect()->prepare($sql);
+            $result = $stmt->execute(['id' => $id]);
+
+            $this->db->connect()->commit();
+
+            return $result;
+        } catch (Exception $e) {
+            $this->db->connect()->rollBack();
+            throw $e;
+        }
     }
 }

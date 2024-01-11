@@ -6,12 +6,12 @@ import ApiClient from "../../ApiClient.js";
 
 const EditLinkForm = (function () {
     async function submit(link, formData) {
-        console.log(link);
         const submitUrl = `link-group/${link.linkGroupId}/link/${link.id}`;
         const method = "PUT";
 
         formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
-
+        console.log(formData.get("title"));
+        
         try {
             const response = await ApiClient.fetchData(submitUrl, {
                 method,

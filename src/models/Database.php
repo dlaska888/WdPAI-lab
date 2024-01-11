@@ -7,13 +7,15 @@ use PDOException;
 
 require_once "config.php";
 
-class Database {
+class Database
+{
     private string $username;
     private string $password;
     private string $host;
     private string $port;
     private string $database;
-    
+    private PDO $pdo;
+
     private static ?Database $instance = null;
 
     private function __construct()
@@ -23,34 +25,35 @@ class Database {
         $this->host = HOST;
         $this->port = PORT;
         $this->database = DATABASE;
+        $this->pdo = $this->getConnection();
     }
-    
-    //Singleton design pattern
-    public static function getInstance() : Database{
-        if(self::$instance === null){
+
+    // Singleton design pattern
+    public static function getInstance(): Database
+    {
+        if (self::$instance === null) {
             self::$instance = new Database();
         }
-        
+
         return self::$instance;
     }
-    
 
-    public function connect()
+    public function connect(): PDO
     {
-        try {
-            $conn = new PDO(
-                "pgsql:host=$this->host;port=$this->port;dbname=$this->database",
-                $this->username,
-                $this->password,
-                ["sslmode"  => "prefer"]
-            );
+        return $this->pdo;
+    }
+    
+    private function getConnection() : PDO
+    {
+        $pdo = new PDO(
+            "pgsql:host=$this->host;port=$this->port;dbname=$this->database",
+            $this->username,
+            $this->password,
+            ["sslmode" => "prefer"]
+        );
 
-            // set the PDO error mode to exception
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $conn;
-        }
-        catch(PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        }
+        // set the PDO error mode to exception
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
     }
 }
