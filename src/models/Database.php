@@ -14,7 +14,7 @@ class Database
     private string $host;
     private string $port;
     private string $database;
-    private PDO $pdo;
+    private ?PDO $pdo;
 
     private static ?Database $instance = null;
 
@@ -55,5 +55,10 @@ class Database
         // set the PDO error mode to exception
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return $pdo;
+    }
+
+    public function __destruct()
+    {
+        $this->pdo = null;
     }
 }

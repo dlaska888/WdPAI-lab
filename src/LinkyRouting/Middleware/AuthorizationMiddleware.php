@@ -42,9 +42,6 @@ class AuthorizationMiddleware extends BaseMiddleware
 
         // No session 
         $userRole = $this->sessionHandler->getUserRole();
-        if (empty($userRole) || !in_array($userRole, $roles))
-            return false;
-
-        return true;
+        return !(empty($userRole) || !in_array($userRole, $roles));
     }
 }

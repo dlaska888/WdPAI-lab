@@ -157,7 +157,6 @@ abstract class BaseRepo implements IRepo
             $stmt->execute($data);
 
             $result = $this->findById($model->id);
-            $result = $this->findById($model->id);
 
             $this->db->connect()->commit();
 

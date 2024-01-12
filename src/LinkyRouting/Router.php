@@ -20,8 +20,11 @@ class Router
         $this->routeResolver = new RouteResolver();
     }
 
-    public function run($url): void
+    public function run(): void
     {
+        $url = trim($_SERVER['REQUEST_URI'], '/');
+        $url = parse_url($url, PHP_URL_PATH);
+        
         $route = $this->matchRoute($url ?: 'index');
         $params = $this->extractDynamicParameters($url, $route->getPath());
 

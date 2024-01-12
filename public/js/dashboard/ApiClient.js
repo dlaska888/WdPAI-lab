@@ -6,19 +6,23 @@ class ApiClient {
     static handleApiResponse(jsonResponse) {
         if (jsonResponse.status === "success") {
             return this.createResultObject(true, jsonResponse.data);
-        } else {
-            const errorMessage = jsonResponse.message || 'Oops! Something went wrong';
-            console.error(`API ${jsonResponse.status}:`, jsonResponse.message, jsonResponse.data);
-            return this.createResultObject(false, jsonResponse.data, errorMessage);
         }
+        
+        const errorMessage = jsonResponse.message || 'Oops! Something went wrong';
+        console.error(`API ${jsonResponse.status}:`, jsonResponse.message, jsonResponse.data);
+        return this.createResultObject(false, jsonResponse.data, errorMessage);
+        
     }
-    
+
     static async fetchData(url, options = {}) {
         if (!options.headers)
             options.headers = new Headers();
+
+        // Add "Accept" header to indicate that the client accepts JSON
+        options.headers.append('Accept', 'application/json');
         
-        options.headers.set("Content-Type", "application/json");
-        
+        options.mode = "same-origin";
+
         try {
             const response = await fetch(url, options);
             const jsonResponse = await response.json();
@@ -29,6 +33,7 @@ class ApiClient {
             return result;
         }
     }
+
 }
 
 export default ApiClient;
