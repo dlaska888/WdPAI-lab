@@ -150,7 +150,7 @@ class LinkController extends AppController
         $this->validateRequestData($_GET, SearchLinkGroupsValidator::class);
         $name = $_GET['name'];
         
-        $matchingLinkGroups = $this->linkGroupRepo->findAllByName(
+        $matchingLinkGroups = $this->linkGroupRepo->findLinkGroupsByName(
             $this->sessionHandler->getUserId(),
             $name
         );

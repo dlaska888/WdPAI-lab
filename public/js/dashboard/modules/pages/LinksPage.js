@@ -2,7 +2,7 @@ import ButtonModule from "../ButtonModule.js";
 import GroupModule from "../GroupModule.js";
 import AddGroupForm from "../forms/AddGroupForm.js";
 import ModalModule from "../ModalModule.js";
-import SearchBarModule from "../SearchBarModule.js";
+import GroupSearchModule from "../GroupSearchModule.js";
 import ApiClient from "../../ApiClient.js";
 import NotificationService from "../../NotificationService.js";
 
@@ -15,7 +15,7 @@ const LinksPage = (function () {
             </section>`;
         page = page.firstElementChild;
 
-        page.prepend(await SearchBarModule.render(pageId, groupsEndpoint));
+        page.prepend(await GroupSearchModule.render(pageId, groupsEndpoint));
 
         if (groupAdd) {
             page.querySelector(".search-container")

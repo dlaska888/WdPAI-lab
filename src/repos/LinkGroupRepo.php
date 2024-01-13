@@ -72,10 +72,12 @@ class LinkGroupRepo extends BaseRepo
     }
 
 
-    public function findAllByName(string $userId, string $name): array
+    public function findLinkGroupsByName(string $userId, string $name): array
     {
-        $stmt = $this->db->connect()
-            ->prepare("SELECT * FROM link_group WHERE user_id = :userId AND name LIKE :name ORDER BY date_created");
+        $stmt = $this->db->connect()->prepare(
+            "SELECT * FROM link_group 
+                    WHERE user_id = :userId AND 
+                    LOWER(link_group.name) LIKE LOWER(:name) ORDER BY date_created");
         $stmt->execute([
             'userId' => $userId,
             'name' => '%' . $name . '%'
@@ -90,7 +92,7 @@ class LinkGroupRepo extends BaseRepo
         $stmt = $this->db->connect()->prepare(
             "SELECT link_group.* FROM link_group 
                     JOIN link_group_share ON link_group.id = link_group_share.link_group_id 
-                    WHERE link_group_share.user_id = :userId AND link_group.name LIKE :name
+                    WHERE link_group_share.user_id = :userId AND LOWER(link_group.name) LIKE LOWER(:name)
                     ORDER BY date_created");
         $stmt->execute([
             'userId' => $userId,
@@ -100,6 +102,5 @@ class LinkGroupRepo extends BaseRepo
 
         return $this->mapToObjectAll($results);
     }
-
 
 }

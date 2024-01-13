@@ -13,9 +13,7 @@ const NavigationHandler = (function () {
     async function initNavigation() {
         document.querySelectorAll(".btn-page").forEach(btn => {
             btn.addEventListener("click", async () => {
-                if (!loading) {
-                    await navigateToPage(findPageClass(btn));
-                }
+                await navigateToPage(findPageClass(btn));
             });
         });
 

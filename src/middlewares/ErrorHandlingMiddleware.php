@@ -53,7 +53,7 @@ class ErrorHandlingMiddleware extends BaseMiddleware
             );
         } catch (Throwable $e) {
             error_log($e->getMessage());
-            return new Error($request, $e->getMessage(), HttpStatusCode::INTERNAL_SERVER_ERROR);
+            return new Error($request, "Something went wrong", HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }
 }

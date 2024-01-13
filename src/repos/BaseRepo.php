@@ -10,6 +10,7 @@ use ReflectionException;
 use src\exceptions\NotFoundException;
 use src\Helpers\StringHelper;
 use src\hydrators\EntityHydrator;
+use src\hydrators\interfaces\IHydrator;
 use src\models\Database;
 use src\Models\Entities\Entity;
 use src\Repos\Interfaces\IRepo;
@@ -21,7 +22,7 @@ abstract class BaseRepo implements IRepo
 {
     protected Database $db;
 
-    protected EntityHydrator $hydrator;
+    protected IHydrator $hydrator;
 
     public function __construct()
     {
