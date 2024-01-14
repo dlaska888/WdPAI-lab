@@ -6,15 +6,17 @@ import DeleteGroupForm from "./forms/DeleteGroupForm.js";
 import EditGroupForm from "./forms/EditGroupForm.js";
 import ShareGroupForm from "./forms/ShareGroupForm.js";
 import ApiClient from "../ApiClient.js";
+import NotificationService from "../NotificationService.js";
+import IconModule from "./IconModule.js";
 
 const GroupModule = (function () {
-    async function render(group) {
+    async function render(group, shared) {
         if (!validateGroup(group)) {
             console.error("Invalid group for render")
             return "";
         }
 
-        const {id, name, editable, links} = group;
+        const {id, name, editable, links, userId} = group;
 
         let groupElement = document.createElement("div");
         groupElement.innerHTML = `
@@ -22,6 +24,9 @@ const GroupModule = (function () {
                 <div class="group-menu flex"> 
                     <div class="group-name flex flex-center">
                         <p class="text-tertiary text-ellipsis">${name}</p>
+                        <p class="dot-separator text-tertiary"></p>
+                        <p class="owner-name text-tertiary"></p>
+                        <div class="owner-picture"></div>
                     </div>
                     <div class="group-buttons flex flex-center">
                     </div>
@@ -34,16 +39,40 @@ const GroupModule = (function () {
         groupElement.querySelector(".group-name")
             .prepend(await ButtonModule.render("collapse", collapseGroup, "btn-group-collapse"));
 
-        if (editable) {
-            const groupButtons = groupElement.querySelector(".group-buttons");
-            groupButtons.appendChild(await ButtonModule.render("add", () => addLinkForm(group)));
-            groupButtons.appendChild(await ButtonModule.render("edit", () => editGroupForm(group)));
-            groupButtons.appendChild(await ButtonModule.render("share", () => shareGroupForm(group)));
-            groupButtons.appendChild(await ButtonModule.render("delete", () => deleteGroupForm(group)));
-        }
+        const groupButtons = groupElement.querySelector(".group-buttons");
 
         for (const link of links) {
             groupElement.querySelector(".group-links").appendChild(await LinkModule.render(link, editable));
+        }
+
+        if (shared) {
+
+            if (editable) {
+                groupButtons.appendChild(await ButtonModule.render("add", () => addLinkForm(group)));
+            }
+
+            const ownerData = await fetchUserData(userId);
+            groupElement.querySelector(".owner-name").textContent = ownerData.userName;
+            groupElement.querySelector(".dot-separator").textContent = "•";
+
+            const ownerPicture = await getUserPictureSource(userId);
+            const pictureContainer = groupElement.querySelector(".owner-picture");
+
+            if (!ownerPicture) {
+                pictureContainer.innerHTML = await IconModule.render("account");
+                return groupElement;
+            }
+
+            const ownerImg = document.createElement("img");
+            ownerImg.src = ownerPicture;
+            ownerImg.height = 30;
+            ownerImg.width = 30;
+
+            pictureContainer.appendChild(ownerImg);
+        } else {
+            groupButtons.appendChild(await ButtonModule.render("edit", () => editGroupForm(group)));
+            groupButtons.appendChild(await ButtonModule.render("share", () => shareGroupForm(group)));
+            groupButtons.appendChild(await ButtonModule.render("delete", () => deleteGroupForm(group)));
         }
 
         return groupElement;
@@ -86,6 +115,21 @@ const GroupModule = (function () {
         } else {
             console.error(`Group with id ${groupId} to delete not found`);
         }
+    }
+
+    function fetchUserData(userId) {
+        return ApiClient.fetchData(`http://localhost:8080/account/public/${userId}`)
+            .then(result => {
+                if (result.success) return result.data;
+                NotificationService.notify(result.message || "Could not get user data", "error")
+            })
+    }
+
+    function getUserPictureSource(userId) {
+        return ApiClient.fetchFile(`http://localhost:8080/account/public/${userId}/profile-picture`)
+            .then(result => {
+                if (result.success) return `account/public/${userId}/profile-picture`;
+            })
     }
 
     function collapseGroup(e) {

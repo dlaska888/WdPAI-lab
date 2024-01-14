@@ -6,7 +6,9 @@ use src\Enums\UserRole;
 use src\exceptions\BadRequestException;
 use src\exceptions\NotFoundException;
 use src\Handlers\UserSessionHandler;
+use src\LinkyRouting\attributes\authorization\SkipAuthorization;
 use src\LinkyRouting\attributes\controller\ApiController;
+use src\LinkyRouting\Responses\BinaryFile;
 use src\Models\Entities\File;
 use src\Models\Entities\Link;
 use src\Models\Entities\LinkyUser;
@@ -42,6 +44,32 @@ class AccountController extends AppController
         $this->sessionHandler = new UserSessionHandler();
     }
 
+    #[SkipAuthorization]
+    #[HttpGet]
+    #[Route("account/public/{userId}")]
+    public function getAccountDetailsById(string $userId): Json
+    {
+        $user = $this->userRepo->findById($userId);
+        return new Json($user);
+    }
+
+    #[SkipAuthorization]
+    #[HttpGet]
+    #[Route("account/public/{userId}/profile-picture")]
+    public function getProfilePictureById($userId): BinaryFile
+    {
+        $user = $this->userRepo->findById($userId);
+        $file = $this->findProfilePicture($user);
+
+        $filePath = self::UPLOAD_DIRECTORY . $file->name;
+
+//        header("Content-Type: application/octet-stream");
+//        header("Content-Disposition: attachment; filename=" . $file->name);
+//        header("Content-Length: " . filesize($filePath));
+
+        return new BinaryFile($filePath);
+    }
+
     #[HttpGet]
     #[Route("account")]
     public function getAccountDetails(): Json
@@ -54,7 +82,7 @@ class AccountController extends AppController
 
     #[HttpGet]
     #[Route("account/profile-picture")]
-    public function getProfilePicture(): Json
+    public function getProfilePicture(): BinaryFile
     {
         $user = $this->userRepo->findById($this->sessionHandler->getUserId());
         $file = $this->findProfilePicture($user);
@@ -65,9 +93,7 @@ class AccountController extends AppController
         header("Content-Disposition: attachment; filename=" . $file->name);
         header("Content-Length: " . filesize($filePath));
 
-        readfile($filePath);
-
-        return new Json();
+        return new BinaryFile($filePath);
     }
 
     #[HttpPost]
@@ -86,11 +112,11 @@ class AccountController extends AppController
 
         $userId = $this->sessionHandler->getUserId();
         $user = $this->userRepo->findById($userId);
-        
-        try{
+
+        try {
             $oldPicture = $this->findProfilePicture($user);
             $this->removeProfilePicture($oldPicture);
-        }catch (NotFoundException){
+        } catch (NotFoundException) {
         }
 
         $fileName = $userId . "_" . $_FILES['file']['name'];
@@ -115,7 +141,7 @@ class AccountController extends AppController
     {
         $user = $this->userRepo->findById($this->sessionHandler->getUserId());
         $file = $this->findProfilePicture($user);
-        
+
         return new Json($this->removeProfilePicture($file));
     }
 
@@ -129,14 +155,10 @@ class AccountController extends AppController
         $requestData = $this->getRequestBody();
         $this->validateRequestData($requestData, UpdateUserNameValidator::class);
 
-        try {
-            $this->userRepo->findByUserName($requestData['userName']);
+        if($this->userRepo->findByUserName($requestData['userName']) !== null)
             throw new BadRequestException("Username is already taken");
-        }
-        catch (NotFoundException) {
-        }
 
-        $user->user_name = $requestData['userName'];
+        $user->userName = $requestData['userName'];
 
         return new Json($this->userRepo->update($user));
     }
@@ -154,11 +176,11 @@ class AccountController extends AppController
         $password = $requestData['password'];
         $newPassword = $requestData['newPassword'];
 
-        if (!password_verify($password, $user->password_hash)) {
+        if (!password_verify($password, $user->passwordHash)) {
             throw new BadRequestException("Invalid password");
         }
 
-        $user->password_hash = password_hash($newPassword, PASSWORD_BCRYPT);
+        $user->passwordHash = password_hash($newPassword, PASSWORD_BCRYPT);
 
         return new Json($this->userRepo->update($user));
     }

@@ -10,7 +10,7 @@ use modules\IconModule;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkyApp - Main</title>
+    <title>LinkyApp Dashboard</title>
     <link rel="stylesheet" href="/public/css/global.css">
     <link rel="stylesheet" href="/public/css/dashboard.css">
     <script src="/public/js/dashboard/dashboard.js" type="module"></script>

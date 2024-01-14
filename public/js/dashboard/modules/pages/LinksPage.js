@@ -7,7 +7,7 @@ import ApiClient from "../../ApiClient.js";
 import NotificationService from "../../NotificationService.js";
 
 const LinksPage = (function () {
-    async function render(pageId, groupsEndpoint, groupAdd) {
+    async function render(pageId, groupsEndpoint, shared) {
         let page = document.createElement("div");
         page.innerHTML = `
             <section id="${pageId}" class="page page-links flex-column">
@@ -17,7 +17,7 @@ const LinksPage = (function () {
 
         page.prepend(await GroupSearchModule.render(pageId, groupsEndpoint));
 
-        if (groupAdd) {
+        if (!shared) {
             page.querySelector(".search-container")
                 .appendChild(await ButtonModule.render("add", addGroupForm, "btn-menu"));
         }
@@ -32,7 +32,7 @@ const LinksPage = (function () {
         }
 
         for (const group of groups) {
-            groupsContainer.appendChild(await GroupModule.render(group));
+            groupsContainer.appendChild(await GroupModule.render(group, shared));
         }
 
         return page;

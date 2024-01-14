@@ -222,6 +222,10 @@ main {
 				& path {
 					fill: var(--tertiary);
 				}
+				
+				& img {
+					border-radius: 50%;
+				}
 			}
 
 			& .group-links {
@@ -307,6 +311,13 @@ main {
 				width: 50%;
 				max-width: 50vh;
 				height: auto;
+				
+				& img{
+					object-fit: cover;
+					width: 25vh;
+					height: 25vh;
+					border-radius: 50%;
+				}
 			}
 		}
 
