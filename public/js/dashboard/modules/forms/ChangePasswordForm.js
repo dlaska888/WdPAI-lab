@@ -31,7 +31,7 @@ const ChangePasswordForm = (function () {
             { type: "text", name: "newPasswordConfirm", placeholder: "New password confirm" }
         ];
 
-        return await FormModule.render((e) => submit(new FormData(e.currentTarget)), "Add link", formFields);
+        return await FormModule.render((e) => submit(new FormData(e.currentTarget)), "Change password", formFields);
     }
 
     return {

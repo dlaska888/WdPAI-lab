@@ -31,7 +31,7 @@ const ChangeUserNameForm = (function () {
             { type: "text", name: "userName", placeholder: "New username" }
         ];
 
-        return await FormModule.render((e) => submit(new FormData(e.currentTarget)), "Add link", formFields);
+        return await FormModule.render((e) => submit(new FormData(e.currentTarget)), "Change username", formFields);
     }
 
     return {

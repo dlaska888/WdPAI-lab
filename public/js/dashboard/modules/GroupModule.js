@@ -45,12 +45,11 @@ const GroupModule = (function () {
             groupElement.querySelector(".group-links").appendChild(await LinkModule.render(link, editable));
         }
 
+        if (editable) {
+            groupButtons.appendChild(await ButtonModule.render("add", () => addLinkForm(group)));
+        }
+
         if (shared) {
-
-            if (editable) {
-                groupButtons.appendChild(await ButtonModule.render("add", () => addLinkForm(group)));
-            }
-
             const ownerData = await fetchUserData(userId);
             groupElement.querySelector(".owner-name").textContent = ownerData.userName;
             groupElement.querySelector(".dot-separator").textContent = "•";
