@@ -6,13 +6,13 @@ import ChangeUsernameForm from "../forms/ChangeUsernameForm.js";
 import ChangePasswordForm from "../forms/ChangePasswordForm.js";
 
 const SettingsPage = (function () {
-    async function render() {
+    async function render(pageId) {
         const userData = await fetchUserData();
         const {userName, email} = userData;
         
         let page = document.createElement("div");
         page.innerHTML = `
-            <section id="page-settings" class="page flex flex-center">
+            <section id="${pageId}" class="page flex flex-center">
                 <div class="profile-container flex-column flex-center hide-mobile">
                     <div class="profile-photo flex flex-center">
                     </div>

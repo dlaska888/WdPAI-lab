@@ -6,8 +6,8 @@ const NavigationHandler = (function () {
 
     const pages = {
         "page-home": () => LinksPage.render("page-home", "link-groups"),
-        "page-shared": () => LinksPage.render("page-shared", "link-groups/shared", true),
-        "page-settings": () => SettingsPage.render("page-settings", []),
+        "page-shared": () => LinksPage.render("page-shared", "link-groups/shared"),
+        "page-settings": () => SettingsPage.render("page-settings"),
     };
 
     async function initNavigation() {

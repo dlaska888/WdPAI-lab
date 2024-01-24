@@ -10,13 +10,13 @@ import NotificationService from "../NotificationService.js";
 import IconModule from "./IconModule.js";
 
 const GroupModule = (function () {
-    async function render(group, shared) {
+    async function render(group) {
         if (!validateGroup(group)) {
             console.error("Invalid group for render")
             return "";
         }
 
-        const {id, name, editable, links, userId} = group;
+        const {id, name, shared, editable, links, userId} = group;
 
         let groupElement = document.createElement("div");
         groupElement.innerHTML = `
@@ -45,9 +45,13 @@ const GroupModule = (function () {
             groupElement.querySelector(".group-links").appendChild(await LinkModule.render(link, editable));
         }
 
+
         if (editable) {
             groupButtons.appendChild(await ButtonModule.render("add", () => addLinkForm(group)));
+            groupButtons.appendChild(await ButtonModule.render("edit", () => editGroupForm(group)));
         }
+
+        groupButtons.appendChild(await ButtonModule.render("share", () => shareGroupForm(group)));
 
         if (shared) {
             const ownerData = await fetchUserData(userId);
@@ -69,8 +73,6 @@ const GroupModule = (function () {
 
             pictureContainer.appendChild(ownerImg);
         } else {
-            groupButtons.appendChild(await ButtonModule.render("edit", () => editGroupForm(group)));
-            groupButtons.appendChild(await ButtonModule.render("share", () => shareGroupForm(group)));
             groupButtons.appendChild(await ButtonModule.render("delete", () => deleteGroupForm(group)));
         }
 

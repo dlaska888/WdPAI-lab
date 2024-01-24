@@ -11,6 +11,9 @@ class LinkGroup extends Entity
     public string $name;
 
     #[SkipHydration]
+    public ?bool $shared;
+
+    #[SkipHydration]
     public ?bool $editable;
 
     #[SkipHydration]
