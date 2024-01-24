@@ -1,0 +1,8 @@
+@import "global.css";
+@import "form.css";
+@import "notification.css";
+
+body {
+    width: 250px;
+    border-radius: 1rem;
+}

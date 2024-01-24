@@ -1,0 +1,18 @@
+.main-form {
+    height: 100%;
+    width: 100%;
+    gap: 1rem;
+    padding: 1rem;
+    justify-content: space-evenly;
+    background-color: var(--primary);
+}
+
+.input-container {
+    gap: 1rem;
+    width: 100%;
+}
+
+.input {
+    width: 100%;
+}
+

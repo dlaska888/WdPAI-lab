@@ -14,6 +14,9 @@ use src\LinkyRouting\RouterBuilder;
 
 $builder = new RouterBuilder();
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: *');
+
 $builder->setViewsPath('src/views');
 $builder->setControllersPath('src/controllers');
 
