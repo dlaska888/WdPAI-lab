@@ -8,6 +8,7 @@ import ShareGroupForm from "./forms/ShareGroupForm.js";
 import ApiClient from "../ApiClient.js";
 import NotificationService from "../NotificationService.js";
 import IconModule from "./IconModule.js";
+import KebabMenuModule from "./KebabMenuModule.js";
 
 const GroupModule = (function () {
     async function render(group) {
@@ -29,7 +30,7 @@ const GroupModule = (function () {
                         <div class="owner-picture"></div>
                     </div>
                     <div class="group-buttons flex flex-center">
-                    </div>
+                    </div>  
                 </div>
                 <div class="group-links flex-column">
                 </div>
@@ -39,42 +40,45 @@ const GroupModule = (function () {
         groupElement.querySelector(".group-name")
             .prepend(await ButtonModule.render("collapse", collapseGroup, "btn-group-collapse"));
 
-        const groupButtons = groupElement.querySelector(".group-buttons");
-
         for (const link of links) {
             groupElement.querySelector(".group-links").appendChild(await LinkModule.render(link, editable));
         }
 
+        const groupOptions = [];
 
         if (editable) {
-            groupButtons.appendChild(await ButtonModule.render("add", () => addLinkForm(group)));
-            groupButtons.appendChild(await ButtonModule.render("edit", () => editGroupForm(group)));
+            groupOptions.push({optionTitle: "Add", optionIcon: "add", callback: () => addLinkForm(group)});
+            groupOptions.push({optionTitle: "Edit", optionIcon: "edit", callback: () => editGroupForm(group)});
         }
 
-        groupButtons.appendChild(await ButtonModule.render("share", () => shareGroupForm(group)));
+        groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => shareGroupForm(group)});
 
         if (shared) {
             const ownerData = await fetchUserData(userId);
             groupElement.querySelector(".owner-name").textContent = ownerData.userName;
             groupElement.querySelector(".dot-separator").textContent = "•";
 
-            const ownerPicture = await getUserPictureSource(userId);
             const pictureContainer = groupElement.querySelector(".owner-picture");
-
-            if (!ownerPicture) {
-                pictureContainer.innerHTML = await IconModule.render("account");
-                return groupElement;
-            }
+            pictureContainer.classList = "flex flex-center";
 
             const ownerImg = document.createElement("img");
-            ownerImg.src = ownerPicture;
+            
+            ownerImg.src = `http://localhost:8080/account/public/${userId}/profile-picture`;
             ownerImg.height = 30;
             ownerImg.width = 30;
 
+            ownerImg.onerror = async () => {
+                pictureContainer.innerHTML = await IconModule.render("account");
+            }
+            
             pictureContainer.appendChild(ownerImg);
+
         } else {
-            groupButtons.appendChild(await ButtonModule.render("delete", () => deleteGroupForm(group)));
+            groupOptions.push({optionTitle: "Delete", optionIcon: "delete", callback: () => deleteGroupForm(group)});
         }
+
+        groupElement.querySelector(".group-buttons").appendChild(await KebabMenuModule.render(groupOptions));
+        console.log("group rendered!");
 
         return groupElement;
     }
@@ -123,13 +127,6 @@ const GroupModule = (function () {
             .then(result => {
                 if (result.success) return result.data;
                 NotificationService.notify(result.message || "Could not get user data", "error")
-            })
-    }
-
-    function getUserPictureSource(userId) {
-        return ApiClient.fetchFile(`http://localhost:8080/account/public/${userId}/profile-picture`)
-            .then(result => {
-                if (result.success) return `account/public/${userId}/profile-picture`;
             })
     }
 
