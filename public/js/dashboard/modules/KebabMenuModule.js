@@ -4,7 +4,7 @@ const KebabMenuModule = (function  () {
 
     async function render(options) {
         const kebab = document.createElement('button');
-        kebab.classList.add('kebab');
+        kebab.classList = "kebab flex flex-center";
 
         const kebabFigures = Array.from({length: 3}, () => document.createElement('figure'));
         kebabFigures[1].classList.add('middle');
@@ -18,9 +18,9 @@ const KebabMenuModule = (function  () {
             const li = document.createElement('li');
             const btn = document.createElement('button');
             
-            btn.classList = "flex btn-hover-dim";
+            btn.classList = "flex flex-center btn-hover-dim";
             btn.innerHTML = await IconModule.render(optionIcon);
-            btn.innerHTML += `<p class="flex flex-center">${optionTitle}</p>`;
+            btn.innerHTML += `<p>${optionTitle}</p>`;
             
             btn.addEventListener("click", callback);
             

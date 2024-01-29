@@ -29,8 +29,6 @@ const GroupModule = (function () {
                         <p class="owner-name text-tertiary"></p>
                         <div class="owner-picture"></div>
                     </div>
-                    <div class="group-buttons flex flex-center">
-                    </div>  
                 </div>
                 <div class="group-links flex-column">
                 </div>
@@ -44,6 +42,8 @@ const GroupModule = (function () {
             groupElement.querySelector(".group-links").appendChild(await LinkModule.render(link, editable));
         }
 
+        // Group buttons
+
         const groupOptions = [];
 
         if (editable) {
@@ -54,7 +54,7 @@ const GroupModule = (function () {
         groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => shareGroupForm(group)});
 
         if (shared) {
-            const ownerData = await fetchUserData(userId);
+            const ownerData = await fetchUserDataById(userId);
             groupElement.querySelector(".owner-name").textContent = ownerData.userName;
             groupElement.querySelector(".dot-separator").textContent = "•";
 
@@ -62,7 +62,7 @@ const GroupModule = (function () {
             pictureContainer.classList = "flex flex-center";
 
             const ownerImg = document.createElement("img");
-            
+
             ownerImg.src = `http://localhost:8080/account/public/${userId}/profile-picture`;
             ownerImg.height = 30;
             ownerImg.width = 30;
@@ -70,14 +70,14 @@ const GroupModule = (function () {
             ownerImg.onerror = async () => {
                 pictureContainer.innerHTML = await IconModule.render("account");
             }
-            
+
             pictureContainer.appendChild(ownerImg);
 
         } else {
             groupOptions.push({optionTitle: "Delete", optionIcon: "delete", callback: () => deleteGroupForm(group)});
         }
 
-        groupElement.querySelector(".group-buttons").appendChild(await KebabMenuModule.render(groupOptions));
+        groupElement.querySelector(".group-menu").appendChild(await KebabMenuModule.render(groupOptions));
         console.log("group rendered!");
 
         return groupElement;
@@ -122,8 +122,16 @@ const GroupModule = (function () {
         }
     }
 
-    function fetchUserData(userId) {
+    function fetchUserDataById(userId) {
         return ApiClient.fetchData(`http://localhost:8080/account/public/${userId}`)
+            .then(result => {
+                if (result.success) return result.data;
+                NotificationService.notify(result.message || "Could not get user data", "error")
+            })
+    }
+
+    function fetchCurrentUserData() {
+        return ApiClient.fetchData(`http://localhost:8080/account`)
             .then(result => {
                 if (result.success) return result.data;
                 NotificationService.notify(result.message || "Could not get user data", "error")
@@ -142,7 +150,8 @@ const GroupModule = (function () {
     }
 
     async function shareGroupForm(group) {
-        document.body.appendChild(await ModalModule.render(await ShareGroupForm.render(group)));
+        const user = await fetchCurrentUserData();
+        document.body.appendChild(await ModalModule.render(await ShareGroupForm.render(user, group)));
     }
 
     async function editGroupForm(group) {

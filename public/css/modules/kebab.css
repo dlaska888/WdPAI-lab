@@ -24,7 +24,7 @@
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.16), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
     background: white;
     border-radius: 0.5rem;
-    padding: 0.25rem;
+    padding: 0.5rem;
     
     & li {
         display: block;

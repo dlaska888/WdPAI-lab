@@ -9,8 +9,8 @@ const ShareGroupForm = (function () {
         const method = "POST";
 
         formData.set("permission", formData.get("permission").toUpperCase());
-        
-        
+
+
         try {
             const response = await ApiClient.fetchData(submitUrl, {
                 method,
@@ -29,10 +29,17 @@ const ShareGroupForm = (function () {
         }
     }
 
-    async function render(group) {
+    async function render(user, group) {
+        console.log(group.groupShares)
+
+        const shares = group.groupShares.map((share) => {
+            return {value: share.id, text: share.userId}
+        })
+
         const formFields = [
-            { type: "email", name: "email", placeholder: "Email", required: true },
-            { type: "select", name: "permission", options: ["Read", "Write"], required: true },
+            {type: "select", name: "shares", options: shares, required: true},
+            {type: "email", name: "email", placeholder: "Email", required: true},
+            {type: "select", name: "permission", options: [{value: "Read"}, {value: "Write"}], required: true},
         ];
 
         return await FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Share group", formFields);

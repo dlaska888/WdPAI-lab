@@ -55,13 +55,14 @@ const FormModule = (function () {
         const select = document.createElement("select");
         select.className = "input";
         select.setAttribute("name", field.name); // Set the name attribute using setAttribute
+        
 
         if (field.options) {
-            field.options.forEach(optionValue => {
-                const option = document.createElement("option");
-                option.value = optionValue;
-                option.text = optionValue;
-                select.appendChild(option);
+            field.options.forEach(option => {
+                const optionEl = document.createElement("option");
+                optionEl.value = option.value;
+                optionEl.text = option.text || option.value;
+                select.appendChild(optionEl);
             });
         }
 
