@@ -1,5 +1,5 @@
 const FormModule = (function () {
-    async function render(submitCallback, header = null, fields = null, classes = null) {
+    function render(submitCallback, header = null, fields = null, classes = null) {
         let form = document.createElement("div");
         form.innerHTML = `
         <form class="main-form flex-column flex-center">
@@ -12,8 +12,9 @@ const FormModule = (function () {
 
         form.className += classes || " ";
 
-        if (fields !== null){
-            form.insertBefore(renderInputContainer(fields), form.querySelector("button"));
+        if (fields !== null) {
+            const inputContainer = renderInputContainer(fields);
+            form.insertBefore(inputContainer, form.querySelector("button"));
         }
 
         form.addEventListener("submit", (e) => {
@@ -37,11 +38,16 @@ const FormModule = (function () {
     }
 
     function createInputField(field) {
-        if (field.type === 'select') {
-            return createSelectInput(field);
-        } else {
-            return createTextInput(field);
-        }
+        const inputTypeMap = {
+            'text': createTextInput,
+            'select': createSelectInput,
+            // Add more input types here
+        };
+
+        const inputType = field.type || 'text';
+        const createInputFn = inputTypeMap[inputType] || createTextInput;
+
+        return createInputFn(field);
     }
 
     function createTextInput(field) {
@@ -54,8 +60,7 @@ const FormModule = (function () {
     function createSelectInput(field) {
         const select = document.createElement("select");
         select.className = "input";
-        select.setAttribute("name", field.name); // Set the name attribute using setAttribute
-        
+        select.setAttribute("name", field.name || ''); // Set the name attribute using setAttribute
 
         if (field.options) {
             field.options.forEach(option => {
@@ -68,7 +73,6 @@ const FormModule = (function () {
 
         return select;
     }
-
 
     return {
         render: render

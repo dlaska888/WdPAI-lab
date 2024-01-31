@@ -1,14 +1,14 @@
 import LinkModule from "./LinkModule.js";
-import ButtonModule from "./ButtonModule.js";
-import AddLinkForm from "./forms/AddLinkForm.js";
-import ModalModule from "./ModalModule.js";
-import DeleteGroupForm from "./forms/DeleteGroupForm.js";
-import EditGroupForm from "./forms/EditGroupForm.js";
-import ShareGroupForm from "./forms/ShareGroupForm.js";
-import ApiClient from "../ApiClient.js";
-import NotificationService from "../NotificationService.js";
-import IconModule from "./IconModule.js";
-import KebabMenuModule from "./KebabMenuModule.js";
+import ButtonModule from "../ButtonModule.js";
+import AddLinkForm from "../forms/AddLinkForm.js";
+import ModalModule from "../ModalModule.js";
+import DeleteGroupForm from "../forms/DeleteGroupForm.js";
+import EditGroupForm from "../forms/EditGroupForm.js";
+import ApiClient from "../../ApiClient.js";
+import NotificationService from "../../NotificationService.js";
+import IconModule from "../IconModule.js";
+import KebabMenuModule from "../KebabMenuModule.js";
+import GroupSharesModule from "./GroupSharesModule.js";
 
 const GroupModule = (function () {
     async function render(group) {
@@ -49,9 +49,8 @@ const GroupModule = (function () {
         if (editable) {
             groupOptions.push({optionTitle: "Add", optionIcon: "add", callback: () => addLinkForm(group)});
             groupOptions.push({optionTitle: "Edit", optionIcon: "edit", callback: () => editGroupForm(group)});
+            groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupShares(group)});
         }
-
-        groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => shareGroupForm(group)});
 
         if (shared) {
             const ownerData = await fetchUserDataById(userId);
@@ -78,7 +77,6 @@ const GroupModule = (function () {
         }
 
         groupElement.querySelector(".group-menu").appendChild(await KebabMenuModule.render(groupOptions));
-        console.log("group rendered!");
 
         return groupElement;
     }
@@ -130,14 +128,6 @@ const GroupModule = (function () {
             })
     }
 
-    function fetchCurrentUserData() {
-        return ApiClient.fetchData(`http://localhost:8080/account`)
-            .then(result => {
-                if (result.success) return result.data;
-                NotificationService.notify(result.message || "Could not get user data", "error")
-            })
-    }
-
     function collapseGroup(e) {
         const btn = e.currentTarget;
         const links = btn.closest(".group").querySelector(".group-links");
@@ -149,9 +139,8 @@ const GroupModule = (function () {
         document.body.appendChild(await ModalModule.render(await AddLinkForm.render(group)));
     }
 
-    async function shareGroupForm(group) {
-        const user = await fetchCurrentUserData();
-        document.body.appendChild(await ModalModule.render(await ShareGroupForm.render(user, group)));
+    async function groupShares(group) {
+        document.body.appendChild(await ModalModule.render(await GroupSharesModule.render(group, false)));
     }
 
     async function editGroupForm(group) {

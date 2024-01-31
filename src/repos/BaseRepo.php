@@ -103,7 +103,7 @@ abstract class BaseRepo implements IRepo
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$result) {
-            throw new NotFoundException("{${$this->getEntityName()}} with this id not found");
+            throw new NotFoundException("{$this->getEntityName()} with this id not found");
         }
         
         return $this->mapToObject($result);

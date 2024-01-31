@@ -3,7 +3,7 @@ import ButtonModule from "./ButtonModule.js";
 const ModalModule = (function () {
     let modal;
 
-    async function render(content, classes = null) {
+    async function render(content, closeOnSubmit = true, classes = null) {
         modal = document.createElement("div");
         modal.className = "modal flex flex-center " + classes || " ";
 
@@ -16,7 +16,7 @@ const ModalModule = (function () {
 
         // form submission should close the modal
         const form = modalContent.querySelector("form");
-        if (form) {
+        if (form && closeOnSubmit) {
             form.addEventListener("submit", close);
         }
 

@@ -86,7 +86,6 @@ const SettingsPage = (function () {
     function getUserPictureSource() {
         return ApiClient.fetchFile(`http://localhost:8080/account/profile-picture`)
             .then(result => {
-                console.log(result);
                 if (result.success) return `/account/profile-picture`;
             })
     }

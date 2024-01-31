@@ -1,13 +1,13 @@
 import ButtonModule from "../ButtonModule.js";
-import GroupModule from "../GroupModule.js";
+import GroupModule from "../group/GroupModule.js";
 import AddGroupForm from "../forms/AddGroupForm.js";
 import ModalModule from "../ModalModule.js";
-import GroupSearchModule from "../GroupSearchModule.js";
+import GroupSearchModule from "../group/GroupSearchModule.js";
 import ApiClient from "../../ApiClient.js";
 import NotificationService from "../../NotificationService.js";
 
 const LinksPage = (function () {
-    async function render(pageId, groupsEndpoint, shared) {
+    async function render(pageId, groupsEndpoint, shared = false) {
         let page = document.createElement("div");
         page.innerHTML = `
             <section id="${pageId}" class="page page-links flex-column">

@@ -255,7 +255,7 @@ class LinkController extends AppController
     }
 
     #[HttpPost]
-    #[Route("link-group/{groupId}/share")]
+    #[Route("link-group/{groupId}/shares")]
     public function addGroupShare(string $groupId): Json
     {
         $userId = $this->sessionHandler->getUserId();
@@ -289,12 +289,12 @@ class LinkController extends AppController
     }
 
     #[HttpPut]
-    #[Route("link-group/{groupId}/share/{shareId}")]
+    #[Route("link-group/{groupId}/shares/{shareId}")]
     public function updateGroupShare(string $groupId, string $shareId): Json
     {
-        $group = $this->linkGroupRepo->findById($groupId);
+        $userId =  $this->sessionHandler->getUserId();
 
-        if ($group->userId !== $this->sessionHandler->getUserId()) {
+        if (!$this->checkGroupAccess($userId, $groupId, GroupPermissionLevel::WRITE)) {
             throw new UnauthorizedException("User is not authorized to edit this share");
         }
 
@@ -312,15 +312,15 @@ class LinkController extends AppController
     #[Route("link-group/{groupId}/shares/{shareId}")]
     public function deleteGroupShare(string $groupId, string $shareId): Json
     {
-        $group = $this->linkGroupRepo->findById($groupId);
+        $userId =  $this->sessionHandler->getUserId();
 
-        if ($group->userId !== $this->sessionHandler->getUserId()) {
+        if (!$this->checkGroupAccess($userId, $groupId, GroupPermissionLevel::WRITE)) {
             throw new UnauthorizedException("User is not authorized to delete this share");
         }
 
         $this->findGroupShare($groupId, $shareId); // check if share exists
 
-        return new Json($this->linkGroupRepo->delete($shareId), HttpStatusCode::OK);
+        return new Json($this->linkGroupShareRepo->delete($shareId), HttpStatusCode::OK);
     }
 
     private function findGroupShare($groupId, $shareId): ?LinkGroupShare

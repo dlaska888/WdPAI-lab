@@ -1,7 +1,7 @@
 import IconModule from "./IconModule.js";
 
 const ButtonModule = (function () {
-    async function render(icon, callback, classes = null) {
+    async function render(icon, callback = null, classes = null) {
         const button = document.createElement("button");
 
         button.className = "flex flex-center btn-hover-dim " + classes || " ";

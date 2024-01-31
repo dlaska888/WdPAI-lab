@@ -11,6 +11,7 @@
     transition: background-color 0.3s ease;
     color: var(--secondary);
     font-weight: bold;
+    z-index: 100;
 }
 
 @media (max-width: 768px) {

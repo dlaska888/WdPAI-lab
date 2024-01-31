@@ -1,16 +1,15 @@
 import FormModule from "./FormModule.js";
-import GroupModule from "../GroupModule.js";
+import GroupModule from "../group/GroupModule.js";
 import NotificationService from "../../NotificationService.js";
 import ApiClient from "../../ApiClient.js";
 
 const ShareGroupForm = (function () {
     async function submit(group, formData) {
-        const submitUrl = `link-group/${group.id}/share`;
+        const submitUrl = `link-group/${group.id}/shares`;
         const method = "POST";
 
         formData.set("permission", formData.get("permission").toUpperCase());
-
-
+        
         try {
             const response = await ApiClient.fetchData(submitUrl, {
                 method,
@@ -29,20 +28,13 @@ const ShareGroupForm = (function () {
         }
     }
 
-    async function render(user, group) {
-        console.log(group.groupShares)
-
-        const shares = group.groupShares.map((share) => {
-            return {value: share.id, text: share.userId}
-        })
-
+    async function render(group) {
         const formFields = [
-            {type: "select", name: "shares", options: shares, required: true},
-            {type: "email", name: "email", placeholder: "Email", required: true},
-            {type: "select", name: "permission", options: [{value: "Read"}, {value: "Write"}], required: true},
+            { type: "email", name: "email", placeholder: "Email", required: true },
+            { type: "select", name: "permission", options: [{value: "Read"}, {value: "Write"}], required: true },
         ];
 
-        return await FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Share group", formFields);
+        return FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Share group", formFields);
     }
 
     return {

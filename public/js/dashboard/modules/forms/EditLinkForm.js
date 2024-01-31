@@ -1,5 +1,5 @@
 import FormModule from "./FormModule.js";
-import LinkModule from "../LinkModule.js";
+import LinkModule from "../group/LinkModule.js";
 import StringHelper from "../../../dashboard/StringHelper.js";
 import NotificationService from "../../NotificationService.js";
 import ApiClient from "../../ApiClient.js";
@@ -10,7 +10,6 @@ const EditLinkForm = (function () {
         const method = "PUT";
 
         formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
-        console.log(formData.get("title"));
         
         try {
             const response = await ApiClient.fetchData(submitUrl, {
@@ -36,7 +35,7 @@ const EditLinkForm = (function () {
             { type: "text", name: "title", placeholder: "Title", value: link.title || "" }
         ];
 
-        return await FormModule.render((e) => submit(link, new FormData(e.currentTarget)), "Update link", formFields);
+        return FormModule.render((e) => submit(link, new FormData(e.currentTarget)), "Update link", formFields);
     }
 
     return {

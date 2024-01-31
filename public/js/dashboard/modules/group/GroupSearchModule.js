@@ -1,6 +1,6 @@
-import ApiClient from "../ApiClient.js";
+import ApiClient from "../../ApiClient.js";
 import GroupModule from "./GroupModule.js";
-import NotificationService from "../NotificationService.js";
+import NotificationService from "../../NotificationService.js";
 
 const GroupSearchModule = (function () {
     let searchTimer; // Variable to store the timer

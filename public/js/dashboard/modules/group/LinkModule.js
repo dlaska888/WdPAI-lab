@@ -1,8 +1,8 @@
-import ButtonModule from "./ButtonModule.js";
-import ModalModule from "./ModalModule.js";
-import EditLinkForm from "./forms/EditLinkForm.js";
-import DeleteLinkForm from "./forms/DeleteLinkForm.js";
-import ApiClient from "../ApiClient.js";
+import ButtonModule from "../ButtonModule.js";
+import ModalModule from "../ModalModule.js";
+import EditLinkForm from "../forms/EditLinkForm.js";
+import DeleteLinkForm from "../forms/DeleteLinkForm.js";
+import ApiClient from "../../ApiClient.js";
 
 const LinkModule = (function () {
     async function render(link, editable = true) {
@@ -59,7 +59,7 @@ const LinkModule = (function () {
                     if (linkElement) {
                         linkElement.replaceWith(await LinkModule.render(response.data));
                     } else {
-                        console.error(`Link with id ${linkId} to update not found on the website`);
+                        console.error(`Link with id ${linkId} to update not found`);
                     }
                 }
             })
@@ -67,7 +67,6 @@ const LinkModule = (function () {
                 console.error(`Error updating link with id ${linkId}: ${error.message}`);
             });
     }
-
 
     async function removeElement(linkId) {
         const linkElement = document.querySelector(`[id="${linkId}" ]`); // escaping forbidden id characters

@@ -52,7 +52,7 @@ class ErrorHandlingMiddleware extends BaseMiddleware
                 $request->getRoute()->getPath()
             );
         } catch (Throwable $e) {
-            error_log($e->getMessage());
+            error_log($e);
             return new Error($request, "Something went wrong", HttpStatusCode::INTERNAL_SERVER_ERROR);
         }
     }

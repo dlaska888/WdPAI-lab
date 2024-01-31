@@ -1,5 +1,5 @@
 import FormModule from "./FormModule.js";
-import GroupModule from "../GroupModule.js";
+import GroupModule from "../group/GroupModule.js";
 import NotificationService from "../../NotificationService.js";
 import ApiClient from "../../ApiClient.js";
 
