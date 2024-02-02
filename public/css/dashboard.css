@@ -2,6 +2,8 @@
 @import "modules/spinner.css";
 @import "modules/notification.css";
 @import "modules/kebab.css";
+@import "modules/share-group.css";
+@import "modules/modal.css";
 
 body {
 	height: 100vh;

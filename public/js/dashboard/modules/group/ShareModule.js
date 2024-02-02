@@ -7,30 +7,30 @@ import GroupSharesModule from "./GroupSharesModule.js";
 const ShareModule = (function () {
 
     async function render(groupShare, user) {
-        const share = document.createElement("div");
-        share.classList = "flex flex-center text-secondary";
-
-        const emailContainer = document.createElement("p");
-        emailContainer.classList = "flex flex-center";
-        emailContainer.textContent = user.email;
-        share.appendChild(emailContainer);
-
-        const form = document.createElement("form");
-
-        const select = document.createElement("select");
-        select.className = "input";
-        select.setAttribute("name", "permission");
-
-        const permissionOptions = [{value: "READ", text: "Read"}, {value: "WRITE", text: "Write"}];
-
-        permissionOptions.forEach(permission => {
-            const option = createOption(permission);
-            if (groupShare.permission === permission.value) {
+        let shareElement = document.createElement("div");
+        shareElement.innerHTML = `
+            <div class="group-share flex flex-center text-secondary">
+                <div class="email-container flex flex-center">
+                    <p class="flex flex-center">${user.email}</p>
+                </div>
+                <form>
+                    <select name="permission" class="input">
+                        <option value="READ">Read</option>
+                        <option value="WRITE">Write</option>
+                    </select>
+                </form>
+            </div>`
+        shareElement = shareElement.firstElementChild;
+        
+        const options = shareElement.querySelectorAll("option");
+        options.forEach(option => {
+            if (groupShare.permission === option.value) {
                 option.selected = true;
             }
-            select.appendChild(option);
         });
 
+        const form = shareElement.querySelector("form");
+        const select = shareElement.querySelector("select");
         select.addEventListener("change", async () => {
             await submit(groupShare,
                 new FormData(form),
@@ -38,9 +38,6 @@ const ShareModule = (function () {
                 "PUT");
             await GroupSharesModule.updateState(groupShare.linkGroupId);
         });
-
-        form.appendChild(select);
-        share.appendChild(form);
 
         const deleteBtn = await ButtonModule.render(
             "delete",
@@ -53,8 +50,8 @@ const ShareModule = (function () {
             }
         );
 
-        share.appendChild(deleteBtn);
-        return share;
+        shareElement.appendChild(deleteBtn);
+        return shareElement;
     }
 
     async function submit(groupShare, formData, submitUrl, method) {
@@ -76,13 +73,6 @@ const ShareModule = (function () {
             console.error("Error submitting form:", error);
             NotificationService.notify("An error occurred", "error");
         }
-    }
-
-    function createOption(option) {
-        const optionEl = document.createElement("option");
-        optionEl.value = option.value;
-        optionEl.text = option.text;
-        return optionEl;
     }
 
     return {

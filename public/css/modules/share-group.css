@@ -1,0 +1,30 @@
+.shares-container{
+    gap: 2rem;
+    
+    & .share-form,
+    & .group-shares,
+    & .group-share{
+        gap: 1rem;
+    }
+
+    & h2{
+        font-size: 2rem;
+    }
+
+    & .share-form {
+        padding: 1rem;
+        width: 100%;
+    }
+    
+    & .group-shares{
+        max-height: 20vh;
+    }
+
+    & select.input {
+        width: auto;
+    }
+    
+    
+    
+}
+

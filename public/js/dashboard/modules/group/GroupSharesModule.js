@@ -7,42 +7,24 @@ import ShareModule from "./ShareModule.js";
 const GroupSharesModule = (function () {
 
     async function render(group) {
-        const groupShares = document.createElement("div");
-        groupShares.id = `share-${group.id}`
-
-        const sharesContainer = document.createElement("div");
-
-        for (let share of group.groupShares) {
-            const user = await fetchUserDataById(share.userId);
-            sharesContainer.appendChild(await ShareModule.render(share, user));
-        }
-        groupShares.appendChild(sharesContainer);
-
-        const form = document.createElement("form");
-        form.classList = "flex flex-center text-secondary";
-
-        const emailInput = document.createElement("input");
-        emailInput.classList = "input";
-        emailInput.type = "text";
-        emailInput.name = "email";
-        emailInput.placeholder = "Email";
-        emailInput.required = true;
-
-        form.appendChild(emailInput);
-
-        const permissionSelect = document.createElement("select");
-        permissionSelect.className = "input";
-        permissionSelect.setAttribute("name", "permission");
-
-        const permissionOptions = [{value: "READ", text: "Read"}, {value: "WRITE", text: "Write"}];
-
-        permissionOptions.forEach(permission => {
-            const option = createOption(permission);
-            permissionSelect.appendChild(option);
-        });
-
-        form.appendChild(permissionSelect);
-
+        let groupSharesElement = document.createElement("div");
+        
+        groupSharesElement.innerHTML = `
+            <div id="share-${group.id}" class="shares-container flex-column flex-center">
+                <h2 class="flex flex-center text-secondary text-shadow">Group Shares</h2>
+                <form class="share-form flex flex-center text-secondary">
+                    <input type="email" name="email" placeholder="Email" class="input" required>
+                    <select name="permission" class="input">
+                        <option value="READ">Read</option>
+                        <option value="WRITE">Write</option>
+                    </select>
+                </form>
+                <div class="group-shares flex-column flex-center"></div>
+            </div>`
+        groupSharesElement = groupSharesElement.firstElementChild;        
+        
+        const form = groupSharesElement.querySelector("form");
+        
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
             await submit(group.id, new FormData(e.target));
@@ -54,8 +36,14 @@ const GroupSharesModule = (function () {
 
         form.appendChild(addBtn);
 
-        groupShares.appendChild(form);
-        return groupShares;
+        const sharesContainer = groupSharesElement.querySelector(".group-shares");
+
+        for (let share of group.groupShares) {
+            const user = await fetchUserDataById(share.userId);
+            sharesContainer.appendChild(await ShareModule.render(share, user));
+        }
+        
+        return groupSharesElement;
     }
     
     async function submit(groupId, formData) {
@@ -100,13 +88,6 @@ const GroupSharesModule = (function () {
                 if (result.success) return result.data;
                 NotificationService.notify(result.message || "Could not get user data", "error")
             })
-    }
-
-    function createOption(option) {
-        const optionEl = document.createElement("option");
-        optionEl.value = option.value;
-        optionEl.text = option.text;
-        return optionEl;
     }
 
     return {

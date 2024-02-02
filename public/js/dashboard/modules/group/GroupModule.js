@@ -140,7 +140,7 @@ const GroupModule = (function () {
     }
 
     async function groupShares(group) {
-        document.body.appendChild(await ModalModule.render(await GroupSharesModule.render(group, false)));
+        document.body.appendChild(await ModalModule.render(await GroupSharesModule.render(group), false));
     }
 
     async function editGroupForm(group) {

@@ -15,13 +15,15 @@ const ModalModule = (function () {
         modalContent.appendChild(content);
 
         // form submission should close the modal
-        const form = modalContent.querySelector("form");
-        if (form && closeOnSubmit) {
-            form.addEventListener("submit", close);
+        const forms = modalContent.querySelectorAll("form");
+
+        if (closeOnSubmit) {
+            forms.forEach((form) => form.addEventListener("submit", close));
+            console.log("bro");
         }
 
         modal.appendChild(modalContent);
-        
+
         modal.addEventListener("click", closeOnModalClick);
         document.body.addEventListener("keydown", closeOnEscape);
 
