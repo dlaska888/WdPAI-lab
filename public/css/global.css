@@ -169,7 +169,6 @@ input[type="submit"] {
     box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3);
     transition: 500ms ease-in-out;
     font-size: 1rem;
-
     max-width: 350px;
 }
 
@@ -177,6 +176,10 @@ input[type="submit"] {
     background-color: white;
     transform: scale(1.05);
     box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+select.input{
+    padding: 0.75rem 1rem;
 }
 
 .footer-logo {

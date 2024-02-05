@@ -27,7 +27,7 @@ const GroupModule = (function () {
                         <p class="text-tertiary text-ellipsis">${name}</p>
                         <p class="dot-separator text-tertiary"></p>
                         <p class="owner-name text-tertiary"></p>
-                        <div class="owner-picture"></div>
+                        <div class="img-container flex flex-center"></div>
                     </div>
                 </div>
                 <div class="group-links flex-column">
@@ -57,9 +57,7 @@ const GroupModule = (function () {
             groupElement.querySelector(".owner-name").textContent = ownerData.userName;
             groupElement.querySelector(".dot-separator").textContent = "•";
 
-            const pictureContainer = groupElement.querySelector(".owner-picture");
-            pictureContainer.classList = "flex flex-center";
-
+            const pictureContainer = groupElement.querySelector(".img-container");
             const ownerImg = document.createElement("img");
 
             ownerImg.src = `http://localhost:8080/account/public/${userId}/profile-picture`;

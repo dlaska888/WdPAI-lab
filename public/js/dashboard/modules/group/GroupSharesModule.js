@@ -13,10 +13,12 @@ const GroupSharesModule = (function () {
             <div id="share-${group.id}" class="shares-container flex-column flex-center">
                 <h2 class="flex flex-center text-secondary text-shadow">Group Shares</h2>
                 <form class="share-form flex flex-center text-secondary">
-                    <input type="email" name="email" placeholder="Email" class="input" required>
+                    <div class="input-container flex flex-center">
+                        <input type="email" name="email" placeholder="Email" class="input" required>
+                    </div>
                     <select name="permission" class="input">
-                        <option value="READ">Read</option>
-                        <option value="WRITE">Write</option>
+                        <option value="READ">👁</option>
+                        <option value="WRITE">✏️</option>
                     </select>
                 </form>
                 <div class="group-shares flex-column flex-center"></div>

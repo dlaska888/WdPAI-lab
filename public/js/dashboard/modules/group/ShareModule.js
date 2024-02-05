@@ -3,6 +3,7 @@ import NotificationService from "../../NotificationService.js";
 import ApiClient from "../../ApiClient.js";
 import ButtonModule from "../ButtonModule.js";
 import GroupSharesModule from "./GroupSharesModule.js";
+import IconModule from "../IconModule.js";
 
 const ShareModule = (function () {
 
@@ -10,24 +11,27 @@ const ShareModule = (function () {
         let shareElement = document.createElement("div");
         shareElement.innerHTML = `
             <div class="group-share flex flex-center text-secondary">
-                <div class="email-container flex flex-center">
-                    <p class="flex flex-center">${user.email}</p>
+                <div class="user-container flex flex-center">
+                    <div class="img-container flex flex-center">
+                       <img src="http://localhost:8080/account/public/${user.id}/profile-picture" 
+                    alt="User image" width="30" height="30">
+                    </div>
+                    <p class="flex flex-center text-secondary">${user.email}</p>
                 </div>
                 <form>
                     <select name="permission" class="input">
-                        <option value="READ">Read</option>
-                        <option value="WRITE">Write</option>
+                        <option value="READ">👁️</option>
+                        <option value="WRITE">✏️</option>
                     </select>
                 </form>
             </div>`
         shareElement = shareElement.firstElementChild;
-        
-        const options = shareElement.querySelectorAll("option");
-        options.forEach(option => {
-            if (groupShare.permission === option.value) {
-                option.selected = true;
-            }
-        });
+
+        const imgContainer = shareElement.querySelector(".img-container");
+        const userImg = imgContainer.querySelector("img");
+        userImg.onerror = async () => {
+            imgContainer.innerHTML = await IconModule.render("account");
+        }
 
         const form = shareElement.querySelector("form");
         const select = shareElement.querySelector("select");
@@ -37,6 +41,13 @@ const ShareModule = (function () {
                 `link-group/${groupShare.linkGroupId}/shares/${groupShare.id}`,
                 "PUT");
             await GroupSharesModule.updateState(groupShare.linkGroupId);
+        });
+
+        const options = shareElement.querySelectorAll("option");
+        options.forEach(option => {
+            if (groupShare.permission === option.value) {
+                option.selected = true;
+            }
         });
 
         const deleteBtn = await ButtonModule.render(
