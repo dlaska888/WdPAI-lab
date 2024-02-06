@@ -17,11 +17,11 @@ const GroupSharesModule = (function () {
                         <input type="email" name="email" placeholder="Email" class="input" required>
                     </div>
                     <select name="permission" class="input">
-                        <option value="READ">👁</option>
+                        <option value="READ">👁️</option>
                         <option value="WRITE">✏️</option>
                     </select>
                 </form>
-                <div class="group-shares flex-column flex-center"></div>
+                <div class="group-shares flex-column"></div>
             </div>`
         groupSharesElement = groupSharesElement.firstElementChild;        
         

@@ -26,7 +26,7 @@ const GroupModule = (function () {
                     <div class="group-name flex flex-center">
                         <p class="text-tertiary text-ellipsis">${name}</p>
                         <p class="dot-separator text-tertiary"></p>
-                        <p class="owner-name text-tertiary"></p>
+                        <p class="owner-name text-tertiary text-ellipsis"></p>
                         <div class="img-container flex flex-center"></div>
                     </div>
                 </div>

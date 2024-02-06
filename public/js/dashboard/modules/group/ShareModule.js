@@ -10,20 +10,22 @@ const ShareModule = (function () {
     async function render(groupShare, user) {
         let shareElement = document.createElement("div");
         shareElement.innerHTML = `
-            <div class="group-share flex flex-center text-secondary">
-                <div class="user-container flex flex-center">
+            <div class="group-share flex flex-center">
+                <div class="share-info flex flex-center">
                     <div class="img-container flex flex-center">
                        <img src="http://localhost:8080/account/public/${user.id}/profile-picture" 
                     alt="User image" width="30" height="30">
                     </div>
-                    <p class="flex flex-center text-secondary">${user.email}</p>
+                    <p class="text-ellipsis">${user.email}</p>
                 </div>
-                <form>
-                    <select name="permission" class="input">
-                        <option value="READ">👁️</option>
-                        <option value="WRITE">✏️</option>
-                    </select>
-                </form>
+                <div class="share-buttons flex flex-center">
+                    <form>
+                        <select name="permission" class="input">
+                            <option value="READ">👁️</option>
+                            <option value="WRITE">✏️</option>
+                        </select>
+                    </form>
+                </div>
             </div>`
         shareElement = shareElement.firstElementChild;
 
@@ -61,7 +63,7 @@ const ShareModule = (function () {
             }
         );
 
-        shareElement.appendChild(deleteBtn);
+        shareElement.querySelector(".share-buttons").appendChild(deleteBtn);
         return shareElement;
     }
 
