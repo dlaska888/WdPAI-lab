@@ -1,24 +1,26 @@
-import IconModule from "../IconModule.js";
+import IconModule from "../../modules/IconModule.js";
 import ApiClient from "../../ApiClient.js";
 import NotificationService from "../../NotificationService.js";
 import ModalModule from "../ModalModule.js";
 import ChangeUsernameForm from "../forms/ChangeUsernameForm.js";
 import ChangePasswordForm from "../forms/ChangePasswordForm.js";
+import ChangeProfilePictureForm from "../forms/ChangeProfilePictureForm.js";
 
 const SettingsPage = (function () {
     async function render(pageId) {
         const userData = await fetchUserData();
         const {userName, email} = userData;
-        
+
         let page = document.createElement("div");
         page.innerHTML = `
             <section id="${pageId}" class="page flex flex-center">
                 <div class="profile-container flex-column flex-center hide-mobile">
                     <div class="profile-photo flex flex-center">
+                        <img src="http://localhost:8080/account/profile-picture" alt="Profile picture">
                     </div>
                     <div class="profile-info text-primary text-center">
-                        <h1>${userName || "Username"}</h1>
-                        <p>${email || "Email"}</p>
+                        <h1 class="profile-username">${userName || "Username"}</h1>
+                        <p class="profile-email">${email || "Email"}</p>
                     </div>
                 </div>
                 <div class="settings-container flex-column">
@@ -40,39 +42,41 @@ const SettingsPage = (function () {
                 </div>
             </section>`;
         page = page.firstElementChild;
-        
+
         page.querySelector("#btn-change-username")
             .addEventListener("click", () => changeUsernameForm());
 
         page.querySelector("#btn-change-password")
             .addEventListener("click", () => changePasswordForm());
 
-        const pictureSrc = await getUserPictureSource();
-        const pictureContainer = page.querySelector(".profile-photo");
+        const pictureContainer = page.querySelector(".profile-photo")
+        const profilePicture = pictureContainer.querySelector("img");
+        profilePicture.src = "http://localhost:8080/account/profile-picture#" + new Date().getTime();
         
-        if (!pictureSrc) {
+        profilePicture.onerror = async () => {
             pictureContainer.innerHTML = await IconModule.render("account");
-            return page;
-        }
+        };
 
-        const img = document.createElement("img");
-        img.src = pictureSrc;
+        pictureContainer.addEventListener("click", async () => await changeProfilePictureForm());
 
-        pictureContainer.appendChild(img);
-        
         return page;
     }
-    
-    function updateState(){
-        document.querySelector(".page-settings").click();
+
+    async function updateState() {
+        const page = document.querySelector("#page-settings");
+        page.replaceWith(await render("page-settings"));
     }
-    
-    async function changeUsernameForm(){
+
+    async function changeUsernameForm() {
         document.body.appendChild(await ModalModule.render(await ChangeUsernameForm.render()));
     }
 
-    async function changePasswordForm(){
+    async function changePasswordForm() {
         document.body.appendChild(await ModalModule.render(await ChangePasswordForm.render()));
+    }
+
+    async function changeProfilePictureForm() {
+        document.body.appendChild(await ModalModule.render(await ChangeProfilePictureForm.render()));
     }
 
     function fetchUserData() {
@@ -80,13 +84,6 @@ const SettingsPage = (function () {
             .then(result => {
                 if (result.success) return result.data;
                 NotificationService.notify(result.message || "Could not get user data", "error")
-            })
-    }
-
-    function getUserPictureSource() {
-        return ApiClient.fetchFile(`http://localhost:8080/account/profile-picture`)
-            .then(result => {
-                if (result.success) return `/account/profile-picture`;
             })
     }
 

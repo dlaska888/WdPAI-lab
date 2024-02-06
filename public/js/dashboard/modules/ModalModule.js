@@ -19,7 +19,6 @@ const ModalModule = (function () {
 
         if (closeOnSubmit) {
             forms.forEach((form) => form.addEventListener("submit", close));
-            console.log("bro");
         }
 
         modal.appendChild(modalContent);

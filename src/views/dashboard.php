@@ -31,11 +31,7 @@ use modules\IconModule;
             </button>
         </div>
         <div id="nav-content" class="nav-content flex-column flex-center">
-            <?= IconModule::render('account') ?>
-            <div class="profile-info text-secondary text-shadow text-center">
-                <h1>Silvio Suresh</h1>
-                <p>sureshsilvio@gmail.com</p>
-            </div>
+            <div id="nav-user-info"></div>
             <div class="line-horizontal-secondary"></div>
             <a id="btn-mobile-settings" href="#" class="page-settings btn-primary btn-nav btn-page" type="button"
                title="Settings">

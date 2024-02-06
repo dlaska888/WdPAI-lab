@@ -1,14 +1,17 @@
+import MobileNavigationModule from "./modules/MobileNavigationModule.js";
+
 const MobileNavigationHandler = (function () {
-    function initMobileNavigation() {
+    async function initMobileNavigation() {
         const navButtons = document.querySelectorAll(".btn-nav");
         const menuBtn = document.querySelector("#btn-mobile-menu");
         const nav = document.querySelector("#nav-mobile");
-
+        
         toggleNavOnClick(navButtons, menuBtn, nav);
 
-        // Collapse on click
         const collapseButtons = document.querySelectorAll(".btn-nav-collapse");
         collapseNavOnClick(collapseButtons, menuBtn, nav);
+
+        await MobileNavigationModule.updateState();
     }
     
     function toggleNavOnClick(navButtons, menuBtn, nav) {

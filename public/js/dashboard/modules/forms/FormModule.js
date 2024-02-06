@@ -41,6 +41,7 @@ const FormModule = (function () {
         const inputTypeMap = {
             'text': createTextInput,
             'select': createSelectInput,
+            'file': createFileInput, // Added file input type
             // Add more input types here
         };
 
@@ -72,6 +73,29 @@ const FormModule = (function () {
         }
 
         return select;
+    }
+
+    function createFileInput(field) {
+        let inputElement = document.createElement("div");
+        inputElement.innerHTML = `<!-- actual upload which is hidden -->
+            <div class="file-input flex flex-center">
+                <input id="picture-input" type="file" hidden/>
+                <label class="input flex" for="picture-input">Choose File</label>
+                <p id="file-chosen" class="text-secondary text-ellipsis"></p>
+            </div>`
+        inputElement = inputElement.firstElementChild;
+
+        const input = inputElement.querySelector("input");
+        Object.assign(input, field);
+        
+        const pictureInput = inputElement.querySelector("#picture-input");
+        const fileChosen = inputElement.querySelector("#file-chosen");
+
+        pictureInput.addEventListener('change', function() {
+            fileChosen.textContent = this.files[0].name;
+        });
+
+        return inputElement;
     }
 
     return {

@@ -26,8 +26,8 @@ class ApiClient {
             const jsonResponse = await response.json();
             return this.handleApiResponse(jsonResponse);
         } catch (error) {
-            const result = this.createResultObject(false, null, error.message);
-            console.error('API error:', result.message, result.data);
+            const result = this.createResultObject(false, null, 'Oops! Something went wrong');
+            console.error('API error:', error.message);
             return result;
         }
     }
@@ -43,8 +43,8 @@ class ApiClient {
             return this.createResultObject(false, null, response.message)
             
         } catch (error) {
-            const result = this.createResultObject(false, null, error.message);
-            console.error('File fetch error:', result.message, result.data);
+            const result = this.createResultObject(false, null, 'Oops! Something went wrong');
+            console.error('API error:', error.message);
             return result;
         }
     }

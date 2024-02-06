@@ -172,7 +172,8 @@ input[type="submit"] {
     max-width: 350px;
 }
 
-.input:focus {
+.input:focus,
+.input:hover {
     background-color: white;
     transform: scale(1.05);
     box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.1);
@@ -180,6 +181,20 @@ input[type="submit"] {
 
 select.input{
     padding: 0.75rem 1rem;
+}
+
+.file-input{
+    min-width: 0;
+    max-width: 100%;
+    gap: 1rem;
+    & #file-chosen{
+        margin-left: 0.3rem;
+        max-width: 70%;
+    }
+    
+    & .input{
+        max-width: max-content;
+    }
 }
 
 .footer-logo {

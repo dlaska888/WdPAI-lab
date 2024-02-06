@@ -20,10 +20,10 @@ CREATE TABLE linky_user
     password_hash      TEXT         NOT NULL,
     email_confirmed    BOOLEAN      NOT NULL DEFAULT FALSE,
     role               userrole     NOT NULL DEFAULT 'NORMAL'::userrole,
-    profile_picture_id UUID,
+    profile_picture_id UUID DEFAULT NULL,
     date_created       TIMESTAMP    NOT NULL DEFAULT now(),
     is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (profile_picture_id) REFERENCES file (id) ON DELETE CASCADE
+    FOREIGN KEY (profile_picture_id) REFERENCES file (id) ON DELETE SET DEFAULT
 );
 
 
