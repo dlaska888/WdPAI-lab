@@ -22,6 +22,7 @@ without the usage of frameworks.
 - [Usage](#usage)
 - [Features](#features)
 - [LinkyRouting](#linkyrouting)
+- [LinkyApp extention](#linkyapp-extention)
 - [Technologies](#technologies)
 - [Database diagram](#database-diagram)
 - [Contributing](#contributing)
@@ -77,6 +78,13 @@ routing framework, which facilitates adding endpoints to the application.
 
 Example usages are visible in the code (controllers), however it will be documented and moved as a separate project in 
 the future.
+
+## LinkyApp Extention
+
+Add links to LinkyApp in just one click - no need to switch between tabs.
+
+Currently it can be added locally - "linkyapp_extention" folder.
+Supported browsers: Google Chrome
 
 ## Technologies
 
