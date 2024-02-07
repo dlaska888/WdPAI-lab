@@ -6,9 +6,12 @@
 
 ## Project Description
 
-Introducing LinkyApp: Your One-Stop Bookmark Solution 
+Introducing LinkyApp: Your One-Stop Bookmark Solution
+
 Ever wondered how to manage your bookmarks across multiple browsers? LinkyApp is the answer. It is a web application that allows you to store and manage your bookmarks in one, organized space.
 
+The project's objective is to provide a deep understanding of fundamental concepts in full-stack web development, 
+without the usage of frameworks.  
 
 ## Table of Contents
 
@@ -17,12 +20,20 @@ Ever wondered how to manage your bookmarks across multiple browsers? LinkyApp is
 - [Getting Started](#getting-started)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Features](#features)
+- [LinkyRouting](#linkyrouting)
+- [LinkyApp extention](#linkyapp-extention)
+- [Technologies](#technologies)
+- [Database diagram](#database-diagram)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Getting Started
 
-The app will be hosted on a server in the future. As of PR#1, you can clone the repository and run the app locally - see [Installation](#installation).
+The app will be hosted in the future. 
+
+For now, you can download and run the app locally - see 
+[Installation](#installation).
 
 ## Installation
 
@@ -39,7 +50,60 @@ Or if you want to run it in the background:
 
 ## Usage
 
-As of PR#1, you can interact with the app without having to log in. Not all features are implemented yet, but you can interact with a "view" version of the app - navigate between pages, toggle and scroll through bookmarks.
+LinkyApp is a management system for web links. You can add and manage links, group them and collaborate with other 
+users. All the project's features are listed in [Features](#features).
+
+## Features
+
+- User accounts
+  - register
+  - login
+  - session
+- Saving web links
+  - add
+  - edit
+  - delete
+- Grouping links
+- Sharing link groups and collaborating with other users
+- My account settings
+  - change username
+  - change password
+  - more to come !
+
+## LinkyRouting
+
+Despite the framework-free approach, during the creation of LinkyApp, I stumbled upon several issues with automation of
+development processes. One of them was adding routes for web API. That is how LinkyRouting was born, a simple 
+routing framework, which facilitates adding endpoints to the application.
+
+Example usages are visible in the code (controllers), however it will be documented and moved as a separate project in 
+the future.
+
+## LinkyApp Extention
+
+Add links to LinkyApp in just one click - no need to switch between tabs.
+
+Currently it can be added locally - "linkyapp_extention" folder.
+Supported browsers: Google Chrome
+
+## Technologies
+
+- Frontend
+  - HTML 5
+  - CSS 3
+  - vanilla Javascript
+- Backend (API)
+  - PHP 8
+- Database
+  - PostgreSQL
+- Web server 
+  - Nginx
+- Containerization
+  - Docker
+
+## Database diagram
+
+![img.png](linkyapp_diagram.png)
 
 ## Contributing
 

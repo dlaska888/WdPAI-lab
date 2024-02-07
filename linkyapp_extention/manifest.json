@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Linkyapp One Click Save",
+  "version": "1.0",
+  "description": "Add links to LinkyApp in just one click - no need to switch between tabs.",
+  "icons": {
+    "48": "icon.png"
+  },
+  "host_permissions": [
+    "http://localhost:8080/"
+  ],
+  "permissions": [
+    "activeTab",
+    "cookies"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icon.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
+  

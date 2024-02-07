@@ -1,0 +1,55 @@
+.notification {
+    visibility: hidden;
+    position: fixed;
+    top: 0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 90%;
+    padding: 1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.notification.error {
+    background-color: #ff6262; /* Light Red */
+}
+
+.notification.okay {
+    background-color: #53d15f; /* Light Green */
+}
+
+.notification.info {
+    background-color: #6fc2ff; /* Light Blue */
+}
+
+.notification.show {
+    visibility: visible; /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
+    However, delay the fade out process for 4.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
+    animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+    from {opacity: 0;}
+    to { opacity: 1;}
+}
+
+@keyframes fadein {
+    from { opacity: 0;}
+    to { opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from { opacity: 1;}
+    to { opacity: 0;}
+}
+
+@keyframes fadeout {
+    from { opacity: 1;}
+    to { opacity: 0;}
+}

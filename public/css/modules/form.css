@@ -1,0 +1,26 @@
+.main-form {
+    height: 100%;
+    width: 100%;
+    gap: 2rem;
+    padding: 2rem 0;
+    justify-content: space-evenly;
+
+    border-radius: 1rem;
+    background-color: var(--primary);
+}
+
+.input-container {
+    width: 75%;
+    gap: 1rem;
+}
+
+.input {
+    width: 100%;
+}
+
+
+@media (max-width: 768px) {
+    .input-container {
+        width: 100%;
+    }
+}

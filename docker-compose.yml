@@ -9,12 +9,54 @@ services:
       - "8080:80"
     volumes:
       - .:/app/
-    links:
-      - php
-
+    networks:
+      - app
   php:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
+    environment:
+      XDEBUG_MODE: debug
+      XDEBUG_CONFIG: mode=develop,coverage,debug idekey=docker start_with_request=yes log=/dev/stdout log_level=0 client_port=9003 client_host=host.docker.internal
     volumes:
       - .:/app/
+    networks:
+      - app
+  postgres:
+    image: postgres:alpine3.18
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - app
+      - database
+    volumes:
+      - ./docker/postgres/:/docker-entrypoint-initdb.d/
+      - pgdata:/var/lib/postgresql/data
+  # wait a second after first compose before accessing in browser
+  pgadmin:
+    image: dpage/pgadmin4:7.8
+    container_name: pgadmin
+    restart: "unless-stopped"
+    ports:
+      - "5050:80"
+    networks:
+      - database
+    volumes:
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_USE_MASTER_PASSWORD}
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: ${PGADMIN_USE_MASTER_PASSWORD}
+
+networks:
+  app:
+  database:
+
+volumes:
+  pgdata:

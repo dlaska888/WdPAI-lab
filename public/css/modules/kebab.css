@@ -1,0 +1,53 @@
+.kebab {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 16px;
+}
+
+.kebab figure {
+    width: 6px;
+    height: 6px;
+    border-radius: 5px;
+    background: var(--tertiary);
+    margin: 3px 0;
+}
+
+.dropdown {
+    position: absolute;
+    top: 2rem;
+    right: 1rem;
+    transition: all 0.25s ease-out;
+    transform: scale(0);
+    transform-origin: 100% 0;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.16), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+    background: white;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    
+    & li {
+        display: block;
+        width: 100%;
+        font-size: 1.25rem;    
+    }
+    
+    & button {
+        width: 100%;
+        justify-content: space-around;
+        gap: 1rem;
+        color: var(--tertiary);
+        padding: 0.5rem !important;
+    }
+    
+    & svg {
+        width: 25px;
+        height: 25px;
+    }
+}
+
+.dropdown.active {
+    transform: scale(1);
+    transition: all 0.25s cubic-bezier(.5,1.8,.9,.8);
+}
+

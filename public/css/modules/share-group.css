@@ -1,0 +1,84 @@
+.shares-container {
+    gap: 1.5rem;
+
+    & .share-form,
+    & .group-shares,
+    & .group-share {
+        gap: 1rem;
+        width: 100%;
+    }
+
+    & h2 {
+        font-size: 2rem;
+    }
+
+    & .group-shares {
+        max-height: 20vh;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    & .group-share {
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        align-items: center;
+        justify-content: space-between;
+
+        background: var(--secondary);
+        box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3);
+        font-size: 1.1rem;
+
+        & path {
+            fill: var(--primary);
+        }
+        
+        & img{
+            border-radius: 50%;
+        }
+
+        & .share-info {
+            gap: 0.5rem;
+            min-width: 0;
+
+            & .img-container {
+                padding: 0.25rem;
+            }
+        }
+
+        & .share-buttons {
+            gap: 1rem;
+
+            & button {
+                padding: 0;
+            }
+        }
+    }
+
+    & select {
+        width: auto;
+    }
+
+    @media (max-width: 400px) {
+        .share-form {
+            padding: 0;
+            flex-wrap: wrap;
+
+            & .input-container {
+                flex: 1 1 100%;
+            }
+        }
+
+        .group-share {
+            gap: 0.25rem;
+            flex-wrap: wrap;
+
+            & .share-info {
+                flex: 1 1 100%;
+            }
+            
+            & .share-buttons{
+                margin: auto;
+            }
+        }
+    }
+}
