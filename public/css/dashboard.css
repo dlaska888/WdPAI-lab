@@ -64,7 +64,6 @@ body {
 				gap: 1rem;
 				
 				& .profile-photo {
-					display: inline-block;
 					border-radius: 50%;
 					overflow: hidden;
 					width: 30vw;
@@ -350,9 +349,10 @@ main {
 
 			@media (max-width: 768px) {
 				& {
-					padding: 1rem;
+					padding: 2rem;
 					margin: 1rem;
 					width: 90%;
+					gap: 1rem;
 					
 					& .profile-photo{
 						width: 40vw;
