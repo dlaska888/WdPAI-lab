@@ -2,22 +2,13 @@
 
 namespace src\Controllers;
 
-use DateTime;
 use src\Enums\GroupPermissionLevel;
 use src\Enums\UserRole;
 use src\exceptions\BadRequestException;
-use src\exceptions\NotFoundException;
 use src\exceptions\UnauthorizedException;
 use src\Handlers\UserSessionHandler;
-use src\LinkyRouting\attributes\controller\ApiController;
-use src\Models\Entities\Link;
-use src\Models\Entities\LinkGroup;
-use src\Models\Entities\LinkGroupShare;
-use src\Repos\LinkGroupRepo;
-use src\Repos\LinkGroupShareRepo;
-use src\Repos\LinkRepo;
-use src\Repos\UserRepo;
 use src\LinkyRouting\attributes\authorization\Authorize;
+use src\LinkyRouting\attributes\controller\ApiController;
 use src\LinkyRouting\attributes\httpMethod\HttpDelete;
 use src\LinkyRouting\attributes\httpMethod\HttpGet;
 use src\LinkyRouting\attributes\httpMethod\HttpPost;
@@ -25,6 +16,13 @@ use src\LinkyRouting\attributes\httpMethod\HttpPut;
 use src\LinkyRouting\attributes\Route;
 use src\LinkyRouting\enums\HttpStatusCode;
 use src\LinkyRouting\Responses\Json;
+use src\Models\Entities\Link;
+use src\Models\Entities\LinkGroup;
+use src\Models\Entities\LinkGroupShare;
+use src\Repos\LinkGroupRepo;
+use src\Repos\LinkGroupShareRepo;
+use src\Repos\LinkRepo;
+use src\Repos\UserRepo;
 use src\Validators\AddLinkGroupShareValidator;
 use src\Validators\AddLinkGroupValidator;
 use src\Validators\AddLinkValidator;
@@ -275,8 +273,8 @@ class LinkController extends AppController
             throw new UnauthorizedException("User is not authorized to share this group");
         }
 
-        if ($userId === $shareToUser->id ||
-            $this->checkGroupAccess($shareToUser->id, $groupId, $permissionLevel)) {
+        if ($this->checkGroupAccess($shareToUser->id, $groupId, $permissionLevel) ||
+            $userId === $shareToUser->id) {
             throw new BadRequestException("Group is already shared to this user");
         }
 
@@ -292,14 +290,13 @@ class LinkController extends AppController
     #[Route("link-group/{groupId}/shares/{shareId}")]
     public function updateGroupShare(string $groupId, string $shareId): Json
     {
-        $userId =  $this->sessionHandler->getUserId();
+        $userId = $this->sessionHandler->getUserId();
+        $share = $this->findGroupShare($groupId, $shareId);
 
-        if (!$this->checkGroupAccess($userId, $groupId, GroupPermissionLevel::WRITE)) {
+        if (!$this->checkGroupAccess($userId, $groupId, GroupPermissionLevel::WRITE) ||
+            $share->userId === $userId) {
             throw new UnauthorizedException("User is not authorized to edit this share");
         }
-
-        $share = $this->findGroupShare($groupId, $shareId);
-        $this->userRepo->findById($share->userId); // check if user exists
 
         $shareData = $this->getRequestBody();
         $this->validateRequestData($shareData, UpdateLinkGroupShareValidator::class);
@@ -312,13 +309,13 @@ class LinkController extends AppController
     #[Route("link-group/{groupId}/shares/{shareId}")]
     public function deleteGroupShare(string $groupId, string $shareId): Json
     {
-        $userId =  $this->sessionHandler->getUserId();
+        $userId = $this->sessionHandler->getUserId();
+        $share = $this->findGroupShare($groupId, $shareId); // check if share exists
 
-        if (!$this->checkGroupAccess($userId, $groupId, GroupPermissionLevel::WRITE)) {
+        if (!$this->checkGroupAccess($userId, $groupId, GroupPermissionLevel::WRITE) ||
+            $share->userId === $userId) {
             throw new UnauthorizedException("User is not authorized to delete this share");
         }
-
-        $this->findGroupShare($groupId, $shareId); // check if share exists
 
         return new Json($this->linkGroupShareRepo->delete($shareId), HttpStatusCode::OK);
     }
@@ -358,11 +355,22 @@ class LinkController extends AppController
     //TODO refactor to some kind of mapper
     private function resolveEditable(LinkGroup $linkGroup): LinkGroup
     {
+        $userId = $this->sessionHandler->getUserId();
+
         $linkGroup->editable = $this->checkGroupAccess(
-            $this->sessionHandler->getUserId(),
+            $userId,
             $linkGroup->id,
             GroupPermissionLevel::WRITE
         );
+
+        if ($linkGroup->editable) {
+            // remove self share
+            $linkGroup->groupShares = array_values(array_filter($linkGroup->groupShares,
+                fn($share) => $share->userId !== $userId));
+        } else {
+            // cannot view group shares with read-only permissions
+            $linkGroup->groupShares = [];
+        }
 
         return $linkGroup;
     }

@@ -18,7 +18,7 @@ const GroupSharesModule = (function () {
                     </div>
                     <select name="permission" class="input">
                         <option value="READ">👁️</option>
-                        <option value="WRITE">✏️</option>
+                        ${group.editable ? '<option value="WRITE">✏️</option>' : ''}
                     </select>
                 </form>
                 <div class="group-shares flex-column"></div>

@@ -14,7 +14,7 @@ const SettingsPage = (function () {
         let page = document.createElement("div");
         page.innerHTML = `
             <section id="${pageId}" class="page flex flex-center">
-                <div class="profile-container flex-column flex-center hide-mobile">
+                <div class="profile-container flex-column flex-center">
                     <div class="profile-photo flex flex-center">
                         <img src="http://localhost:8080/account/profile-picture" alt="Profile picture">
                     </div>
@@ -23,7 +23,7 @@ const SettingsPage = (function () {
                         <p class="profile-email">${email || "Email"}</p>
                     </div>
                 </div>
-                <div class="settings-container flex-column">
+                <div class="settings-container flex-column flex-center">
                     <button id="btn-change-username" class="btn-primary" title="Change Username">
                         <span class="btn-primary-top">Change Username</span>
                     </button>

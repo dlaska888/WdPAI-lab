@@ -49,8 +49,9 @@ const GroupModule = (function () {
         if (editable) {
             groupOptions.push({optionTitle: "Add", optionIcon: "add", callback: () => addLinkForm(group)});
             groupOptions.push({optionTitle: "Edit", optionIcon: "edit", callback: () => editGroupForm(group)});
-            groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupShares(group)});
         }
+
+        groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupShares(group)});
 
         if (shared) {
             const ownerData = await fetchUserDataById(userId);

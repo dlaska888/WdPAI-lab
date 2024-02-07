@@ -31,6 +31,10 @@
         & path {
             fill: var(--primary);
         }
+        
+        & img{
+            border-radius: 50%;
+        }
 
         & .share-info {
             gap: 0.5rem;
