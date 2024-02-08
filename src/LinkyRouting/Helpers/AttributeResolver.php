@@ -1,14 +1,14 @@
 <?php
 
-namespace src\LinkyRouting\helpers;
+namespace src\LinkyRouting\Helpers;
 
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
-use src\LinkyRouting\attributes\authorization\Authorize;
-use src\LinkyRouting\attributes\authorization\SkipAuthorization;
-use src\LinkyRouting\attributes\controller\Controller;
-use src\LinkyRouting\attributes\httpMethod\HttpMethod;
+use src\LinkyRouting\Attributes\Authorization\Authorize;
+use src\LinkyRouting\Attributes\Authorization\SkipAuthorization;
+use src\LinkyRouting\Attributes\Controller\Controller;
+use src\LinkyRouting\Attributes\HttpMethod\HttpMethod;
 use src\LinkyRouting\Route;
 
 class AttributeResolver
@@ -25,7 +25,7 @@ class AttributeResolver
 
         foreach ($controllerReflection->getMethods() as $method) {
             $methodName = $method->getName();
-            $routeAttributes = $method->getAttributes(\src\LinkyRouting\attributes\Route::class);
+            $routeAttributes = $method->getAttributes(\src\LinkyRouting\Attributes\Route::class);
 
             if (empty($routeAttributes)) {
                 continue;

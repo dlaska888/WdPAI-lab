@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting\exceptions;
+namespace src\LinkyRouting\Exceptions;
 
 use Exception;
 

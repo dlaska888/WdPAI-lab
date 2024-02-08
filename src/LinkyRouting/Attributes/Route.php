@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting\attributes;
+namespace src\LinkyRouting\Attributes;
 
 use Attribute;
 

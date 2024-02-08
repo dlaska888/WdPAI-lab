@@ -1,8 +1,8 @@
 <?php
 
-namespace src\LinkyRouting\middleware;
+namespace src\LinkyRouting\Middleware;
 
-use src\LinkyRouting\enums\HttpStatusCode;
+use src\LinkyRouting\Enums\HttpStatusCode;
 use src\LinkyRouting\Interfaces\ISessionHandler;
 use src\LinkyRouting\Request;
 use src\LinkyRouting\Responses\Error;
