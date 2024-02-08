@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules;
+namespace src\Views\Modules;
 
 class FooterModule
 {

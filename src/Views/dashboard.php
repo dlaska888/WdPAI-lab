@@ -1,7 +1,7 @@
 <?php
 
-use modules\FooterModule;
-use modules\IconModule;
+use src\Views\Modules\FooterModule;
+use src\Views\Modules\IconModule;
 
 ?>
 <!DOCTYPE html>

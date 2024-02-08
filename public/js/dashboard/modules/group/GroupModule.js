@@ -61,7 +61,7 @@ const GroupModule = (function () {
             const pictureContainer = groupElement.querySelector(".img-container");
             const ownerImg = document.createElement("img");
 
-            ownerImg.src = `http://localhost:8080/account/public/${userId}/profile-picture`;
+            ownerImg.src = `/account/public/${userId}/profile-picture`;
             ownerImg.height = 30;
             ownerImg.width = 30;
 
@@ -97,7 +97,7 @@ const GroupModule = (function () {
     }
 
     function updateState(groupId) {
-        ApiClient.fetchData(`http://localhost:8080/link-group/${groupId}`)
+        ApiClient.fetchData(`/link-group/${groupId}`)
             .then(async response => {
                 if (response.success) {
                     const groupElement = document.querySelector(`[id="${groupId}"]`);
@@ -120,7 +120,7 @@ const GroupModule = (function () {
     }
 
     function fetchUserDataById(userId) {
-        return ApiClient.fetchData(`http://localhost:8080/account/public/${userId}`)
+        return ApiClient.fetchData(`/account/public/${userId}`)
             .then(result => {
                 if (result.success) return result.data;
                 NotificationService.notify(result.message || "Could not get user data", "error")

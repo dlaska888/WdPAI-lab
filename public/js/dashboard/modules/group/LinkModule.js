@@ -52,7 +52,7 @@ const LinkModule = (function () {
     }
 
     function updateState(linkId, groupId) {
-        ApiClient.fetchData(`http://localhost:8080/link-group/${groupId}/link/${linkId}`)
+        ApiClient.fetchData(`/link-group/${groupId}/link/${linkId}`)
             .then(async response => {
                 if (response.success) {
                     const linkElement = document.querySelector(`[id="${linkId}"]`);

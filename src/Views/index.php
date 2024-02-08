@@ -1,8 +1,6 @@
 <?php
 
-use src\Helpers\ModuleRenderer;
-
-?>
+use src\Views\Modules\IconModule; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,7 +38,7 @@ use src\Helpers\ModuleRenderer;
 	</main>
 	<footer class="footer-logo flex-column flex-center">
 		<a href="index" title="LinkyApp" class="logo-text flex">
-			<?= ModuleRenderer::renderIcon('logo') ?>
+			<?= IconModule::render('logo') ?>
 			<p>LinkyApp</p>
 		</a>
 		<div class="footer-policy flex">
