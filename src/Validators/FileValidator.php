@@ -5,7 +5,7 @@ namespace src\Validators;
 class FileValidator extends BaseValidator
 {
     private const MAX_FILE_SIZE = 1024 * 1024;
-    private const SUPPORTED_TYPES = ['image/png', 'image/jpeg'];
+    private const SUPPORTED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
 
     protected function addValidation(): void
     {

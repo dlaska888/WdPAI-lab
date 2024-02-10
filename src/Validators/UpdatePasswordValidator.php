@@ -9,9 +9,15 @@ class UpdatePasswordValidator extends BaseValidator
     {
         $this
             ->notNull('password')
+            
             ->notNull('newPassword')
             ->minLength('newPassword', 8)
-            ->maxLength('newPassword', 255)
+            ->maxLength('newPassword', 20)
+            ->hasNumber('newPassword')
+            ->hasLowerCase('newPassword', 2)
+            ->hasUpperCase('newPassword', 2)
+            ->hasSpecialCharacter('newPassword')
+            
             ->notNull('newPasswordConfirm')
             ->equals('newPassword', 'newPasswordConfirm', 'Passwords do not match');
     }

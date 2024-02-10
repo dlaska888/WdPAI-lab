@@ -7,7 +7,7 @@ class UpdateLinkGroupShareValidator extends BaseValidator
     public function addValidation(): void
     {
         $this
-            ->emailAddress('email')
+            ->notNull('permission')
             ->validatePermission('permission');
     }
 }

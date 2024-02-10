@@ -131,4 +131,49 @@ abstract class BaseValidator
 
         return $this;
     }
+
+    public function regex(string $field, string $pattern, string $message = 'Value does not match the required pattern.'): BaseValidator
+    {
+        if ($this->hasValue($field) && !preg_match($pattern, $this->data[$field])) {
+            $this->addError($field, $message);
+        }
+
+        return $this;
+    }
+
+    public function hasUpperCase(string $field, int $count = 1, string $message = 'Password must contain at least %d lowercase letter(s).'): BaseValidator
+    {
+        if ($this->hasValue($field) && preg_match_all('/[A-Z]/', $this->data[$field]) < $count) {
+            $this->addError($field, sprintf($message, $count));
+        }
+
+        return $this;
+    }
+
+    public function hasLowerCase(string $field, int $count = 1, string $message = 'Password must contain at least %d lowercase letter(s).'): BaseValidator
+    {
+        if ($this->hasValue($field) && preg_match_all('/[a-z]/', $this->data[$field]) < $count) {
+            $this->addError($field, sprintf($message, $count));
+        }
+
+        return $this;
+    }
+
+    public function hasNumber(string $field, int $count = 1, string $message = 'Password must contain at least %d number(s).'): BaseValidator
+    {
+        if ($this->hasValue($field) && preg_match_all('/[0-9]/', $this->data[$field]) < $count) {
+            $this->addError($field, sprintf($message, $count));
+        }
+
+        return $this;
+    }
+
+    public function hasSpecialCharacter(string $field, int $count = 1, string $message = 'Password must contain at least %d special character(s).'): BaseValidator
+    {
+        if ($this->hasValue($field) && preg_match_all('/[^A-Za-z0-9]/', $this->data[$field]) < $count) {
+            $this->addError($field, sprintf($message, $count));
+        }
+
+        return $this;
+    }
 }
