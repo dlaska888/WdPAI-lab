@@ -6,10 +6,10 @@ const GroupSearchModule = (function () {
     let searchTimer; // Variable to store the timer
     let loading = false;
     
-    async function render(pageId, groupsEndpoint) {
+    async function render(pageId, groupsEndpoint, classes = null) {
         let searchBar = document.createElement("div");
         searchBar.innerHTML = `
-        <form class="search-container flex flex-center hide-mobile">
+        <form class="search-container flex flex-center ${classes}">
             <input type="text" name="name" class="input" placeholder="Search groups...">
         </form>`
         searchBar = searchBar.firstElementChild;

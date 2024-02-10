@@ -2,7 +2,7 @@ import IconModule from "./IconModule.js";
 import ApiClient from "../ApiClient.js";
 import NotificationService from "../NotificationService.js";
 
-const MobileNavigationModule = (function () {
+const MobileUserInfo = (function () {
     async function render() {
         const userData = await fetchUserData();
         const {userName, email} = userData;
@@ -51,4 +51,4 @@ const MobileNavigationModule = (function () {
     };
 }());
 
-export default MobileNavigationModule;
+export default MobileUserInfo;

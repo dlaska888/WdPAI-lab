@@ -35,8 +35,6 @@ body {
 		height: 100vh;
 	}
 
-	/* Initial state for the element */
-
 	& .nav-container {
 		padding: 1rem;
 		min-height: 95vh;
@@ -48,7 +46,20 @@ body {
 			gap: 1rem;
 			align-items: center;
 			padding-bottom: 1rem;
+            
+            & .btn-hamburger{
+                margin: 0.5rem;
+            }
+            
+            & .btn-hover-dim{
+                padding: 0;
+            }
 
+			& .group-buttons{
+				width: 100%;
+				gap:1rem;
+			}
+			
 			& .search-container {
 				justify-content: center;
 				& .input{

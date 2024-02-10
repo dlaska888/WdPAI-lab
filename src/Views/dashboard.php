@@ -23,12 +23,7 @@ use src\Views\Modules\IconModule;
             <button id="btn-mobile-menu" class="btn-nav btn-hamburger">
                 <span class="bar"></span>
             </button>
-            <button class="search-container flex flex-center btn-nav-collapse">
-                <input type="text" name="search" class="input" placeholder="Search">
-            </button>
-            <button id="btn-mobile-search" class="flex flex-center btn-nav-collapse">
-                <?= IconModule::render('search') ?>
-            </button>
+            <div class="group-buttons"></div>
         </div>
         <div id="nav-content" class="nav-content flex-column flex-center">
             <div id="nav-user-info"></div>

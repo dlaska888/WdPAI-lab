@@ -2,7 +2,7 @@ import FormModule from "./FormModule.js";
 import NotificationService from "../../NotificationService.js";
 import ApiClient from "../../ApiClient.js";
 import SettingsPage from "../pages/SettingsPage.js";
-import MobileNavigationModule from "../MobileNavigationModule.js";
+import MobileUserInfo from "../MobileUserInfo.js";
 
 const ChangeProfilePictureForm = (function () {
     async function submit(formData) {
@@ -20,7 +20,7 @@ const ChangeProfilePictureForm = (function () {
 
             if (response.success) {
                 await SettingsPage.updateState();
-                await MobileNavigationModule.updateState();
+                await MobileUserInfo.updateState();
                 
                 NotificationService.notify("Profile picture uploaded!", "okay");
             } else {

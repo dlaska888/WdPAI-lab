@@ -15,7 +15,7 @@ const LinksPage = (function () {
             </section>`;
         page = page.firstElementChild;
 
-        page.prepend(await GroupSearchModule.render(pageId, groupsEndpoint));
+        page.prepend(await GroupSearchModule.render(pageId, groupsEndpoint, "hide-mobile"));
 
         if (!shared) {
             page.querySelector(".search-container")
@@ -34,6 +34,8 @@ const LinksPage = (function () {
         for (const group of groups) {
             groupsContainer.appendChild(await GroupModule.render(group, shared));
         }
+        
+        await renderButtonsMobileNav(pageId, groupsEndpoint, shared);
 
         return page;
     }
@@ -46,6 +48,25 @@ const LinksPage = (function () {
 
     async function addGroupForm() {
         document.body.appendChild(await ModalModule.render(await AddGroupForm.render()));
+    }
+    
+    async function renderButtonsMobileNav(pageId, groupsEndpoint, shared){
+        const navMobile = document.querySelector("#nav-mobile");
+        const groupButtons = document.createElement("div");
+        
+        groupButtons.classList = "group-buttons flex flex-center";
+        groupButtons.appendChild(await GroupSearchModule.render(pageId, groupsEndpoint, "btn-nav-collapse"));
+
+        if (!shared) {
+            groupButtons.appendChild(await ButtonModule.render("add", addGroupForm, "btn-nav-collapse"));
+        }
+
+        groupButtons.addEventListener("click", () => {
+            navMobile.classList.remove("expand");
+            navMobile.querySelector("#btn-mobile-menu").classList.remove("open");
+        })
+        
+        navMobile.querySelector(".group-buttons").replaceWith(groupButtons);
     }
 
     return {
