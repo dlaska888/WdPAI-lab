@@ -31,6 +31,7 @@ const GroupModule = (function () {
                     </div>
                 </div>
                 <div class="group-links flex-column">
+                    ${!links.length ? `<p class="link-placeholder text-center">Add links by clicking on three dots</p>` : ''}
                 </div>
             </div>`
         groupElement = groupElement.firstElementChild;

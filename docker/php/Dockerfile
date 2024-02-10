@@ -38,6 +38,6 @@ RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
 
 # Copy the application code
-COPY --chown=www-data . /app
+COPY . /app
 
 VOLUME ["/app"]

@@ -6,7 +6,7 @@
 @import "modules/modal.css";
 
 body {
-	height: 100vh;
+	height: 100dvh;
 	z-index: 1;
 	background-color: var(--grey);
 
@@ -32,7 +32,7 @@ body {
 	}
 
 	&.expand {
-		height: 100vh;
+		height: 100dvh;
 	}
 
 	& .nav-container {
@@ -109,7 +109,7 @@ body {
 }
 
 aside {
-	height: 100vh;
+	height: 100dvh;
 	padding: 0.75rem;
 	background-color: var(--primary);
 	color: #fff;
@@ -156,7 +156,7 @@ aside {
 main {
 	position: relative;
 	width: 100%;
-	min-height: 100vh;
+	min-height: 100dvh;
 	overflow: scroll;
 	padding: 1rem;
 
@@ -213,6 +213,18 @@ main {
 				padding: 0.5rem;
 				grid-template-columns: repeat(auto-fit, minmax(200px, 600px));
 			}
+		}
+
+		& .link-placeholder{
+			width: 100%;
+			align-self: center;
+
+			padding: 1rem;
+			border-radius: 1rem;
+
+			font-size: 1.2rem;
+			color: var(--tertiary);
+			background-color: rgb(169, 169, 169, 0.1);
 		}
 
 		& .group {

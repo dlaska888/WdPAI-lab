@@ -40,7 +40,7 @@ input[type="submit"] {
     --primary-dark: #00a292;
     --primary-light: #80dfd9;
     --secondary: #fff;
-    --tertiary: #a9a9a9;
+    --tertiary: rgba(169, 169, 169, 0.36);
     --grey: #eee;
 }
 

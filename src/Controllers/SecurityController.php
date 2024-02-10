@@ -94,7 +94,7 @@ class SecurityController extends AppController
 
         $linkGroup = new LinkGroup();
         $linkGroup->userId = $user->id;
-        $linkGroup->name = "No group";
+        $linkGroup->name = "Favourites";
 
         $this->linkGroupRepo->insert($linkGroup);
 
