@@ -29,7 +29,7 @@ const AddGroupForm = (function () {
 
     function render() {
         const formFields = [
-            { type: "text", name: "name", placeholder: "Group Name", required: true }
+            { type: "text", name: "name", placeholder: "Group Name", minLength: 3, maxLength: 50, required: true }
         ];
 
         return FormModule.render(submit, "Add Group", formFields);

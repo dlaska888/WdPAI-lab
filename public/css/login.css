@@ -1,7 +1,7 @@
 @import "modules/form.css";
 
 body {
-	height: 100vh;
+	height: 100dvh;
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-template-rows: 0.5fr 2fr 0.5fr;

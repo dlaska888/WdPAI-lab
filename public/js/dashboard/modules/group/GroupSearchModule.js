@@ -14,12 +14,14 @@ const GroupSearchModule = (function () {
         </form>`
         searchBar = searchBar.firstElementChild;
 
-        searchBar.addEventListener("input", () => {
+        searchBar.addEventListener("input", (event) => {
+            event.preventDefault();
             clearTimeout(searchTimer); // Clear the previous timer
             searchTimer = setTimeout(() => {
                 search(searchBar, pageId, groupsEndpoint);
             }, 500); // Adjust the delay as needed
         });
+        searchBar.addEventListener("submit", (e) => {e.preventDefault()})
 
         return searchBar;
     }
