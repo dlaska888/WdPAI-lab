@@ -141,7 +141,7 @@ abstract class BaseValidator
         return $this;
     }
 
-    public function hasUpperCase(string $field, int $count = 1, string $message = 'Password must contain at least %d lowercase letter(s).'): BaseValidator
+    public function hasUpperCase(string $field, int $count = 1, string $message = 'Password must contain at least %d uppercase letter(s).'): BaseValidator
     {
         if ($this->hasValue($field) && preg_match_all('/[A-Z]/', $this->data[$field]) < $count) {
             $this->addError($field, sprintf($message, $count));
