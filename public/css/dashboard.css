@@ -54,7 +54,7 @@ body {
                 padding: 0;
             }
 
-			& .group-buttons{
+			& .groups-buttons{
 				width: 100%;
 				gap:1rem;
 				
@@ -247,6 +247,10 @@ main {
 					gap: 1rem;
 					font-size: 1.5rem;
 				}
+				
+				& .group-buttons{
+					gap: 1rem;
+				}
 
 				& .btn-group-collapse {
 					transition: 0.5s;
@@ -306,10 +310,22 @@ main {
 				
 				& .link-buttons {
 					gap: 1rem;
-					
-					& path{
-						fill: var(--primary);
+				}
+				
+				& .link-edit {
+					& .btn-link {
+						display: none;
 					}
+					
+					& .btn-drag,
+					.btn-edit,
+					.btn-delete {
+						display: flex;
+					}
+				}
+
+				& path{
+					fill: var(--primary);
 				}
 
 				&.collapse {
@@ -318,6 +334,17 @@ main {
 					padding: 0;
 					margin: 0;
 				}
+			}
+		}
+
+		& .group-edit{
+			& .kebab{
+				display: none;
+			}
+
+			& .done-btn,
+			.cancel-btn{
+				display: block;
 			}
 		}
 	}

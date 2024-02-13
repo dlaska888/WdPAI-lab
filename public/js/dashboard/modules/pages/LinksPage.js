@@ -61,21 +61,21 @@ const LinksPage = (function () {
 
     async function renderButtonsMobileNav(pageId, groupsEndpoint, shared) {
         const navMobile = document.querySelector("#nav-mobile");
-        const groupButtons = document.createElement("div");
+        const groupsButtons = document.createElement("div");
 
-        groupButtons.classList = "group-buttons flex flex-center";
-        groupButtons.appendChild(await GroupSearchModule.render(pageId, groupsEndpoint, "btn-nav-collapse"));
+        groupsButtons.classList = "groups-buttons flex flex-center";
+        groupsButtons.appendChild(await GroupSearchModule.render(pageId, groupsEndpoint, "btn-nav-collapse"));
 
         if (!shared) {
-            groupButtons.appendChild(await ButtonModule.render("add", addGroupForm, "btn-nav-collapse"));
+            groupsButtons.appendChild(await ButtonModule.render("add", addGroupForm, "btn-nav-collapse"));
         }
 
-        groupButtons.addEventListener("click", () => {
+        groupsButtons.addEventListener("click", () => {
             navMobile.classList.remove("expand");
             navMobile.querySelector("#btn-mobile-menu").classList.remove("open");
         })
 
-        navMobile.querySelector(".group-buttons").replaceWith(groupButtons);
+        navMobile.querySelector(".groups-buttons").replaceWith(groupsButtons);
     }
 
     return {

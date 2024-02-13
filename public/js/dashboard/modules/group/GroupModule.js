@@ -3,7 +3,6 @@ import ButtonModule from "../ButtonModule.js";
 import AddLinkForm from "../forms/AddLinkForm.js";
 import ModalModule from "../ModalModule.js";
 import DeleteGroupForm from "../forms/DeleteGroupForm.js";
-import EditGroupForm from "../forms/EditGroupForm.js";
 import ApiClient from "../../ApiClient.js";
 import NotificationService from "../../NotificationService.js";
 import IconModule from "../IconModule.js";
@@ -29,6 +28,7 @@ const GroupModule = (function () {
                         <p class="owner-name text-tertiary text-ellipsis"></p>
                         <div class="img-container flex flex-center"></div>
                     </div>
+                    <div class="group-buttons flex flex-center"></div>
                 </div>
                 <div class="group-links flex-column">
                     ${!links.length ? `<p class="link-placeholder text-center">Add links by clicking on three dots</p>` : ''}
@@ -39,17 +39,27 @@ const GroupModule = (function () {
         groupElement.querySelector(".group-name")
             .prepend(await ButtonModule.render("collapse", collapseGroup, "btn-group-collapse"));
 
+        const groupLinks = groupElement.querySelector(".group-links");
         for (const link of links) {
-            groupElement.querySelector(".group-links").appendChild(await LinkModule.render(link, editable));
+            groupLinks.appendChild(await LinkModule.render(link, editable));
         }
 
         // Group buttons
 
+        const groupBtns = groupElement.querySelector(".group-buttons");
         const groupOptions = [];
 
         if (editable) {
             groupOptions.push({optionTitle: "Add", optionIcon: "add", callback: () => addLinkForm(group)});
-            groupOptions.push({optionTitle: "Edit", optionIcon: "edit", callback: () => editGroupForm(group)});
+            groupOptions.push({optionTitle: "Edit", optionIcon: "edit", callback: () => startGroupEdit(group)});
+
+            groupBtns.appendChild(await ButtonModule.render('done',
+                () => endGroupEdit(group, false), "done-btn hidden"));
+
+            groupBtns.appendChild(await ButtonModule.render('cancel',
+                () => endGroupEdit(group, true), "cancel-btn hidden"));
+
+            document.addEventListener("dragover", e => handleLinkDrop(e, groupLinks, group.id));
         }
 
         groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupShares(group)});
@@ -76,8 +86,8 @@ const GroupModule = (function () {
             groupOptions.push({optionTitle: "Delete", optionIcon: "delete", callback: () => deleteGroupForm(group)});
         }
 
-        groupElement.querySelector(".group-menu").appendChild(await KebabMenuModule.render(groupOptions));
-
+        groupElement.querySelector(".group-buttons").appendChild(await KebabMenuModule.render(groupOptions));
+        
         return groupElement;
     }
 
@@ -143,19 +153,81 @@ const GroupModule = (function () {
         document.body.appendChild(await ModalModule.render(await GroupSharesModule.render(group), false));
     }
 
+    async function startGroupEdit(group) {
+        const groupEl = document.querySelector(`[id="${group.id}"]`);
+        groupEl.classList.add("group-edit");
+
+        for (const link of group.links) {
+            LinkModule.startLinkEdit(link);
+        }
+    }
+
+    async function endGroupEdit(group, cancelled) {
+        const groupEl = document.querySelector(`[id="${group.id}"]`);
+        groupEl.classList.remove("group-edit");
+        
+        for (const link of group.links) {
+            LinkModule.endLinkEdit(link);
+        }
+
+        if (!cancelled) {
+            // Additional logic if the changes should be saved
+            // You can add code here to handle the case where the changes should be saved
+            // For example, updating the group data, making API calls, etc.
+        }
+    }
+
     async function editGroupForm(group) {
-        document.body.appendChild(await ModalModule.render(await EditGroupForm.render(group)));
+        // document.body.appendChild(await ModalModule.render(await EditGroupForm.render(group)));
     }
 
     async function deleteGroupForm(group) {
         document.body.appendChild(await ModalModule.render(await DeleteGroupForm.render(group)));
     }
 
+    function handleLinkDrop(e) {
+        e.preventDefault();
+
+        const draggable = document.querySelector('.dragging');
+        const container = draggable.closest(".group-links");
+        const afterElement = getDragAfterElement(container, e.clientY);
+
+        if (afterElement == null) {
+            container.appendChild(draggable);
+        } else {
+            container.insertBefore(draggable, afterElement);
+        }
+
+        // Check if the dragged element is near the top or bottom edge of the container
+        const containerRect = container.getBoundingClientRect();
+        const draggableRect = draggable.getBoundingClientRect();
+
+        if (draggableRect.top < containerRect.top) {
+            container.scrollTop -= containerRect.top - draggableRect.top;
+        } else if (draggableRect.bottom > containerRect.bottom) {
+            container.scrollTop += draggableRect.bottom - containerRect.bottom;
+        }
+    }
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.children];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return {offset: offset, element: child};
+            } else {
+                return closest;
+            }
+        }, {offset: Number.NEGATIVE_INFINITY}).element;
+    }
+
     return {
         render: render,
         updateState: updateState,
-        removeElement: removeElement
-    }
+        removeElement: removeElement,
+    };
 })();
 
 export default GroupModule;

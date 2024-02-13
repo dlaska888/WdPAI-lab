@@ -15,7 +15,7 @@ const LinkModule = (function () {
 
         let linkElement = document.createElement("div");
         linkElement.innerHTML = `
-        <a id="${id}" href="${url}" class="link-container flex">
+        <div id="${id}" class="link-container flex">
             <div class="link-info flex flex-center">
                 <img src="https://www.google.com/s2/favicons?domain=${url}&sz=64" width="32" height="32" alt="Icon">
                 <div class="link-text flex-column">
@@ -24,15 +24,22 @@ const LinkModule = (function () {
                 </div>
             </div>
             <div class="link-buttons flex"></div>
-        </a>`;
+        </div>`;
+        linkElement = linkElement.firstElementChild;
+
+        const linkButtons = linkElement.querySelector(".link-buttons");
+        linkButtons.appendChild(await ButtonModule.render("open-link", () => window.open(url), "btn-link"));
 
         if (editable) {
-            const linkButtons = linkElement.querySelector(".link-buttons");
-            linkButtons.appendChild(await ButtonModule.render('edit', () => editLinkForm(link)))
-            linkButtons.appendChild(await ButtonModule.render('delete', () => deleteLinkForm(link)))
+            linkElement.querySelector(".link-info")
+                .prepend(await ButtonModule.render('drag', null, "btn-drag hidden"));
+            linkButtons.appendChild(await ButtonModule.render('edit',
+                () => editLinkForm(link), "btn-edit hidden"));
+            linkButtons.appendChild(await ButtonModule.render('delete',
+                () => deleteLinkForm(link), "btn-delete hidden"));
         }
 
-        return linkElement.firstElementChild;
+        return linkElement;
     }
 
     function validateLink(link) {
@@ -58,6 +65,7 @@ const LinkModule = (function () {
                     const linkElement = document.querySelector(`[id="${linkId}"]`);
                     if (linkElement) {
                         linkElement.replaceWith(await LinkModule.render(response.data));
+                        startLinkEdit(linkElement);
                     } else {
                         console.error(`Link with id ${linkId} to update not found`);
                     }
@@ -77,6 +85,24 @@ const LinkModule = (function () {
         }
     }
 
+    function startLinkEdit(link) {
+        const linkElement = document.querySelector(`[id="${link.id}"]`);
+
+        linkElement.classList.add("link-edit", "draggable");
+        linkElement.draggable = true;
+        linkElement.addEventListener("dragstart", () => linkElement.classList.add('dragging'));
+        linkElement.addEventListener("dragend", () => linkElement.classList.remove('dragging'));
+    }
+
+    function endLinkEdit(link) {
+        const linkElement = document.querySelector(`[id="${link.id}"]`);
+
+        linkElement.classList.remove("link-edit", "draggable");
+        linkElement.draggable = false;
+        linkElement.removeEventListener("dragstart", () => linkElement.classList.add('dragging'));
+        linkElement.removeEventListener("dragend", () => linkElement.classList.remove('dragging'));
+    }
+
     async function editLinkForm(link) {
         document.body.appendChild(await ModalModule.render(await EditLinkForm.render(link)));
     }
@@ -88,7 +114,9 @@ const LinkModule = (function () {
     return {
         render: render,
         updateState: updateState,
-        removeElement: removeElement
+        removeElement: removeElement,
+        startLinkEdit: startLinkEdit,
+        endLinkEdit: endLinkEdit,
     };
 })();
 

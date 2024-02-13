@@ -36,7 +36,7 @@ const AddLinkForm = (function () {
         ];
 
 
-        return await FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Add link", formFields);
+        return FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Add link", formFields);
     }
 
     return {

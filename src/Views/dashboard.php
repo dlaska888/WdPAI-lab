@@ -23,7 +23,7 @@ use src\Views\Modules\IconModule;
             <button id="btn-mobile-menu" class="btn-nav btn-hamburger">
                 <span class="bar"></span>
             </button>
-            <div class="group-buttons"></div>
+            <div class="groups-buttons"></div>
         </div>
         <div id="nav-content" class="nav-content flex-column flex-center">
             <div id="nav-user-info"></div>

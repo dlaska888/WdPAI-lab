@@ -219,3 +219,8 @@ select.input{
 .messages {
     color: var(--secondary);
 }
+
+.draggable {
+    cursor: grab;
+}
+

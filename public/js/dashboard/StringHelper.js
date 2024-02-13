@@ -23,6 +23,25 @@ class StringHelper {
     static capitalizeFirstLetter(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
+
+    static getPageTitle(url) {
+        const requestOptions = {
+            method: 'GET',
+            headers: new Headers({
+                'Content-Type': 'text/html',  // Set the content type according to your needs
+                'Access-Control-Allow-Origin': '*'  // Allow requests from any origin, adjust as needed
+            }),
+        };
+
+        return fetch(url, requestOptions)
+            .then(function(response) {
+                return response.text();
+            })
+            .then(function(body) {
+                return body.split('<title>')[1].split('</title>')[0];
+            })
+            .catch(() => this.getDomainName(url));
+    }
 }
 
 export default StringHelper;
