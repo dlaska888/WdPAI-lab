@@ -11,19 +11,14 @@ import GroupSharesModule from "./GroupSharesModule.js";
 
 const GroupModule = (function () {
     async function render(group) {
-        if (!validateGroup(group)) {
-            console.error("Invalid group for render")
-            return "";
-        }
-
         const {id, name, shared, editable, links, userId} = group;
 
         let groupElement = document.createElement("div");
         groupElement.innerHTML = `
             <div id=${id} class="group flex-column">
                 <div class="group-menu flex"> 
-                    <div class="group-name flex flex-center">
-                        <p class="text-tertiary text-ellipsis">${name}</p>
+                    <div class="group-info flex">
+                        <p class="group-name text-tertiary text-ellipsis">${name}</p>
                         <p class="dot-separator text-tertiary"></p>
                         <p class="owner-name text-tertiary text-ellipsis"></p>
                         <div class="img-container flex flex-center"></div>
@@ -31,12 +26,12 @@ const GroupModule = (function () {
                     <div class="group-buttons flex flex-center"></div>
                 </div>
                 <div class="group-links flex-column">
-                    ${!links.length ? `<p class="link-placeholder text-center">Add links by clicking on three dots</p>` : ''}
+                    ${links.length === 0 ? `<p class="link-placeholder text-center">Add links by clicking on three dots</p>` : ''}
                 </div>
             </div>`
         groupElement = groupElement.firstElementChild;
 
-        groupElement.querySelector(".group-name")
+        groupElement.querySelector(".group-info")
             .prepend(await ButtonModule.render("collapse", collapseGroup, "btn-group-collapse"));
 
         const groupLinks = groupElement.querySelector(".group-links");
@@ -87,24 +82,8 @@ const GroupModule = (function () {
         }
 
         groupElement.querySelector(".group-buttons").appendChild(await KebabMenuModule.render(groupOptions));
-        
+
         return groupElement;
-    }
-
-    function validateGroup(group) {
-        if (!group || typeof group !== 'object') {
-            console.error('Invalid group data provided for rendering.');
-            return false;
-        }
-
-        const {id, name, editable, links} = group;
-
-        if (!id || !name || editable === undefined || !Array.isArray(links)) {
-            console.error('Missing required fields in group data for rendering.');
-            return false;
-        }
-
-        return true;
     }
 
     function updateState(groupId) {
@@ -160,29 +139,55 @@ const GroupModule = (function () {
         for (const link of group.links) {
             LinkModule.startLinkEdit(link);
         }
+
+        const groupNameEl = groupEl.querySelector(".group-name");
+        const groupNameInput = document.createElement("input");
+        groupNameInput.classList.add("group-name", "input");
+        groupNameInput.value = groupNameEl.innerText;
+        groupNameInput.placeholder = groupNameEl.innerText;
+        groupNameEl.replaceWith(groupNameInput);
     }
 
     async function endGroupEdit(group, cancelled) {
         const groupEl = document.querySelector(`[id="${group.id}"]`);
         groupEl.classList.remove("group-edit");
-        
+
         for (const link of group.links) {
             LinkModule.endLinkEdit(link);
         }
 
         if (!cancelled) {
-            // Additional logic if the changes should be saved
-            // You can add code here to handle the case where the changes should be saved
-            // For example, updating the group data, making API calls, etc.
+            const links = groupEl.querySelectorAll(".link-container");
+            const orderList = Array.from(links).map(el => el.getAttribute("id"));
+
+            const body = {
+                linksOrder: orderList,
+                name: groupEl.querySelector(".group-name").value
+            }
+
+            try {
+                const response = await ApiClient.fetchData(`/link-group/${group.id}`, {
+                    method: "PUT",
+                    body: JSON.stringify(body),
+                });
+
+                if (response.success) {
+                    NotificationService.notify("Group edited!", "okay");
+                    updateState(group.id);
+                } else {
+                    NotificationService.notify(response.message, "error", response.data);
+                }
+            } catch (error) {
+                console.error("Error submitting form:", error);
+                NotificationService.notify("An error occurred while submitting the form", "error");
+            }
+        }else{
+            const groupNameInput = groupEl.querySelector(".group-name");
+            const groupNameEl = document.createElement("p");
+            groupNameEl.classList.add("group-name", "text-tertiary", "text-ellipsis");
+            groupNameEl.innerText = groupNameInput.placeholder;
+            groupNameInput.replaceWith(groupNameEl);
         }
-    }
-
-    async function editGroupForm(group) {
-        // document.body.appendChild(await ModalModule.render(await EditGroupForm.render(group)));
-    }
-
-    async function deleteGroupForm(group) {
-        document.body.appendChild(await ModalModule.render(await DeleteGroupForm.render(group)));
     }
 
     function handleLinkDrop(e) {
@@ -221,6 +226,10 @@ const GroupModule = (function () {
                 return closest;
             }
         }, {offset: Number.NEGATIVE_INFINITY}).element;
+    }
+
+    async function deleteGroupForm(group) {
+        document.body.appendChild(await ModalModule.render(await DeleteGroupForm.render(group)));
     }
 
     return {

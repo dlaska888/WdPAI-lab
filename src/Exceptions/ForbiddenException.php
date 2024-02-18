@@ -4,7 +4,7 @@ namespace src\Exceptions;
 
 use Exception;
 
-class UnauthorizedException extends Exception
+class ForbiddenException extends Exception
 {
 
 }

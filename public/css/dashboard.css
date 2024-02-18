@@ -211,7 +211,13 @@ main {
 			column-gap: 2rem;
 		}
 
-		@media (max-width: 768px) {
+		@media (max-width: 1200px) {
+			& .groups-container {
+				grid-template-columns: repeat(auto-fit, minmax(200px, 40vw));
+			}
+		}
+
+		@media (max-width: 850px) {
 			& .groups-container {
 				padding: 0.5rem;
 				grid-template-columns: repeat(auto-fit, minmax(200px, 600px));
@@ -241,11 +247,12 @@ main {
 				justify-content: space-between;
 				align-items: center;
 
-				& .group-name {
+				& .group-info {
 					min-width: 0;
 					padding: 0 0.5rem;
 					gap: 1rem;
 					font-size: 1.5rem;
+					align-items: center;
 				}
 				
 				& .group-buttons{
@@ -313,6 +320,7 @@ main {
 				}
 				
 				& .link-edit {
+					padding-left: 0.25rem;
 					& .btn-link {
 						display: none;
 					}
@@ -335,6 +343,10 @@ main {
 					margin: 0;
 				}
 			}
+			
+			& .input{
+				display: none;
+			}
 		}
 
 		& .group-edit{
@@ -345,6 +357,14 @@ main {
 			& .done-btn,
 			.cancel-btn{
 				display: block;
+			}
+			
+			& .input{
+				display: block;
+				width: 60%;
+				max-width: 250px;
+				padding: 0.5rem;
+				font-size: 1.5rem;
 			}
 		}
 	}

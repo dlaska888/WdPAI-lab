@@ -33,7 +33,7 @@ class LinkRepo extends BaseRepo
         $linkGroups = [];
 
         $stmt = $this->db->connect()
-            ->prepare('SELECT * FROM link WHERE link_group_id = :link_group_id ORDER BY date_created');
+            ->prepare('SELECT * FROM link WHERE link_group_id = :link_group_id ORDER BY custom_order');
         $stmt->execute(['link_group_id' => $groupId]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

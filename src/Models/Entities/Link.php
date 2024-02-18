@@ -9,4 +9,6 @@ class Link extends Entity
     public string $title;
     
     public string $url;
+    
+    public float $customOrder;
 }

@@ -2,6 +2,7 @@
 
 namespace src\Repos;
 
+use Exception;
 use InvalidArgumentException;
 use PDO;
 use src\Models\Entities\Entity;
@@ -101,6 +102,40 @@ class LinkGroupRepo extends BaseRepo
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $this->mapToObjectAll($results);
+    }
+    
+    public function updateLinksOrder(array $linkIds, string $groupId): LinkGroup
+    {
+        $this->db->connect()->beginTransaction();
+
+        try {
+            $sql = "UPDATE public.link 
+            SET custom_order = CASE id ";
+
+            $params = [];
+            foreach ($linkIds as $index => $linkId) {
+                $sql .= "WHEN ? THEN CAST (? AS INTEGER) ";
+                $params[] = $linkId;
+                $params[] = $index;
+            }
+
+            $sql .= "END 
+            WHERE id IN (" . implode(",", array_fill(0, count($linkIds), '?')) . ")
+            AND link_group_id = ?";
+
+            $params = array_merge($params, $linkIds, [$groupId]);
+
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute($params);
+
+            $result = $this->findById($groupId);
+            $this->db->connect()->commit();
+
+            return $result;
+        } catch (Exception $e) {
+            $this->db->connect()->rollBack();
+            throw $e;
+        }
     }
 
 }

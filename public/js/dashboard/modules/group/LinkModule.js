@@ -6,11 +6,6 @@ import ApiClient from "../../ApiClient.js";
 
 const LinkModule = (function () {
     async function render(link, editable = true) {
-        if (!validateLink(link)) {
-            console.error("Invalid link for render")
-            return "";
-        }
-
         const {id, url, title} = link;
 
         let linkElement = document.createElement("div");
@@ -26,6 +21,8 @@ const LinkModule = (function () {
             <div class="link-buttons flex"></div>
         </div>`;
         linkElement = linkElement.firstElementChild;
+        
+        linkElement.order = link.customOrder;
 
         const linkButtons = linkElement.querySelector(".link-buttons");
         linkButtons.appendChild(await ButtonModule.render("open-link", () => window.open(url), "btn-link"));
@@ -41,23 +38,6 @@ const LinkModule = (function () {
 
         return linkElement;
     }
-
-    function validateLink(link) {
-        if (!link || typeof link !== 'object') {
-            console.error('Invalid link data provided for rendering.');
-            return false;
-        }
-
-        const {id, url, title} = link;
-
-        if (!id || !url || !title) {
-            console.error('Missing required fields in link data for rendering.');
-            return false;
-        }
-
-        return true;
-    }
-
     function updateState(linkId, groupId) {
         ApiClient.fetchData(`/link-group/${groupId}/link/${linkId}`)
             .then(async response => {

@@ -20,28 +20,32 @@ class AuthorizationMiddleware extends BaseMiddleware
 
     public function invoke(Request $request): Response
     {
-        if (!$this->checkAuthorization($request->getRoute())) {
+        $roles = $request->getRoute()->getRoles();
+        $userRole = $this->sessionHandler->getUserRole();
+        
+        //No authentication needed
+        if(empty($roles)){
+            return parent::invoke($request);
+        }
+        
+        //Authentication fail
+        if(empty($userRole)){
             return new Error(
-                $request, 
-                "You are not authorized to access this resource", 
+                $request,
+                "You need to be logged in",
                 HttpStatusCode::UNAUTHORIZED
             );
         }
-
-        return parent::invoke($request);
-    }
-
-    private function checkAuthorization(Route $route): bool
-    {
-        $roles = $route->getRoles();
-
-        // No authentication needed
-        if (empty($roles)) {
-            return true;
+            
+        //Authorization by user role fail
+        if(!in_array($userRole, $roles)){
+            return new Error(
+                $request,
+                "You are not authorized to access this resource",
+                HttpStatusCode::FORBIDDEN
+            );
         }
-
-        // No session 
-        $userRole = $this->sessionHandler->getUserRole();
-        return !(empty($userRole) || !in_array($userRole, $roles));
+        
+        return parent::invoke($request);
     }
 }
