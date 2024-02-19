@@ -14,7 +14,7 @@ const LinksPage = (function () {
         page.innerHTML = `
             <section id="${pageId}" class="page page-links flex-column">
                 <div class="groups-container">
-                    ${!groups.length ? `<p class="link-placeholder text-center">Add groups by clicking on add button</p>` : ''}
+                    ${!groups.length && shared === false ? `<p class="link-placeholder text-center">Add groups by clicking on add button</p>` : ''}
                 </div>
             </section>`;
         page = page.firstElementChild;

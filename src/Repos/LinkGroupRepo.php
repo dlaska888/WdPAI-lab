@@ -106,6 +106,10 @@ class LinkGroupRepo extends BaseRepo
     
     public function updateLinksOrder(array $linkIds, string $groupId): LinkGroup
     {
+        if(count($linkIds) === 0){
+            return $this->findById($groupId);
+        }
+
         $this->db->connect()->beginTransaction();
 
         try {

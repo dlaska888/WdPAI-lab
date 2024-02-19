@@ -30,7 +30,7 @@ const ChangeUserNameForm = (function () {
 
     async function render() {
         const formFields = [
-            { type: "text", name: "userName", placeholder: "New username" }
+            { type: "text", name: "userName", placeholder: "New username" , minLength: 3, maxLength: 50, required: true}
         ];
 
         return FormModule.render((e) => submit(new FormData(e.currentTarget)), "Change username", formFields);

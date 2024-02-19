@@ -3,6 +3,7 @@
 namespace src\Controllers;
 
 use src\Exceptions\BadRequestException;
+use src\Exceptions\UnauthorizedException;
 use src\Handlers\UserSessionHandler;
 use src\LinkyRouting\Attributes\Controller\MvcController;
 use src\LinkyRouting\Attributes\HttpMethod\HttpGet;
@@ -55,7 +56,7 @@ class SecurityController extends AppController
         $user = $this->userRepo->findByEmail($email) ?? $this->userRepo->findByUserName($email);
 
         if (!$user || !password_verify($password, $user->passwordHash)) {
-            throw new BadRequestException("Invalid credentials");
+            throw new UnauthorizedException("Invalid credentials");
         }
 
         $this->sessionHandler->setSession($user);

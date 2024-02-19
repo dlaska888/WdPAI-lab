@@ -14,8 +14,8 @@ class UpdatePasswordValidator extends BaseValidator
             ->minLength('newPassword', 8)
             ->maxLength('newPassword', 20)
             ->hasNumber('newPassword')
-            ->hasLowerCase('newPassword', 2)
-            ->hasUpperCase('newPassword', 2)
+            ->hasLowerCase('newPassword')
+            ->hasUpperCase('newPassword')
             ->hasSpecialCharacter('newPassword')
             
             ->notNull('newPasswordConfirm')

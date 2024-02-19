@@ -57,7 +57,7 @@ const GroupModule = (function () {
             document.addEventListener("dragover", e => handleLinkDrop(e, groupLinks, group.id));
         }
 
-        groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupShares(group)});
+        groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupSharesForm(group)});
 
         if (shared) {
             const ownerData = await fetchUserDataById(userId);
@@ -109,14 +109,6 @@ const GroupModule = (function () {
         }
     }
 
-    function fetchUserDataById(userId) {
-        return ApiClient.fetchData(`/account/public/${userId}`)
-            .then(result => {
-                if (result.success) return result.data;
-                NotificationService.notify(result.message || "Could not get user data", "error")
-            })
-    }
-
     function collapseGroup(e) {
         const btn = e.currentTarget;
         const links = btn.closest(".group").querySelector(".group-links");
@@ -128,7 +120,7 @@ const GroupModule = (function () {
         document.body.appendChild(await ModalModule.render(await AddLinkForm.render(group)));
     }
 
-    async function groupShares(group) {
+    async function groupSharesForm(group) {
         document.body.appendChild(await ModalModule.render(await GroupSharesModule.render(group), false));
     }
 
@@ -230,6 +222,14 @@ const GroupModule = (function () {
 
     async function deleteGroupForm(group) {
         document.body.appendChild(await ModalModule.render(await DeleteGroupForm.render(group)));
+    }
+
+    function fetchUserDataById(userId) {
+        return ApiClient.fetchData(`/account/public/${userId}`)
+            .then(result => {
+                if (result.success) return result.data;
+                NotificationService.notify(result.message || "Could not get user data", "error")
+            })
     }
 
     return {

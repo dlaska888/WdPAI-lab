@@ -18,8 +18,8 @@ class RegisterValidator extends BaseValidator
             ->minLength('password', 8)
             ->maxLength('password', 20)
             ->hasNumber('password')
-            ->hasLowerCase('password', 2)
-            ->hasUpperCase('password', 2)
+            ->hasLowerCase('password')
+            ->hasUpperCase('password')
             ->hasSpecialCharacter('password')
             
             ->notNull('passwordConfirm', 'Please enter password confirmation')

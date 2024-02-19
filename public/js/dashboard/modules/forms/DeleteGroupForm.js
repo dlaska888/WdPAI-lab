@@ -26,7 +26,7 @@ const DeleteGroupForm = (function () {
     }
 
     async function render(group) {
-        return await FormModule.render(() => submit(group), "Delete group?");
+        return FormModule.render(() => submit(group), "Delete group?");
     }
 
     return {

@@ -27,14 +27,36 @@ main {
 	& .main-form{
 		background-color: var(--primary-light);
 	}
+
+	.messages{
+		position: relative;
+		width: 75%;
+		max-width: 350px;
+		text-align: center;
+		p{
+			position: relative;
+			padding: 0.75rem 2rem;
+			border-radius: 0.5rem;
+			background-color: rgba(255, 0, 0, 0.6);
+		}
+	}
 }
 
 @media (max-width: 768px) {
 	main {
 		max-width: 80vw;
-	}
-	main .main-form {
-		background-color: var(--primary);
+
+		& .main-form {
+			background-color: var(--primary);
+		}
+
+		& .messages{
+			width: 100%;
+
+			p{
+				background-color: rgba(255, 0, 0, 0.7);
+			}
+		}
 	}
 }
 

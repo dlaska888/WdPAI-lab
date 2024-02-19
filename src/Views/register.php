@@ -11,15 +11,22 @@
 
 <body>
 <main class="flex-column flex-center">
-    <form action="register" method="POST" class="main-form flex-column flex-center">
+    <form action="/register" method="POST" class="main-form flex-column flex-center">
         <h1 class="text-secondary text-shadow text-center">Join us today</h1>
         <div class="input-container flex-column flex-center">
-            <input type="text" name="userName" class="input" placeholder="Username" required>
-            <input type="email" name="email" class="input" placeholder="Email" required>
-            <input type="text" name="password" class="input" placeholder="Password" required>
-            <input type="text" name="passwordConfirm" class="input" placeholder="Confirm password" required>
+            <input title="username" type="text" name="userName" class="input" placeholder="Username" minlength="3"
+                   maxlength="50" required>
+            <input type="email" name="email" class="input" placeholder="Email"
+                   title="Email" required>
+            <input type="password" name="password" class="input" placeholder="Password"
+                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                   title="Password must be at least 8 characters long, contain at least 1 lowercase letter,
+                   1 uppercase letter, 1 number, and 1 special character" required>
+            <input type="password" name="passwordConfirm" class="input" placeholder="Confirm password"
+                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                   title="Please enter the same password as above" required>
         </div>
-        
+
         <?php if (isset($data)): ?>
             <div class="messages">
                 <?php foreach ($data as $message): ?>
@@ -32,12 +39,12 @@
             <span class="btn-primary-top">Sign Up</span>
         </button>
         <p class="text-secondary">Already have an account?
-            <a href="login" class="text-underline">Sign in</a>
+            <a href="/login" class="text-underline">Sign in</a>
         </p>
     </form>
 </main>
 <footer class="footer-logo flex-column flex-center">
-    <a href="index" title="LinkyApp" class="logo-text flex">
+    <a href="/index" title="LinkyApp" class="logo-text flex">
         <img src="/public/assets/svg/logo.svg" alt="LinkyApp">
         <p>LinkyApp</p>
     </a>
