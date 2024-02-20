@@ -11,7 +11,6 @@ class SessionRefresher {
 
     async refreshSession() {
         await ApiClient.fetchData(this.#endpoint, { method: "POST" });
-        console.log("xd");
     }
 
 }

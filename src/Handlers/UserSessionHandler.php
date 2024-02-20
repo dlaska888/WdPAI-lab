@@ -34,7 +34,7 @@ class UserSessionHandler extends AppSessionHandler
         $_SESSION['userRole'] = $user->role->value;
 
         // Set session expiry time (e.g., 1 hour from now)
-        $_SESSION['expiryTime'] = time() + 5; // 1 hour
+        $_SESSION['expiryTime'] = time() + 3600; // 1 hour
     }
 
     public function isSessionSet(): bool

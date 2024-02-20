@@ -18,6 +18,11 @@ services:
     environment:
       XDEBUG_MODE: debug
       XDEBUG_CONFIG: mode=develop,coverage,debug idekey=docker start_with_request=yes log=/dev/stdout log_level=0 client_port=9003 client_host=host.docker.internal
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
     volumes:
       - .:/app/
       - ./uploads:/app/uploads/
