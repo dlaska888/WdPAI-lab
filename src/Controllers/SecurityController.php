@@ -9,7 +9,10 @@ use src\LinkyRouting\Attributes\Controller\MvcController;
 use src\LinkyRouting\Attributes\HttpMethod\HttpGet;
 use src\LinkyRouting\Attributes\HttpMethod\HttpPost;
 use src\LinkyRouting\Attributes\Route;
+use src\LinkyRouting\Enums\HttpStatusCode;
+use src\LinkyRouting\Responses\Json;
 use src\LinkyRouting\Responses\Redirect;
+use src\LinkyRouting\Responses\Response;
 use src\LinkyRouting\Responses\View;
 use src\Models\Entities\LinkGroup;
 use src\Models\Entities\LinkyUser;
@@ -81,8 +84,8 @@ class SecurityController extends AppController
         $password = $_POST['password'];
 
         $user = $this->userRepo->findByEmail($email) ?? $this->userRepo->findByUserName($email);
-        
-        if($user){
+
+        if ($user) {
             throw new BadRequestException("User already exists");
         }
 
@@ -105,10 +108,19 @@ class SecurityController extends AppController
     }
 
     #[HttpGet]
-    #[Route('logout')]
+    #[Route("logout")]
     public function logout(): Redirect
     {
         $this->sessionHandler->unsetSession();
         return new Redirect('login');
+    }
+
+    #[HttpPost]
+    #[Route("refreshSession")]
+    public function refreshSession(): Json
+    {
+        return $this->sessionHandler->refreshSession() ?
+            new Json(null, HttpStatusCode::OK) :
+            new Json(null, HttpStatusCode::UNAUTHORIZED);
     }
 }
