@@ -5,8 +5,11 @@ services:
     build:
       context: .
       dockerfile: docker/nginx/Dockerfile
+      args:
+#        SSL_CERT_PATH: /path/to/cert # files should be named default.crt and default.key
     ports:
       - "8080:80"
+      - "8081:443"
     volumes:
       - .:/app/
     networks:
