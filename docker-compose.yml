@@ -6,10 +6,12 @@ services:
       context: .
       dockerfile: docker/nginx/Dockerfile
       args:
-#        SSL_CERT_PATH: /path/to/cert # files should be named default.crt and default.key
+        USE_SSL: ${USE_SSL}
+        SSL_CERT_PATH: ${SSL_CERT_PATH} # files should be named default.crt and default.key
     ports:
-      - "8080:80"
-      - "8081:443"
+      - "${WEB_HOST_PORT}:80"
+    environment:
+      WEB_PORT: ${WEB_HOST_PORT}
     volumes:
       - .:/app/
     networks:
@@ -35,7 +37,7 @@ services:
     image: postgres:alpine3.18
     restart: always
     ports:
-      - "5432:5432"
+      - "${DB_HOST_PORT}:5342"
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -52,7 +54,7 @@ services:
     container_name: pgadmin
     restart: "unless-stopped"
     ports:
-      - "5050:80"
+      - "${PGADMIN_HOST_PORT}:80"
     networks:
       - database
     volumes:
