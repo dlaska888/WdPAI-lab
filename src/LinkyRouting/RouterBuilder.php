@@ -2,13 +2,13 @@
 
 namespace src\LinkyRouting;
 
-use src\LinkyRouting\exceptions\RouterBuilderException;
-use src\LinkyRouting\helpers\ControllerMapper;
-use src\LinkyRouting\helpers\HttpResponseHandler;
+use src\LinkyRouting\Exceptions\RouterBuilderException;
+use src\LinkyRouting\Helpers\ControllerMapper;
+use src\LinkyRouting\Helpers\HttpResponseHandler;
 use src\LinkyRouting\Interfaces\ISessionHandler;
-use src\LinkyRouting\middleware\AuthorizationMiddleware;
-use src\LinkyRouting\middleware\interfaces\IMiddleware;
-use src\LinkyRouting\middleware\MiddlewareChain;
+use src\LinkyRouting\Middleware\AuthorizationMiddleware;
+use src\LinkyRouting\Middleware\Interfaces\IMiddleware;
+use src\LinkyRouting\Middleware\MiddlewareChain;
 
 class RouterBuilder
 {

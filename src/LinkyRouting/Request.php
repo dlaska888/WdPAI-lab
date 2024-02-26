@@ -4,7 +4,6 @@ namespace src\LinkyRouting;
 
 use src\LinkyRouting\Responses\Response;
 
-
 readonly class Request
 {
     private Route $route;

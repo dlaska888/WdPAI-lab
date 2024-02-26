@@ -1,10 +1,10 @@
 <?php
 
-namespace src\LinkyRouting\helpers;
+namespace src\LinkyRouting\Helpers;
 
-use src\LinkyRouting\attributes\controller\ApiController;
-use src\LinkyRouting\attributes\controller\MvcController;
-use src\LinkyRouting\enums\HttpStatusCode;
+use src\LinkyRouting\Attributes\Controller\ApiController;
+use src\LinkyRouting\Attributes\Controller\MvcController;
+use src\LinkyRouting\Enums\HttpStatusCode;
 use src\LinkyRouting\Responses\BinaryFile;
 use src\LinkyRouting\Responses\Error;
 use src\LinkyRouting\Responses\Json;

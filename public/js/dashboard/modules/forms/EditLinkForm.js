@@ -31,7 +31,7 @@ const EditLinkForm = (function () {
 
     async function render(link) {
         const formFields = [
-            { type: "text", name: "url", placeholder: "Url", required: true, value: link.url || "" },
+            { type: "text", name: "url", placeholder: "Url", value: link.url || "", minLength: 3, maxLength: 2000, required: true },
             { type: "text", name: "title", placeholder: "Title", value: link.title || "" }
         ];
 

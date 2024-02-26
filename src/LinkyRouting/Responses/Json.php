@@ -3,7 +3,7 @@
 namespace src\LinkyRouting\Responses;
 
 use JsonSerializable;
-use src\LinkyRouting\enums\HttpStatusCode;
+use src\LinkyRouting\Enums\HttpStatusCode;
 
 // Based on JSend https://github.com/omniti-labs/jsend
 class Json extends Response implements JsonSerializable

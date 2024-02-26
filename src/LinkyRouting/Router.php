@@ -2,10 +2,10 @@
 
 namespace src\LinkyRouting;
 
-use src\LinkyRouting\enums\HttpStatusCode;
-use src\LinkyRouting\helpers\HttpResponseHandler;
-use src\LinkyRouting\helpers\RouteResolver;
-use src\LinkyRouting\middleware\interfaces\IMiddleware;
+use src\LinkyRouting\Enums\HttpStatusCode;
+use src\LinkyRouting\Helpers\HttpResponseHandler;
+use src\LinkyRouting\Helpers\RouteResolver;
+use src\LinkyRouting\Middleware\Interfaces\IMiddleware;
 use src\LinkyRouting\Responses\Error;
 
 class Router

@@ -2,7 +2,7 @@
 
 namespace src\LinkyRouting\Responses;
 
-use src\LinkyRouting\enums\HttpStatusCode;
+use src\LinkyRouting\Enums\HttpStatusCode;
 
 class View extends Response
 {

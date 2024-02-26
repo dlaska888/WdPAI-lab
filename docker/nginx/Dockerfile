@@ -1,8 +1,10 @@
-FROM nginx:1.17.8-alpine
+FROM nginx:1.25.3-alpine3.18
 
-# Copy the public directory
-# COPY ./public/ /app/public/
-COPY . /app/
+ARG USE_SSL
+ARG SSL_CERT_PATH
+ARG WEB_PORT
 
-# Copy the nginx config file
-COPY ./docker/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ${SSL_CERT_PATH}/ /etc/nginx/cert/
+COPY ./docker/nginx/php.conf /etc/nginx/
+
+COPY ./docker/nginx/nginx${USE_SSL:+-ssl}.conf /etc/nginx/templates/default.conf.template

@@ -51,7 +51,7 @@ const GroupSharesModule = (function () {
     async function submit(groupId, formData) {
         try {
             const response = await ApiClient.fetchData(
-                `http://localhost:8080/link-group/${groupId}/shares`,
+                `/link-group/${groupId}/shares`,
                 {
                     method: "POST",
                     body: JSON.stringify(Object.fromEntries(formData))
@@ -71,7 +71,7 @@ const GroupSharesModule = (function () {
     }
 
     function updateState(groupId) {
-        ApiClient.fetchData(`http://localhost:8080/link-group/${groupId}`)
+        ApiClient.fetchData(`/link-group/${groupId}`)
             .then(async response => {
                 if (response.success) {
                     const groupSharesElement = document.querySelector(`[id="share-${groupId}"]`);
@@ -85,7 +85,7 @@ const GroupSharesModule = (function () {
     }
 
     function fetchUserDataById(userId) {
-        return ApiClient.fetchData(`http://localhost:8080/account/public/${userId}`)
+        return ApiClient.fetchData(`/account/public/${userId}`)
             .then(result => {
                 if (result.success) return result.data;
                 NotificationService.notify(result.message || "Could not get user data", "error")

@@ -5,11 +5,11 @@ import StringHelper from "../StringHelper.js";
 
 const AddLinkForm = (function () {
     async function submit(formData) {
-        const submitUrl = `http://localhost:8080/link-group/a4fd05e3-3690-4eea-a397-377c9e81884c/link`;
+        const submitUrl = `/link-group/a4fd05e3-3690-4eea-a397-377c9e81884c/link`;
         const method = "POST";
         const cookie = {
             'Cookie': chrome.cookies.get({
-                url: 'http://localhost:8080',
+                url: 'http://srv24.mikr.us:20136',
                 name: 'PHPSESSID'
             }, cookie => cookie)
         }

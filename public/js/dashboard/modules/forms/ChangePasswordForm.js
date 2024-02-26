@@ -15,7 +15,7 @@ const ChangePasswordForm = (function () {
 
             if (response.success) {
                 NotificationService.notify("Password updated!", "okay");
-            }else {
+            } else {
                 NotificationService.notify(response.message, "error", response.data);
             }
         } catch (error) {
@@ -26,12 +26,26 @@ const ChangePasswordForm = (function () {
 
     async function render() {
         const formFields = [
-            { type: "password", name: "password", placeholder: "Password" },
-            { type: "text", name: "newPassword", placeholder: "New password" },
-            { type: "text", name: "newPasswordConfirm", placeholder: "New password confirm" }
+            {type: "password", name: "password", placeholder: "Password", required: true},
+            {
+                type: "password",
+                name: "newPassword",
+                placeholder: "New password",
+                pattern: "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}",
+                title: "Password must be at least 8 characters long, contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character",
+                required: true
+            },
+            {
+                type: "password",
+                name: "newPasswordConfirm",
+                placeholder: "Confirm new password",
+                pattern: "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}",
+                title: "Password must be at least 8 characters long, contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character",
+                required: true
+            }
         ];
 
-        return await FormModule.render((e) => submit(new FormData(e.currentTarget)), "Change password", formFields);
+        return FormModule.render((e) => submit(new FormData(e.currentTarget)), "Change password", formFields);
     }
 
     return {

@@ -4,7 +4,7 @@ const KebabMenuModule = (function  () {
 
     async function render(options) {
         const kebab = document.createElement('button');
-        kebab.classList = "kebab flex flex-center";
+        kebab.classList = "kebab";
 
         const kebabFigures = Array.from({length: 3}, () => document.createElement('figure'));
         kebabFigures[1].classList.add('middle');

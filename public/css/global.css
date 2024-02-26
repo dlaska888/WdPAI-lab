@@ -172,8 +172,7 @@ input[type="submit"] {
     max-width: 350px;
 }
 
-.input:focus,
-.input:hover {
+.input:focus{
     background-color: white;
     transform: scale(1.05);
     box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.1);
@@ -219,3 +218,8 @@ select.input{
 .messages {
     color: var(--secondary);
 }
+
+.draggable {
+    cursor: grab;
+}
+

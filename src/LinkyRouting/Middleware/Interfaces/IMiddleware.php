@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting\middleware\interfaces;
+namespace src\LinkyRouting\Middleware\Interfaces;
 
 use src\LinkyRouting\Request;
 use src\LinkyRouting\Responses\Response;

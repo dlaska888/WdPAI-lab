@@ -31,12 +31,12 @@ const AddLinkForm = (function () {
 
     async function render(group) {
         const formFields = [
-            { type: "url", name: "url", placeholder: "Url", required: true },
-            { type: "text", name: "title", placeholder: "Title" }
+            { type: "url", name: "url", placeholder: "Url", minLength: 3, maxLength: 2000, required: true },
+            { type: "text", name: "title", minLength: 3, maxLength: 50, placeholder: "Title" }
         ];
 
 
-        return await FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Add link", formFields);
+        return FormModule.render((e) => submit(group, new FormData(e.currentTarget)), "Add link", formFields);
     }
 
     return {

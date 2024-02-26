@@ -1,4 +1,4 @@
-import MobileNavigationModule from "./modules/MobileNavigationModule.js";
+import MobileUserInfo from "./modules/MobileUserInfo.js";
 
 const MobileNavigationHandler = (function () {
     async function initMobileNavigation() {
@@ -10,8 +10,8 @@ const MobileNavigationHandler = (function () {
 
         const collapseButtons = document.querySelectorAll(".btn-nav-collapse");
         collapseNavOnClick(collapseButtons, menuBtn, nav);
-
-        await MobileNavigationModule.updateState();
+        
+        await MobileUserInfo.updateState();
     }
     
     function toggleNavOnClick(navButtons, menuBtn, nav) {

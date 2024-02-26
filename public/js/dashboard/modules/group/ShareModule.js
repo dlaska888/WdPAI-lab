@@ -13,7 +13,7 @@ const ShareModule = (function () {
             <div class="group-share flex flex-center">
                 <div class="share-info flex flex-center">
                     <div class="img-container flex flex-center">
-                       <img src="http://localhost:8080/account/public/${user.id}/profile-picture" 
+                       <img src="/account/public/${user.id}/profile-picture" 
                     alt="User image" width="30" height="30">
                     </div>
                     <p class="text-ellipsis">${user.email}</p>

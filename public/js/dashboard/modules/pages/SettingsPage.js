@@ -16,7 +16,7 @@ const SettingsPage = (function () {
             <section id="${pageId}" class="page flex flex-center">
                 <div class="profile-container flex-column flex-center">
                     <div class="profile-photo flex flex-center">
-                        <img src="http://localhost:8080/account/profile-picture" alt="Profile picture">
+                        <img src="/account/profile-picture" alt="Profile picture">
                     </div>
                     <div class="profile-info text-primary text-center">
                         <h1 class="profile-username">${userName || "Username"}</h1>
@@ -51,7 +51,7 @@ const SettingsPage = (function () {
 
         const pictureContainer = page.querySelector(".profile-photo")
         const profilePicture = pictureContainer.querySelector("img");
-        profilePicture.src = "http://localhost:8080/account/profile-picture#" + new Date().getTime();
+        profilePicture.src = "/account/profile-picture#" + new Date().getTime();
         
         profilePicture.onerror = async () => {
             pictureContainer.innerHTML = await IconModule.render("account");
@@ -80,7 +80,7 @@ const SettingsPage = (function () {
     }
 
     function fetchUserData() {
-        return ApiClient.fetchData(`http://localhost:8080/account`)
+        return ApiClient.fetchData(`/account`)
             .then(result => {
                 if (result.success) return result.data;
                 NotificationService.notify(result.message || "Could not get user data", "error")

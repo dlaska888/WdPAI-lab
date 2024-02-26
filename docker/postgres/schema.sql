@@ -20,9 +20,9 @@ CREATE TABLE linky_user
     password_hash      TEXT         NOT NULL,
     email_confirmed    BOOLEAN      NOT NULL DEFAULT FALSE,
     role               userrole     NOT NULL DEFAULT 'NORMAL'::userrole,
-    profile_picture_id UUID DEFAULT NULL,
+    profile_picture_id UUID                  DEFAULT NULL,
     date_created       TIMESTAMP    NOT NULL DEFAULT now(),
-    is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
+    is_deleted         BOOLEAN      NOT NULL DEFAULT FALSE,
     FOREIGN KEY (profile_picture_id) REFERENCES file (id) ON DELETE SET DEFAULT
 );
 
@@ -34,7 +34,7 @@ CREATE TABLE link_group
     user_id      UUID        NOT NULL,
     name         VARCHAR(50) NOT NULL,
     date_created TIMESTAMP   NOT NULL DEFAULT now(),
-    is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
+    is_deleted   BOOLEAN     NOT NULL DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES linky_user (id) ON DELETE CASCADE
 );
 
@@ -46,7 +46,8 @@ CREATE TABLE link
     title         VARCHAR(50) NOT NULL,
     url           TEXT        NOT NULL,
     date_created  TIMESTAMP   NOT NULL DEFAULT now(),
-    is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
+    is_deleted    BOOLEAN     NOT NULL DEFAULT FALSE,
+    custom_order  INTEGER     NOT NULL DEFAULT 1,
     FOREIGN KEY (link_group_id) REFERENCES link_group (id) ON DELETE CASCADE
 );
 
@@ -58,7 +59,7 @@ CREATE TABLE link_group_share
     link_group_id UUID            NOT NULL,
     permission    permissionlevel NOT NULL DEFAULT 'READ'::permissionlevel,
     date_created  TIMESTAMP       NOT NULL DEFAULT now(),
-    is_deleted   BOOLEAN      NOT NULL DEFAULT FALSE,
+    is_deleted    BOOLEAN         NOT NULL DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES linky_user (id) ON DELETE CASCADE,
     FOREIGN KEY (link_group_id) REFERENCES link_group (id) ON DELETE CASCADE
 );

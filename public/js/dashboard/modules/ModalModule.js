@@ -9,8 +9,9 @@ const ModalModule = (function () {
 
         const modalContent = document.createElement("div");
         const closeButton = await ButtonModule.render("cancel", close, "cancel-btn");
-
+        
         modalContent.appendChild(closeButton);
+        
         modalContent.className = "modal-content flex flex-column";
         modalContent.appendChild(content);
 
@@ -25,6 +26,8 @@ const ModalModule = (function () {
 
         modal.addEventListener("click", closeOnModalClick);
         document.body.addEventListener("keydown", closeOnEscape);
+
+        setTimeout(() => {closeButton.focus()}, 0);
 
         return modal;
     }

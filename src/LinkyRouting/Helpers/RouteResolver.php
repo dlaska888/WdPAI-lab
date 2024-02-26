@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting\helpers;
+namespace src\LinkyRouting\Helpers;
 
 use src\LinkyRouting\Route;
 

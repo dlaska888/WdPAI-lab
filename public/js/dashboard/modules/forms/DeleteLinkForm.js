@@ -26,7 +26,7 @@ const DeleteLinkForm = (function () {
     }
 
     async function render(link) {
-        return await FormModule.render(() => submit(link), "Delete link?");
+        return FormModule.render(() => submit(link), "Delete link?");
     }
 
     return {
