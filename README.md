@@ -30,17 +30,21 @@ without the usage of frameworks.
 
 ## Getting Started
 
-The app will be hosted in the future. 
-
-For now, you can download and run the app locally - see 
+Clone repository code and proceed to 
 [Installation](#installation).
+
+The latest version of the application is also available on a [testing website](https://srv24.mikr.us:20136).
+
+SSL certificate is currently a self-signed one, so there will be browser alert about privacy. 
 
 ## Installation
 
 Pre-requisites:
  - docker installed
 
-Run the following commands in the root directory of the project:
+App configuration can be found in [.env](.env) file (passwords, ports, ssl, etc.).
+
+After initial configuration, run the following commands in the root directory of the project:
 
 ```docker compose up```
 
@@ -103,7 +107,7 @@ Supported browsers: Google Chrome
 
 ## Database diagram
 
-![img.png](linkyapp_diagram.png)
+![img.png](database_diagram.png)
 
 ## Contributing
 
