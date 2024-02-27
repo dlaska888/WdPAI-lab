@@ -2,6 +2,7 @@ import ButtonModule from "../ButtonModule.js";
 import ModalModule from "../ModalModule.js";
 import EditLinkForm from "../forms/EditLinkForm.js";
 import DeleteLinkForm from "../forms/DeleteLinkForm.js";
+import NotificationService from "../../NotificationService.js";
 import ApiClient from "../../ApiClient.js";
 
 const LinkModule = (function () {
@@ -25,6 +26,9 @@ const LinkModule = (function () {
         linkElement.order = link.customOrder;
 
         const linkButtons = linkElement.querySelector(".link-buttons");
+        linkButtons.appendChild(await ButtonModule.render("copy", 
+            async () => await copyToClipboard(url), 
+            "btn-link"));
         linkButtons.appendChild(await ButtonModule.render("open-link", () => window.open(url), "btn-link"));
 
         if (editable) {
@@ -37,6 +41,16 @@ const LinkModule = (function () {
         }
 
         return linkElement;
+    }
+
+    async function copyToClipboard(url) {
+        try {
+            await navigator.clipboard.writeText(url);
+            NotificationService.notify("Copied to clipboard!");
+        } catch (error) {
+            console.error("Failed to copy text to clipboard:", error);
+            NotificationService.notify("Failed to copy text to clipboard", "error");
+        }
     }
 
     function updateState(linkId, groupId) {
@@ -99,6 +113,7 @@ const LinkModule = (function () {
     async function deleteLinkForm(link) {
         document.body.appendChild(await ModalModule.render(await DeleteLinkForm.render(link)));
     }
+
 
     return {
         render: render,

@@ -53,10 +53,6 @@ const GroupModule = (function () {
 
             groupBtns.appendChild(await ButtonModule.render('cancel',
                 () => endGroupEdit(group, true), "cancel-btn hidden"));
-
-            document.addEventListener("dragover", e => handleLinkDrop(e, groupLinks, group.id));
-            document.addEventListener("touchmove", e => handleLinkDrop(e, groupLinks, group.id),
-                {passive: false});
         }
 
         groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupSharesForm(group)});
@@ -139,6 +135,11 @@ const GroupModule = (function () {
         groupNameInput.className = "group-name input";
         groupNameInput.value = groupNameInput.placeholder = groupNameEl.innerText;
         groupNameEl.replaceWith(groupNameInput);
+
+        const groupLinks = groupEl.querySelector(".group-links");
+        groupEl.addEventListener("dragover", e => handleLinkDrop(e, groupLinks, group.id));
+        groupEl.addEventListener("touchmove", e => handleLinkDrop(e, groupLinks, group.id),
+            {passive: false});
     }
 
     async function endGroupEdit(group, cancelled) {
@@ -148,6 +149,11 @@ const GroupModule = (function () {
         for (const link of group.links) {
             LinkModule.endLinkEdit(link);
         }
+
+        const groupLinks = groupEl.querySelector(".group-links");
+        groupEl.removeEventListener("dragover", e => handleLinkDrop(e, groupLinks, group.id));
+        groupEl.removeEventListener("touchmove", e => handleLinkDrop(e, groupLinks, group.id),
+            {passive: false});
 
         if (!cancelled) {
             const links = groupEl.querySelectorAll(".link-container");
