@@ -21,7 +21,7 @@ const LinkModule = (function () {
             <div class="link-buttons flex"></div>
         </div>`;
         linkElement = linkElement.firstElementChild;
-        
+
         linkElement.order = link.customOrder;
 
         const linkButtons = linkElement.querySelector(".link-buttons");
@@ -38,6 +38,7 @@ const LinkModule = (function () {
 
         return linkElement;
     }
+
     function updateState(linkId, groupId) {
         ApiClient.fetchData(`/link-group/${groupId}/link/${linkId}`)
             .then(async response => {
@@ -70,8 +71,12 @@ const LinkModule = (function () {
 
         linkElement.classList.add("link-edit", "draggable");
         linkElement.draggable = true;
+
         linkElement.addEventListener("dragstart", () => linkElement.classList.add('dragging'));
         linkElement.addEventListener("dragend", () => linkElement.classList.remove('dragging'));
+
+        linkElement.addEventListener("touchstart", () => linkElement.classList.add('dragging'));
+        linkElement.addEventListener("touchend", () => linkElement.classList.remove('dragging'));
     }
 
     function endLinkEdit(link) {
@@ -79,8 +84,12 @@ const LinkModule = (function () {
 
         linkElement.classList.remove("link-edit", "draggable");
         linkElement.draggable = false;
+
         linkElement.removeEventListener("dragstart", () => linkElement.classList.add('dragging'));
         linkElement.removeEventListener("dragend", () => linkElement.classList.remove('dragging'));
+
+        linkElement.removeEventListener("touchstart", () => linkElement.classList.add('dragging'));
+        linkElement.removeEventListener("touchend", () => linkElement.classList.remove('dragging'));
     }
 
     async function editLinkForm(link) {

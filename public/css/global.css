@@ -221,5 +221,6 @@ select.input{
 
 .draggable {
     cursor: grab;
+    position: relative;
 }
 

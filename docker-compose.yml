@@ -2,6 +2,7 @@ version: '3'
 
 services:
   web:
+    restart: always
     build:
       context: .
       dockerfile: docker/nginx/Dockerfile
@@ -17,6 +18,7 @@ services:
     networks:
       - app
   php:
+    restart: always
     build:
       context: .
       dockerfile: docker/php/Dockerfile
@@ -51,8 +53,6 @@ services:
   # wait a second after first compose before accessing in browser
   pgadmin:
     image: dpage/pgadmin4:7.8
-    container_name: pgadmin
-    restart: "unless-stopped"
     ports:
       - "${PGADMIN_HOST_PORT}:80"
     networks:

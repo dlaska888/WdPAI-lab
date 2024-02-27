@@ -55,6 +55,8 @@ const GroupModule = (function () {
                 () => endGroupEdit(group, true), "cancel-btn hidden"));
 
             document.addEventListener("dragover", e => handleLinkDrop(e, groupLinks, group.id));
+            document.addEventListener("touchmove", e => handleLinkDrop(e, groupLinks, group.id),
+                {passive: false});
         }
 
         groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupSharesForm(group)});
@@ -134,9 +136,8 @@ const GroupModule = (function () {
 
         const groupNameEl = groupEl.querySelector(".group-name");
         const groupNameInput = document.createElement("input");
-        groupNameInput.classList.add("group-name", "input");
-        groupNameInput.value = groupNameEl.innerText;
-        groupNameInput.placeholder = groupNameEl.innerText;
+        groupNameInput.className = "group-name input";
+        groupNameInput.value = groupNameInput.placeholder = groupNameEl.innerText;
         groupNameEl.replaceWith(groupNameInput);
     }
 
@@ -165,7 +166,6 @@ const GroupModule = (function () {
 
                 if (response.success) {
                     NotificationService.notify("Group edited!", "okay");
-                    updateState(group.id);
                 } else {
                     NotificationService.notify(response.message, "error", response.data);
                 }
@@ -173,31 +173,27 @@ const GroupModule = (function () {
                 console.error("Error submitting form:", error);
                 NotificationService.notify("An error occurred while submitting the form", "error");
             }
-        }else{
-            const groupNameInput = groupEl.querySelector(".group-name");
-            const groupNameEl = document.createElement("p");
-            groupNameEl.classList.add("group-name", "text-tertiary", "text-ellipsis");
-            groupNameEl.innerText = groupNameInput.placeholder;
-            groupNameInput.replaceWith(groupNameEl);
         }
+
+        updateState(group.id);
     }
 
     function handleLinkDrop(e) {
         e.preventDefault();
 
-        const draggable = document.querySelector('.dragging');
-        const container = draggable.closest(".group-links");
-        const afterElement = getDragAfterElement(container, e.clientY);
+        const dragging = document.querySelector('.dragging');
+        const container = dragging.closest(".group-links");
+        const afterElement = getDragAfterElement(container, e.clientY || e.touches[0].clientY); // touches for mobile
 
         if (afterElement == null) {
-            container.appendChild(draggable);
+            container.appendChild(dragging);
         } else {
-            container.insertBefore(draggable, afterElement);
+            container.insertBefore(dragging, afterElement);
         }
 
         // Check if the dragged element is near the top or bottom edge of the container
         const containerRect = container.getBoundingClientRect();
-        const draggableRect = draggable.getBoundingClientRect();
+        const draggableRect = dragging.getBoundingClientRect();
 
         if (draggableRect.top < containerRect.top) {
             container.scrollTop -= containerRect.top - draggableRect.top;

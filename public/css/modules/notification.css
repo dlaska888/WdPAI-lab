@@ -20,6 +20,10 @@
     }
 }
 
+.notification ul{
+    list-style-type: none;
+}
+
 .notification.error {
     background-color: #ff6262; /* Light Red */
 }
