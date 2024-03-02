@@ -19,11 +19,11 @@
             <input type="email" name="email" class="input" placeholder="Email"
                    title="Email" required>
             <input type="password" name="password" class="input" placeholder="Password"
-                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s])[A-Za-z\d[^\w\d\s]]{8,20}"
                    title="Password must be at least 8 characters long, contain at least 1 lowercase letter,
                    1 uppercase letter, 1 number, and 1 special character" required>
             <input type="password" name="passwordConfirm" class="input" placeholder="Confirm password"
-                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s])[A-Za-z\d[^\w\d\s]]{8,20}"
                    title="Please enter the same password as above" required>
         </div>
 
