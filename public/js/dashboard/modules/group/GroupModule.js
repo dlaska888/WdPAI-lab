@@ -46,13 +46,13 @@ const GroupModule = (function () {
 
         if (editable) {
             groupOptions.push({optionTitle: "Add", optionIcon: "add", callback: () => addLinkForm(group)});
-            groupOptions.push({optionTitle: "Edit", optionIcon: "edit", callback: () => startGroupEdit(group)});
+            groupOptions.push({optionTitle: "Edit", optionIcon: "edit", callback: () => startGroupEdit(group.id)});
 
             groupBtns.appendChild(await ButtonModule.render('done',
-                () => endGroupEdit(group, false), "done-btn hidden"));
+                () => endGroupEdit(group.id, false), "done-btn hidden"));
 
             groupBtns.appendChild(await ButtonModule.render('cancel',
-                () => endGroupEdit(group, true), "cancel-btn hidden"));
+                () => endGroupEdit(group.id, true), "cancel-btn hidden"));
         }
 
         groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupSharesForm(group)});
@@ -99,7 +99,7 @@ const GroupModule = (function () {
     }
 
     function removeElement(groupId) {
-        const groupElement = document.querySelector(`[id="${groupId}"]`); // escaping forbidden id characters
+        const groupElement = document.querySelector(`[id="${groupId}"]`);
         if (groupElement) {
             groupElement.remove();
         } else {
@@ -122,13 +122,12 @@ const GroupModule = (function () {
         document.body.appendChild(await ModalModule.render(await GroupSharesModule.render(group), false));
     }
 
-    async function startGroupEdit(group) {
-        const groupEl = document.querySelector(`[id="${group.id}"]`);
-        groupEl.classList.add("group-edit");
+    async function startGroupEdit(groupId) {
+        const groupEl = document.querySelector(`[id="${groupId}"]`);
 
-        for (const link of group.links) {
-            LinkModule.startLinkEdit(link);
-        }
+        groupEl.classList.add("group-edit");
+        groupEl.addEventListener("dragover", handleLinkDrop);
+        groupEl.addEventListener("touchmove", handleLinkDrop, {passive: false});
 
         const groupNameEl = groupEl.querySelector(".group-name");
         const groupNameInput = document.createElement("input");
@@ -136,36 +135,32 @@ const GroupModule = (function () {
         groupNameInput.value = groupNameInput.placeholder = groupNameEl.innerText;
         groupNameEl.replaceWith(groupNameInput);
 
-        const groupLinks = groupEl.querySelector(".group-links");
-        groupEl.addEventListener("dragover", e => handleLinkDrop(e, groupLinks, group.id));
-        groupEl.addEventListener("touchmove", e => handleLinkDrop(e, groupLinks, group.id),
-            {passive: false});
+        const groupLinkIds = getGroupLinksIds(groupId);
+        for (const groupLinkId of groupLinkIds) {
+            LinkModule.startLinkEdit(groupLinkId);
+        }
     }
 
-    async function endGroupEdit(group, cancelled) {
-        const groupEl = document.querySelector(`[id="${group.id}"]`);
-        groupEl.classList.remove("group-edit");
+    async function endGroupEdit(groupId, cancelled) {
+        const groupEl = document.querySelector(`[id="${groupId}"]`);
 
-        for (const link of group.links) {
-            LinkModule.endLinkEdit(link);
+        groupEl.classList.remove("group-edit");
+        groupEl.removeEventListener("dragover", handleLinkDrop);
+        groupEl.removeEventListener("touchmove", handleLinkDrop, {passive: false});
+
+        const groupLinkIds = getGroupLinksIds(groupId);
+        for (const groupLinkId of groupLinkIds) {
+            LinkModule.endLinkEdit(groupLinkId);
         }
 
-        const groupLinks = groupEl.querySelector(".group-links");
-        groupEl.removeEventListener("dragover", e => handleLinkDrop(e, groupLinks, group.id));
-        groupEl.removeEventListener("touchmove", e => handleLinkDrop(e, groupLinks, group.id),
-            {passive: false});
-
         if (!cancelled) {
-            const links = groupEl.querySelectorAll(".link-container");
-            const orderList = Array.from(links).map(el => el.getAttribute("id"));
-
             const body = {
-                linksOrder: orderList,
+                linksOrder: groupLinkIds,
                 name: groupEl.querySelector(".group-name").value
             }
 
             try {
-                const response = await ApiClient.fetchData(`/link-group/${group.id}`, {
+                const response = await ApiClient.fetchData(`/link-group/${groupId}`, {
                     method: "PUT",
                     body: JSON.stringify(body),
                 });
@@ -181,7 +176,15 @@ const GroupModule = (function () {
             }
         }
 
-        updateState(group.id);
+        updateState(groupId);
+    }
+
+    function getGroupLinksIds(groupId) {
+        return Array
+            .from(document
+                .querySelector(`[id="${groupId}"]`)
+                .querySelectorAll(".link-container"))
+            .map(el => el.getAttribute("id"));
     }
 
     function handleLinkDrop(e) {

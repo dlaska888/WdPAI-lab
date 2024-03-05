@@ -52,7 +52,7 @@ const LinkModule = (function () {
             NotificationService.notify("Failed to copy text to clipboard", "error");
         }
     }
-
+ 
     function updateState(linkId, groupId) {
         ApiClient.fetchData(`/link-group/${groupId}/link/${linkId}`)
             .then(async response => {
@@ -72,7 +72,7 @@ const LinkModule = (function () {
     }
 
     async function removeElement(linkId) {
-        const linkElement = document.querySelector(`[id="${linkId}" ]`); // escaping forbidden id characters
+        const linkElement = document.querySelector(`[id="${linkId}"]`); // escaping forbidden id characters
         if (linkElement) {
             linkElement.remove();
         } else {
@@ -80,8 +80,8 @@ const LinkModule = (function () {
         }
     }
 
-    function startLinkEdit(link) {
-        const linkElement = document.querySelector(`[id="${link.id}"]`);
+    function startLinkEdit(linkId) {
+        const linkElement = document.querySelector(`[id="${linkId}"]`);
 
         linkElement.classList.add("link-edit", "draggable");
         linkElement.draggable = true;
@@ -93,8 +93,8 @@ const LinkModule = (function () {
         linkElement.addEventListener("touchend", () => linkElement.classList.remove('dragging'));
     }
 
-    function endLinkEdit(link) {
-        const linkElement = document.querySelector(`[id="${link.id}"]`);
+    function endLinkEdit(linkId) {
+        const linkElement = document.querySelector(`[id="${linkId}"]`);
 
         linkElement.classList.remove("link-edit", "draggable");
         linkElement.draggable = false;
@@ -113,7 +113,6 @@ const LinkModule = (function () {
     async function deleteLinkForm(link) {
         document.body.appendChild(await ModalModule.render(await DeleteLinkForm.render(link)));
     }
-
 
     return {
         render: render,
