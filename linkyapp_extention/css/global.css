@@ -40,7 +40,7 @@ input[type="submit"] {
     --primary-dark: #00a292;
     --primary-light: #80dfd9;
     --secondary: #fff;
-    --tertiary: rgba(169, 169, 169, 0.36);
+    --tertiary: #a9a9a9;
     --grey: #eee;
 }
 
@@ -61,14 +61,14 @@ input[type="submit"] {
 }
 
 .text-shadow {
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .text-underline {
     text-decoration: underline;
 }
 
-.text-bold{
+.text-bold {
     font-weight: bold;
 }
 
@@ -151,7 +151,10 @@ input[type="submit"] {
     transform: translateY(0);
 }
 
-.btn-hover-dim{
+.btn-hover-dim {
+    padding: 0.25rem;
+    border-radius: 0.75rem;
+
     &:hover {
         background-color: rgba(0, 0, 0, .05);
     }
@@ -166,14 +169,31 @@ input[type="submit"] {
     box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3);
     transition: 500ms ease-in-out;
     font-size: 1rem;
-
     max-width: 350px;
 }
 
-.input:focus {
+.input:focus{
     background-color: white;
     transform: scale(1.05);
     box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+select.input{
+    padding: 0.75rem 1rem;
+}
+
+.file-input{
+    min-width: 0;
+    max-width: 100%;
+    gap: 1rem;
+    & #file-chosen{
+        margin-left: 0.3rem;
+        max-width: 70%;
+    }
+    
+    & .input{
+        max-width: max-content;
+    }
 }
 
 .footer-logo {
@@ -195,45 +215,11 @@ input[type="submit"] {
     font-size: 0.7rem;
 }
 
-.messages{
+.messages {
     color: var(--secondary);
 }
 
-/* The Modal (background) */
-.modal {
-    position: fixed; /* Stay in place */
-    z-index: 100; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-
-    & .modal-content{
-        width: 50%;
-        max-width: 500px;
-        padding: 1rem 1rem 2rem 1rem;
-        border-radius: 1rem;
-        background-color: var(--primary);
-
-        & .main-form{
-            padding: 0;
-        }
-
-        & .form-header{
-            font-size: 2rem;
-        }
-
-        & .cancel-btn{
-            align-self: end;
-        }
-    }
-
-    @media (max-width: 768px) {
-        & .modal-content{
-            width: 80%;
-        }
-    }
-
+.draggable {
+    cursor: grab;
 }
+

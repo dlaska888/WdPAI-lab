@@ -2,14 +2,15 @@ import FormModule from "./FormModule.js";
 import NotificationService from "../NotificationService.js";
 import ApiClient from "../ApiClient.js";
 import StringHelper from "../StringHelper.js";
+import {domain} from "../../appConfig.js"
 
 const AddLinkForm = (function () {
     async function submit(formData) {
-        const submitUrl = `/link-group/a4fd05e3-3690-4eea-a397-377c9e81884c/link`;
+        const submitUrl = domain + `/link-group/${formData.get("groupId")}/link`;
         const method = "POST";
         const cookie = {
             'Cookie': chrome.cookies.get({
-                url: 'http://srv24.mikr.us:20136',
+                url: domain,
                 name: 'PHPSESSID'
             }, cookie => cookie)
         }
@@ -28,16 +29,19 @@ const AddLinkForm = (function () {
             }
         } catch (error) {
             console.error("Error submitting link:", error);
-            NotificationService.notify("An error occurred while adding the link", "error");
+            NotificationService.notify("An error occurred while adding link", "error", null, "body");
         }
     }
 
-    async function render(link) {
-        const formFields = [
-            {type: "url", name: "url", placeholder: "Url", value: link, required: true},
-            {type: "text", name: "title", placeholder: "Title", value: StringHelper.getDomainName(link)}
-        ];
+    async function render(tab) {
+        const groups = (await ApiClient.fetchData(domain + "/link-groups")).data;
+        const options = groups.map((group) => ({ text: group.name, value: group.id }));
 
+        const formFields = [
+            {type: "select", name: "groupId", options: options},
+            {type: "text", name: "title", placeholder: "Title", value: tab.title},
+            {type: "url", name: "url", placeholder: "Url", value: tab.url, required: true},
+        ];
 
         return await FormModule.render((e) => submit(new FormData(e.currentTarget)), null, formFields);
     }

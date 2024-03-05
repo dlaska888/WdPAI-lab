@@ -1,9 +1,9 @@
 import AddLinkForm from "./js/modules/AddLinkForm.js";
 
-document.body.appendChild(await AddLinkForm.render((await getCurrentTab()).url));
+document.body.appendChild(await AddLinkForm.render(await getCurrentTab()));
 
 async function getCurrentTab() {
-	let queryOptions = { active: true, lastFocusedWindow: true };
-	let [tab] = await chrome.tabs.query(queryOptions);
+	const queryOptions = { active: true, lastFocusedWindow: true };
+	const [tab] = await chrome.tabs.query(queryOptions);
 	return tab;
 }
