@@ -60,7 +60,7 @@ const LinkModule = (function () {
                     const linkElement = document.querySelector(`[id="${linkId}"]`);
                     if (linkElement) {
                         linkElement.replaceWith(await LinkModule.render(response.data));
-                        startLinkEdit(linkElement);
+                        startLinkEdit(linkId);
                     } else {
                         console.error(`Link with id ${linkId} to update not found`);
                     }

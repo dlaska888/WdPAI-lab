@@ -42,6 +42,10 @@ class StringHelper {
             })
             .catch(() => this.getDomainName(url));
     }
+    
+    static getFullUrl(url){
+        return url.match("^(.*)://") ? url : "https://" + url;
+    }
 }
 
 export default StringHelper;
