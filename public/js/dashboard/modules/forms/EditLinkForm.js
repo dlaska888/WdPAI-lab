@@ -9,7 +9,11 @@ const EditLinkForm = (function () {
         const submitUrl = `link-group/${link.linkGroupId}/link/${link.id}`;
         const method = "PUT";
 
-        formData.get("title") || formData.set("title", StringHelper.getDomainName(formData.get("url")));
+        const url = StringHelper.getFullUrl(formData.get("url"));
+        const title = formData.get("title") || StringHelper.getDomainName(url);
+
+        formData.set("url", url);
+        formData.set("title", title);
         
         try {
             const response = await ApiClient.fetchData(submitUrl, {

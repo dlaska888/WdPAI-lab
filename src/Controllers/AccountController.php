@@ -25,7 +25,7 @@ use src\Validators\UpdatePasswordValidator;
 use src\Validators\UpdateUserNameValidator;
 
 #[ApiController]
-#[Authorize([UserRole::NORMAL->value, UserRole::ADMIN->value])]
+#[Authorize([UserRole::NORMAL, UserRole::ADMIN])]
 class AccountController extends AppController
 {
     private UserRepo $userRepo;

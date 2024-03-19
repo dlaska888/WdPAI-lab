@@ -2,6 +2,7 @@ import ButtonModule from "../ButtonModule.js";
 import ModalModule from "../ModalModule.js";
 import EditLinkForm from "../forms/EditLinkForm.js";
 import DeleteLinkForm from "../forms/DeleteLinkForm.js";
+import NotificationService from "../../NotificationService.js";
 import ApiClient from "../../ApiClient.js";
 
 const LinkModule = (function () {
@@ -21,10 +22,13 @@ const LinkModule = (function () {
             <div class="link-buttons flex"></div>
         </div>`;
         linkElement = linkElement.firstElementChild;
-        
+
         linkElement.order = link.customOrder;
 
         const linkButtons = linkElement.querySelector(".link-buttons");
+        linkButtons.appendChild(await ButtonModule.render("copy", 
+            async () => await copyToClipboard(url), 
+            "btn-link"));
         linkButtons.appendChild(await ButtonModule.render("open-link", () => window.open(url), "btn-link"));
 
         if (editable) {
@@ -38,6 +42,17 @@ const LinkModule = (function () {
 
         return linkElement;
     }
+
+    async function copyToClipboard(url) {
+        try {
+            await navigator.clipboard.writeText(url);
+            NotificationService.notify("Copied to clipboard!");
+        } catch (error) {
+            console.error("Failed to copy text to clipboard:", error);
+            NotificationService.notify("Failed to copy text to clipboard", "error");
+        }
+    }
+ 
     function updateState(linkId, groupId) {
         ApiClient.fetchData(`/link-group/${groupId}/link/${linkId}`)
             .then(async response => {
@@ -45,7 +60,7 @@ const LinkModule = (function () {
                     const linkElement = document.querySelector(`[id="${linkId}"]`);
                     if (linkElement) {
                         linkElement.replaceWith(await LinkModule.render(response.data));
-                        startLinkEdit(linkElement);
+                        startLinkEdit(linkId);
                     } else {
                         console.error(`Link with id ${linkId} to update not found`);
                     }
@@ -57,7 +72,7 @@ const LinkModule = (function () {
     }
 
     async function removeElement(linkId) {
-        const linkElement = document.querySelector(`[id="${linkId}" ]`); // escaping forbidden id characters
+        const linkElement = document.querySelector(`[id="${linkId}"]`); // escaping forbidden id characters
         if (linkElement) {
             linkElement.remove();
         } else {
@@ -65,22 +80,30 @@ const LinkModule = (function () {
         }
     }
 
-    function startLinkEdit(link) {
-        const linkElement = document.querySelector(`[id="${link.id}"]`);
+    function startLinkEdit(linkId) {
+        const linkElement = document.querySelector(`[id="${linkId}"]`);
 
         linkElement.classList.add("link-edit", "draggable");
         linkElement.draggable = true;
+
         linkElement.addEventListener("dragstart", () => linkElement.classList.add('dragging'));
         linkElement.addEventListener("dragend", () => linkElement.classList.remove('dragging'));
+
+        linkElement.addEventListener("touchstart", () => linkElement.classList.add('dragging'));
+        linkElement.addEventListener("touchend", () => linkElement.classList.remove('dragging'));
     }
 
-    function endLinkEdit(link) {
-        const linkElement = document.querySelector(`[id="${link.id}"]`);
+    function endLinkEdit(linkId) {
+        const linkElement = document.querySelector(`[id="${linkId}"]`);
 
         linkElement.classList.remove("link-edit", "draggable");
         linkElement.draggable = false;
+
         linkElement.removeEventListener("dragstart", () => linkElement.classList.add('dragging'));
         linkElement.removeEventListener("dragend", () => linkElement.classList.remove('dragging'));
+
+        linkElement.removeEventListener("touchstart", () => linkElement.classList.add('dragging'));
+        linkElement.removeEventListener("touchend", () => linkElement.classList.remove('dragging'));
     }
 
     async function editLinkForm(link) {

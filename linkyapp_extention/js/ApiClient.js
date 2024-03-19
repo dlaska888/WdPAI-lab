@@ -1,11 +1,16 @@
+import {domain} from "../appConfig.js";
 class ApiClient {
     static createResultObject(success, data, message) {
         return { success, data, message };
     }
 
-    static handleApiResponse(jsonResponse) {
+    static handleApiResponse(jsonResponse, code) {
         if (jsonResponse.status === "success") {
             return this.createResultObject(true, jsonResponse.data);
+        }
+
+        if(code === 401){
+            this.handleSessionExpired();
         }
 
         const errorMessage = jsonResponse.message || 'Oops! Something went wrong';
@@ -13,23 +18,18 @@ class ApiClient {
         return this.createResultObject(false, jsonResponse.data, errorMessage);
     }
 
-    static async fetchData(url, options = {}) {
-        if (!options.headers)
-            options.headers = new Headers();
-        
-        // Add "Accept" header to indicate that the client accepts JSON
-        options.mode = options.mode || "same-origin";
-        options.headers = {
-            'Accept': 'application/json',
-        }
+    static handleSessionExpired(){
+        chrome.tabs.create({ url: domain + "/login" });
+    }
 
+    static async fetchData(url, options = {}) {
         try {
             const response = await fetch(url, options);
             const jsonResponse = await response.json();
-            return this.handleApiResponse(jsonResponse);
+            return this.handleApiResponse(jsonResponse, response.status);
         } catch (error) {
-            const result = this.createResultObject(false, null, error.message);
-            console.error('API error:', result.message, result.data);
+            const result = this.createResultObject(false, null, 'Oops! Something went wrong');
+            console.error('API error:', error.message);
             return result;
         }
     }
@@ -45,8 +45,8 @@ class ApiClient {
             return this.createResultObject(false, null, response.message)
             
         } catch (error) {
-            const result = this.createResultObject(false, null, error.message);
-            console.error('File fetch error:', result.message, result.data);
+            const result = this.createResultObject(false, null, 'Oops! Something went wrong');
+            console.error('API error:', error.message);
             return result;
         }
     }

@@ -32,7 +32,7 @@ use src\Validators\UpdateLinkGroupValidator;
 use src\Validators\UpdateLinkValidator;
 
 #[ApiController]
-#[Authorize([UserRole::NORMAL->value, UserRole::ADMIN->value])]
+#[Authorize([UserRole::NORMAL, UserRole::ADMIN])]
 class LinkController extends AppController
 {
     private LinkRepo $linkRepo;

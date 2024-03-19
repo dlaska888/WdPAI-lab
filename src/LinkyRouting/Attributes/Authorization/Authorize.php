@@ -9,6 +9,6 @@ class Authorize
 {
     public function __construct(public array $roles)
     {
-        $this->roles = array_map(fn($role) => strtoupper($role), $this->roles);
+        $this->roles = array_map(fn($role) => strtoupper($role->value), $this->roles);
     }
 }

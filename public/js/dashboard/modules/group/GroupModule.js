@@ -46,15 +46,13 @@ const GroupModule = (function () {
 
         if (editable) {
             groupOptions.push({optionTitle: "Add", optionIcon: "add", callback: () => addLinkForm(group)});
-            groupOptions.push({optionTitle: "Edit", optionIcon: "edit", callback: () => startGroupEdit(group)});
+            groupOptions.push({optionTitle: "Edit", optionIcon: "edit", callback: () => startGroupEdit(group.id)});
 
             groupBtns.appendChild(await ButtonModule.render('done',
-                () => endGroupEdit(group, false), "done-btn hidden"));
+                () => endGroupEdit(group.id, false), "done-btn hidden"));
 
             groupBtns.appendChild(await ButtonModule.render('cancel',
-                () => endGroupEdit(group, true), "cancel-btn hidden"));
-
-            document.addEventListener("dragover", e => handleLinkDrop(e, groupLinks, group.id));
+                () => endGroupEdit(group.id, true), "cancel-btn hidden"));
         }
 
         groupOptions.push({optionTitle: "Share", optionIcon: "share", callback: () => groupSharesForm(group)});
@@ -101,7 +99,7 @@ const GroupModule = (function () {
     }
 
     function removeElement(groupId) {
-        const groupElement = document.querySelector(`[id="${groupId}"]`); // escaping forbidden id characters
+        const groupElement = document.querySelector(`[id="${groupId}"]`);
         if (groupElement) {
             groupElement.remove();
         } else {
@@ -124,48 +122,51 @@ const GroupModule = (function () {
         document.body.appendChild(await ModalModule.render(await GroupSharesModule.render(group), false));
     }
 
-    async function startGroupEdit(group) {
-        const groupEl = document.querySelector(`[id="${group.id}"]`);
-        groupEl.classList.add("group-edit");
+    async function startGroupEdit(groupId) {
+        const groupEl = document.querySelector(`[id="${groupId}"]`);
 
-        for (const link of group.links) {
-            LinkModule.startLinkEdit(link);
-        }
+        groupEl.classList.add("group-edit");
+        groupEl.addEventListener("dragover", handleLinkDrop);
+        groupEl.addEventListener("touchmove", handleLinkDrop, {passive: false});
 
         const groupNameEl = groupEl.querySelector(".group-name");
         const groupNameInput = document.createElement("input");
-        groupNameInput.classList.add("group-name", "input");
-        groupNameInput.value = groupNameEl.innerText;
-        groupNameInput.placeholder = groupNameEl.innerText;
+        groupNameInput.className = "group-name input";
+        groupNameInput.value = groupNameInput.placeholder = groupNameEl.innerText;
         groupNameEl.replaceWith(groupNameInput);
+
+        const groupLinkIds = getGroupLinksIds(groupId);
+        for (const groupLinkId of groupLinkIds) {
+            LinkModule.startLinkEdit(groupLinkId);
+        }
     }
 
-    async function endGroupEdit(group, cancelled) {
-        const groupEl = document.querySelector(`[id="${group.id}"]`);
-        groupEl.classList.remove("group-edit");
+    async function endGroupEdit(groupId, cancelled) {
+        const groupEl = document.querySelector(`[id="${groupId}"]`);
 
-        for (const link of group.links) {
-            LinkModule.endLinkEdit(link);
+        groupEl.classList.remove("group-edit");
+        groupEl.removeEventListener("dragover", handleLinkDrop);
+        groupEl.removeEventListener("touchmove", handleLinkDrop, {passive: false});
+
+        const groupLinkIds = getGroupLinksIds(groupId);
+        for (const groupLinkId of groupLinkIds) {
+            LinkModule.endLinkEdit(groupLinkId);
         }
 
         if (!cancelled) {
-            const links = groupEl.querySelectorAll(".link-container");
-            const orderList = Array.from(links).map(el => el.getAttribute("id"));
-
             const body = {
-                linksOrder: orderList,
+                linksOrder: groupLinkIds,
                 name: groupEl.querySelector(".group-name").value
             }
 
             try {
-                const response = await ApiClient.fetchData(`/link-group/${group.id}`, {
+                const response = await ApiClient.fetchData(`/link-group/${groupId}`, {
                     method: "PUT",
                     body: JSON.stringify(body),
                 });
 
                 if (response.success) {
                     NotificationService.notify("Group edited!", "okay");
-                    updateState(group.id);
                 } else {
                     NotificationService.notify(response.message, "error", response.data);
                 }
@@ -173,31 +174,35 @@ const GroupModule = (function () {
                 console.error("Error submitting form:", error);
                 NotificationService.notify("An error occurred while submitting the form", "error");
             }
-        }else{
-            const groupNameInput = groupEl.querySelector(".group-name");
-            const groupNameEl = document.createElement("p");
-            groupNameEl.classList.add("group-name", "text-tertiary", "text-ellipsis");
-            groupNameEl.innerText = groupNameInput.placeholder;
-            groupNameInput.replaceWith(groupNameEl);
         }
+
+        updateState(groupId);
+    }
+
+    function getGroupLinksIds(groupId) {
+        return Array
+            .from(document
+                .querySelector(`[id="${groupId}"]`)
+                .querySelectorAll(".link-container"))
+            .map(el => el.getAttribute("id"));
     }
 
     function handleLinkDrop(e) {
         e.preventDefault();
 
-        const draggable = document.querySelector('.dragging');
-        const container = draggable.closest(".group-links");
-        const afterElement = getDragAfterElement(container, e.clientY);
+        const dragging = document.querySelector('.dragging');
+        const container = dragging.closest(".group-links");
+        const afterElement = getDragAfterElement(container, e.clientY || e.touches[0].clientY); // touches for mobile
 
         if (afterElement == null) {
-            container.appendChild(draggable);
+            container.appendChild(dragging);
         } else {
-            container.insertBefore(draggable, afterElement);
+            container.insertBefore(dragging, afterElement);
         }
 
         // Check if the dragged element is near the top or bottom edge of the container
         const containerRect = container.getBoundingClientRect();
-        const draggableRect = draggable.getBoundingClientRect();
+        const draggableRect = dragging.getBoundingClientRect();
 
         if (draggableRect.top < containerRect.top) {
             container.scrollTop -= containerRect.top - draggableRect.top;
