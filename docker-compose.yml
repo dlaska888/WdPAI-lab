@@ -22,8 +22,6 @@ services:
       - .:/app/
       - ./certbot/letsencrypt:/etc/letsencrypt:ro # mounting the folder to the nginx container 
       - ./certbot/data:/var/www/certbot
-    networks:
-      - app
   certbot:
     image: certbot/certbot:latest
     depends_on:
@@ -39,6 +37,7 @@ services:
     restart: always
     depends_on:
       - postgres
+      - selenium
     build:
       context: .
       dockerfile: docker/php/Dockerfile
@@ -53,8 +52,6 @@ services:
     volumes:
       - .:/app/
       - ./uploads:/app/uploads/
-    networks:
-      - app
   postgres:
     image: postgres:alpine3.18
     restart: always
@@ -64,19 +61,17 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    networks:
-      - app
-      - database
     volumes:
       - ./docker/postgres/:/docker-entrypoint-initdb.d/
       - pgdata:/var/lib/postgresql/data
+  selenium:
+    image: selenium/standalone-firefox:4.18.1
+    
   # wait a second after first compose before accessing in browser
   pgadmin:
     image: dpage/pgadmin4:7.8
     ports:
       - "${PGADMIN_PORT}:80"
-    networks:
-      - database
     volumes:
       - ./docker/pgadmin/servers.json:/pgadmin4/servers.json
     environment:
@@ -84,10 +79,6 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_USE_MASTER_PASSWORD}
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: ${PGADMIN_USE_MASTER_PASSWORD}
-
-networks:
-  app:
-  database:
 
 volumes:
   pgdata:
