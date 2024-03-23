@@ -1,8 +1,8 @@
 <?php
 
-namespace src\Repos;
+namespace LinkyApp\Repos;
 
-use src\Models\Entities\File;
+use LinkyApp\Models\Entities\File;
 
 class FileRepo extends BaseRepo
 {

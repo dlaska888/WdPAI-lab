@@ -1,8 +1,8 @@
 <?php
 
-namespace src\Handlers;
+namespace LinkyApp\Handlers;
 
-use src\LinkyRouting\Interfaces\ISessionHandler;
+use LinkyApp\LinkyRouting\Interfaces\ISessionHandler;
 
 abstract class AppSessionHandler implements ISessionHandler
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace src\LinkyRouting\Middleware;
+namespace LinkyApp\LinkyRouting\Middleware;
 
-use src\LinkyRouting\Middleware\Interfaces\IMiddleware;
+use LinkyApp\LinkyRouting\Middleware\Interfaces\IMiddleware;
 
 class MiddlewareChain extends BaseMiddleware
 {

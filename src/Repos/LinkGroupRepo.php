@@ -1,12 +1,12 @@
 <?php
 
-namespace src\Repos;
+namespace LinkyApp\Repos;
 
 use Exception;
 use InvalidArgumentException;
+use LinkyApp\Models\Entities\Entity;
+use LinkyApp\Models\Entities\LinkGroup;
 use PDO;
-use src\Models\Entities\Entity;
-use src\Models\Entities\LinkGroup;
 
 class LinkGroupRepo extends BaseRepo
 {

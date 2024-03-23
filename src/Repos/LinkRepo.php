@@ -1,10 +1,10 @@
 <?php
 
-namespace src\Repos;
+namespace LinkyApp\Repos;
 
+use LinkyApp\Exceptions\NotFoundException;
+use LinkyApp\Models\Entities\Link;
 use PDO;
-use src\Exceptions\NotFoundException;
-use src\Models\Entities\Link;
 
 class LinkRepo extends BaseRepo
 {

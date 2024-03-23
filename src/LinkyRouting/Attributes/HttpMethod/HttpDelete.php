@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting\Attributes\HttpMethod;
+namespace LinkyApp\LinkyRouting\Attributes\HttpMethod;
 
 use Attribute;
 

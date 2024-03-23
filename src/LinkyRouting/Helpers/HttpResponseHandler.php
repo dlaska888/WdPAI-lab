@@ -1,16 +1,16 @@
 <?php
 
-namespace src\LinkyRouting\Helpers;
+namespace LinkyApp\LinkyRouting\Helpers;
 
-use src\LinkyRouting\Attributes\Controller\ApiController;
-use src\LinkyRouting\Attributes\Controller\MvcController;
-use src\LinkyRouting\Enums\HttpStatusCode;
-use src\LinkyRouting\Responses\BinaryFile;
-use src\LinkyRouting\Responses\Error;
-use src\LinkyRouting\Responses\Json;
-use src\LinkyRouting\Responses\Redirect;
-use src\LinkyRouting\Responses\Response;
-use src\LinkyRouting\Responses\View;
+use LinkyApp\LinkyRouting\Attributes\Controller\ApiController;
+use LinkyApp\LinkyRouting\Attributes\Controller\MvcController;
+use LinkyApp\LinkyRouting\Enums\HttpStatusCode;
+use LinkyApp\LinkyRouting\Responses\BinaryFile;
+use LinkyApp\LinkyRouting\Responses\Error;
+use LinkyApp\LinkyRouting\Responses\Json;
+use LinkyApp\LinkyRouting\Responses\Redirect;
+use LinkyApp\LinkyRouting\Responses\Response;
+use LinkyApp\LinkyRouting\Responses\View;
 
 class HttpResponseHandler
 {

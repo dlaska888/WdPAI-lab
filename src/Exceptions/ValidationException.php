@@ -1,9 +1,9 @@
 <?php
 
-namespace src\Exceptions;
+namespace LinkyApp\Exceptions;
 
 use Exception;
-use src\Validators\ValidationResult;
+use LinkyApp\Validators\ValidationResult;
 use Throwable;
 
 class ValidationException extends Exception

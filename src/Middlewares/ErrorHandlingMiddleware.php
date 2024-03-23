@@ -1,17 +1,17 @@
 <?php
 
-namespace src\middlewares;
+namespace LinkyApp\Middlewares;
 
-use src\Exceptions\BadRequestException;
-use src\Exceptions\NotFoundException;
-use src\Exceptions\ForbiddenException;
-use src\Exceptions\UnauthorizedException;
-use src\Exceptions\ValidationException;
-use src\LinkyRouting\Enums\HttpStatusCode;
-use src\LinkyRouting\Middleware\BaseMiddleware;
-use src\LinkyRouting\Request;
-use src\LinkyRouting\Responses\Error;
-use src\LinkyRouting\Responses\Response;
+use LinkyApp\Exceptions\BadRequestException;
+use LinkyApp\Exceptions\ForbiddenException;
+use LinkyApp\Exceptions\NotFoundException;
+use LinkyApp\Exceptions\UnauthorizedException;
+use LinkyApp\Exceptions\ValidationException;
+use LinkyApp\LinkyRouting\Enums\HttpStatusCode;
+use LinkyApp\LinkyRouting\Middleware\BaseMiddleware;
+use LinkyApp\LinkyRouting\Request;
+use LinkyApp\LinkyRouting\Responses\Error;
+use LinkyApp\LinkyRouting\Responses\Response;
 use Throwable;
 
 class ErrorHandlingMiddleware extends BaseMiddleware

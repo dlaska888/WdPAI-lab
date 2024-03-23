@@ -1,7 +1,7 @@
 <?php
 
-use src\Views\Modules\FooterModule;
-use src\Views\Modules\IconModule;
+use LinkyApp\Views\Modules\FooterModule;
+use LinkyApp\Views\Modules\IconModule;
 
 ?>
 <!DOCTYPE html>

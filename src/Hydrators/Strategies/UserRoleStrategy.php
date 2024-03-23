@@ -1,9 +1,9 @@
 <?php
 
-namespace src\Hydrators\Strategies;
+namespace LinkyApp\Hydrators\Strategies;
 
-use src\Enums\UserRole;
-use src\Hydrators\Interfaces\IStrategy;
+use LinkyApp\Enums\UserRole;
+use LinkyApp\Hydrators\Interfaces\IStrategy;
 
 class UserRoleStrategy implements IStrategy
 {

@@ -1,3 +1,5 @@
+import ApiClient from "../dashboard/ApiClient.js"
+
 class StringHelper {
     static getDomainName(url) {
         try {
@@ -24,27 +26,26 @@ class StringHelper {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    static getPageTitle(url) {
-        const requestOptions = {
-            method: 'GET',
-            headers: new Headers({
-                'Content-Type': 'text/html',  // Set the content type according to your needs
-                'Access-Control-Allow-Origin': '*'  // Allow requests from any origin, adjust as needed
-            }),
-        };
-
-        return fetch(url, requestOptions)
-            .then(function(response) {
-                return response.text();
-            })
-            .then(function(body) {
-                return body.split('<title>')[1].split('</title>')[0];
-            })
-            .catch(() => this.getDomainName(url));
-    }
-    
-    static getFullUrl(url){
+    static getFullUrl(url) {
         return url.match("^(.*)://") ? url : "https://" + url;
+    }
+
+    static async getPageTitle(url, maxchars = 50) {
+        return await ApiClient
+            .fetchData(`/util/webtitle?url=${url}`)
+            .then(res => {
+                let result;
+                
+                if (res.success){
+                    result = res.data.title;
+                }
+                else{
+                    console.log("Page title fetch error! ", res.message);
+                    result = this.getDomainName(url);
+                }
+                    
+                return result.substring(0, maxchars);
+            });
     }
 }
 

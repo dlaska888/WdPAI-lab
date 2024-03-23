@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting;
+namespace LinkyApp\LinkyRouting;
 
 readonly class Route
 {

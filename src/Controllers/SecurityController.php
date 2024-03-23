@@ -1,25 +1,24 @@
 <?php
 
-namespace src\Controllers;
+namespace LinkyApp\Controllers;
 
-use src\Exceptions\BadRequestException;
-use src\Exceptions\UnauthorizedException;
-use src\Handlers\UserSessionHandler;
-use src\LinkyRouting\Attributes\Controller\MvcController;
-use src\LinkyRouting\Attributes\HttpMethod\HttpGet;
-use src\LinkyRouting\Attributes\HttpMethod\HttpPost;
-use src\LinkyRouting\Attributes\Route;
-use src\LinkyRouting\Enums\HttpStatusCode;
-use src\LinkyRouting\Responses\Json;
-use src\LinkyRouting\Responses\Redirect;
-use src\LinkyRouting\Responses\Response;
-use src\LinkyRouting\Responses\View;
-use src\Models\Entities\LinkGroup;
-use src\Models\Entities\LinkyUser;
-use src\Repos\LinkGroupRepo;
-use src\Repos\UserRepo;
-use src\Validators\LoginValidator;
-use src\Validators\RegisterValidator;
+use LinkyApp\Exceptions\BadRequestException;
+use LinkyApp\Exceptions\UnauthorizedException;
+use LinkyApp\Handlers\UserSessionHandler;
+use LinkyApp\LinkyRouting\Attributes\Controller\MvcController;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpGet;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpPost;
+use LinkyApp\LinkyRouting\Attributes\Route;
+use LinkyApp\LinkyRouting\Enums\HttpStatusCode;
+use LinkyApp\LinkyRouting\Responses\Json;
+use LinkyApp\LinkyRouting\Responses\Redirect;
+use LinkyApp\LinkyRouting\Responses\View;
+use LinkyApp\Models\Entities\LinkGroup;
+use LinkyApp\Models\Entities\LinkyUser;
+use LinkyApp\Repos\LinkGroupRepo;
+use LinkyApp\Repos\UserRepo;
+use LinkyApp\Validators\LoginValidator;
+use LinkyApp\Validators\RegisterValidator;
 
 #[MvcController]
 class SecurityController extends AppController

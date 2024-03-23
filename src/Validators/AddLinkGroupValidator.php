@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Validators;
+namespace LinkyApp\Validators;
 
 class AddLinkGroupValidator extends BaseValidator
 {

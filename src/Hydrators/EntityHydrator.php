@@ -1,15 +1,15 @@
 <?php
 
-namespace src\Hydrators;
+namespace LinkyApp\Hydrators;
 
 use InvalidArgumentException;
+use LinkyApp\Helpers\StringHelper;
+use LinkyApp\Hydrators\Attributes\HydrationStrategy;
+use LinkyApp\Hydrators\Attributes\SkipHydration;
+use LinkyApp\Hydrators\Interfaces\IHydrator;
+use LinkyApp\Hydrators\Interfaces\IStrategy;
+use LinkyApp\Models\Entities\Entity;
 use ReflectionClass;
-use src\Helpers\StringHelper;
-use src\Hydrators\Attributes\HydrationStrategy;
-use src\Hydrators\Attributes\SkipHydration;
-use src\Hydrators\Interfaces\IHydrator;
-use src\Hydrators\Interfaces\IStrategy;
-use src\Models\Entities\Entity;
 
 
 //Strategy design pattern

@@ -1,8 +1,8 @@
 <?php
 
-namespace src\Validators;
+namespace LinkyApp\Validators;
 
-use src\Enums\GroupPermissionLevel;
+use LinkyApp\Enums\GroupPermissionLevel;
 
 abstract class BaseValidator
 {

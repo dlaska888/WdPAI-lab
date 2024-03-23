@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Enums;
+namespace LinkyApp\Enums;
 
 enum GroupPermissionLevel : string
 {

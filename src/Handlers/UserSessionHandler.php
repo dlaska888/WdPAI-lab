@@ -1,8 +1,8 @@
 <?php
 
-namespace src\Handlers;
+namespace LinkyApp\Handlers;
 
-use src\Models\Entities\LinkyUser;
+use LinkyApp\Models\Entities\LinkyUser;
 
 class UserSessionHandler extends AppSessionHandler
 {

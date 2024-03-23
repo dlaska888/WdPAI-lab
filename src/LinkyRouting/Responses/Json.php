@@ -1,9 +1,9 @@
 <?php
 
-namespace src\LinkyRouting\Responses;
+namespace LinkyApp\LinkyRouting\Responses;
 
 use JsonSerializable;
-use src\LinkyRouting\Enums\HttpStatusCode;
+use LinkyApp\LinkyRouting\Enums\HttpStatusCode;
 
 // Based on JSend https://github.com/omniti-labs/jsend
 class Json extends Response implements JsonSerializable

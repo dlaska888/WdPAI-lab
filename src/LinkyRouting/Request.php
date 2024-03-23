@@ -1,8 +1,8 @@
 <?php
 
-namespace src\LinkyRouting;
+namespace LinkyApp\LinkyRouting;
 
-use src\LinkyRouting\Responses\Response;
+use LinkyApp\LinkyRouting\Responses\Response;
 
 readonly class Request
 {

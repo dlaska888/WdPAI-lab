@@ -1,8 +1,8 @@
 <?php
 
-namespace src\Models\Entities;
+namespace LinkyApp\Models\Entities;
 
-use src\Hydrators\Attributes\SkipHydration;
+use LinkyApp\Hydrators\Attributes\SkipHydration;
 
 class LinkGroup extends Entity
 {

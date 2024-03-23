@@ -1,8 +1,8 @@
 <?php
 
-namespace src\LinkyRouting\Responses;
+namespace LinkyApp\LinkyRouting\Responses;
 
-use src\LinkyRouting\Enums\HttpStatusCode;
+use LinkyApp\LinkyRouting\Enums\HttpStatusCode;
 
 abstract class Response
 {

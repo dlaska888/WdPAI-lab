@@ -1,13 +1,12 @@
 <?php
 
-namespace src\LinkyRouting\Middleware;
+namespace LinkyApp\LinkyRouting\Middleware;
 
-use src\LinkyRouting\Enums\HttpStatusCode;
-use src\LinkyRouting\Interfaces\ISessionHandler;
-use src\LinkyRouting\Request;
-use src\LinkyRouting\Responses\Error;
-use src\LinkyRouting\Responses\Response;
-use src\LinkyRouting\Route;
+use LinkyApp\LinkyRouting\Enums\HttpStatusCode;
+use LinkyApp\LinkyRouting\Interfaces\ISessionHandler;
+use LinkyApp\LinkyRouting\Request;
+use LinkyApp\LinkyRouting\Responses\Error;
+use LinkyApp\LinkyRouting\Responses\Response;
 
 class AuthorizationMiddleware extends BaseMiddleware
 {

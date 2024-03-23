@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Models\Entities;
+namespace LinkyApp\Models\Entities;
 
 class Link extends Entity
 {

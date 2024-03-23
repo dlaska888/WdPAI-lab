@@ -1,9 +1,9 @@
 <?php
 
-namespace src\LinkyRouting\Responses;
+namespace LinkyApp\LinkyRouting\Responses;
 
-use src\LinkyRouting\Enums\HttpStatusCode;
-use src\LinkyRouting\Request;
+use LinkyApp\LinkyRouting\Enums\HttpStatusCode;
+use LinkyApp\LinkyRouting\Request;
 
 class Error extends Response
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting\Enums;
+namespace LinkyApp\LinkyRouting\Enums;
 
 enum HttpStatusCode : int
 {

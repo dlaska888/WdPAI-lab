@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Hydrators\Interfaces;
+namespace LinkyApp\Hydrators\Interfaces;
 
 /**
  * Interface IStrategy

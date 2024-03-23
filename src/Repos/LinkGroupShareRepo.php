@@ -1,9 +1,9 @@
 <?php
 
-namespace src\Repos;
+namespace LinkyApp\Repos;
 
+use LinkyApp\Models\Entities\LinkGroupShare;
 use PDO;
-use src\Models\Entities\LinkGroupShare;
 
 class LinkGroupShareRepo extends BaseRepo
 {

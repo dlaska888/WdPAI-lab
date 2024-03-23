@@ -1,8 +1,8 @@
 <?php
 
-namespace src\Hydrators\Interfaces;
+namespace LinkyApp\Hydrators\Interfaces;
 
-use src\Models\Entities\Entity;
+use LinkyApp\Models\Entities\Entity;
 
 interface IHydrator
 {

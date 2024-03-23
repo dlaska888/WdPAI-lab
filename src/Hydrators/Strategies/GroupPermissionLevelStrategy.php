@@ -1,9 +1,9 @@
 <?php
 
-namespace src\Hydrators\Strategies;
+namespace LinkyApp\Hydrators\Strategies;
 
-use src\Enums\GroupPermissionLevel;
-use src\Hydrators\Interfaces\IStrategy;
+use LinkyApp\Enums\GroupPermissionLevel;
+use LinkyApp\Hydrators\Interfaces\IStrategy;
 
 class GroupPermissionLevelStrategy implements IStrategy
 {

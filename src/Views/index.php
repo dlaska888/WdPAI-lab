@@ -1,6 +1,6 @@
 <?php
 
-use src\Views\Modules\IconModule; ?>
+use LinkyApp\Views\Modules\IconModule; ?>
 <!DOCTYPE html>
 <html lang="en">
 

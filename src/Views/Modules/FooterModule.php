@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Views\Modules;
+namespace LinkyApp\Views\Modules;
 
 class FooterModule
 {

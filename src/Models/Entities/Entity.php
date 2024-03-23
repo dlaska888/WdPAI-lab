@@ -1,12 +1,12 @@
 <?php
 
-namespace src\Models\Entities;
+namespace LinkyApp\Models\Entities;
 
 use DateTime;
-use src\Helpers\UUIDGenerator;
-use src\Hydrators\Attributes\HydrationStrategy;
-use src\Hydrators\Strategies\BooleanStrategy;
-use src\Hydrators\Strategies\DateTimeStrategy;
+use LinkyApp\Helpers\UUIDGenerator;
+use LinkyApp\Hydrators\Attributes\HydrationStrategy;
+use LinkyApp\Hydrators\Strategies\BooleanStrategy;
+use LinkyApp\Hydrators\Strategies\DateTimeStrategy;
 
 class Entity
 {

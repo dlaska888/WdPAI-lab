@@ -1,9 +1,9 @@
 <?php
 
-namespace src\Controllers;
+namespace LinkyApp\Controllers;
 
-use src\Exceptions\ValidationException;
-use src\Validators\ValidationResult;
+use LinkyApp\Exceptions\ValidationException;
+use LinkyApp\Validators\ValidationResult;
 
 abstract class AppController
 {
@@ -18,7 +18,7 @@ abstract class AppController
     {
         return $this->requestBody;
     }
-
+    
     protected function validateRequestData(?array $data, string $validatorClass): void
     {
         if ($data === null) {

@@ -1,14 +1,14 @@
 <?php
 
-namespace src\LinkyRouting;
+namespace LinkyApp\LinkyRouting;
 
-use src\LinkyRouting\Exceptions\RouterBuilderException;
-use src\LinkyRouting\Helpers\ControllerMapper;
-use src\LinkyRouting\Helpers\HttpResponseHandler;
-use src\LinkyRouting\Interfaces\ISessionHandler;
-use src\LinkyRouting\Middleware\AuthorizationMiddleware;
-use src\LinkyRouting\Middleware\Interfaces\IMiddleware;
-use src\LinkyRouting\Middleware\MiddlewareChain;
+use LinkyApp\LinkyRouting\Exceptions\RouterBuilderException;
+use LinkyApp\LinkyRouting\Helpers\ControllerMapper;
+use LinkyApp\LinkyRouting\Helpers\HttpResponseHandler;
+use LinkyApp\LinkyRouting\Interfaces\ISessionHandler;
+use LinkyApp\LinkyRouting\Middleware\AuthorizationMiddleware;
+use LinkyApp\LinkyRouting\Middleware\Interfaces\IMiddleware;
+use LinkyApp\LinkyRouting\Middleware\MiddlewareChain;
 
 class RouterBuilder
 {

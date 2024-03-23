@@ -1,10 +1,10 @@
 <?php
 
-namespace src\Models\Entities;
+namespace LinkyApp\Models\Entities;
 
-use src\Enums\GroupPermissionLevel;
-use src\Hydrators\Attributes\HydrationStrategy;
-use src\Hydrators\Strategies\GroupPermissionLevelStrategy;
+use LinkyApp\Enums\GroupPermissionLevel;
+use LinkyApp\Hydrators\Attributes\HydrationStrategy;
+use LinkyApp\Hydrators\Strategies\GroupPermissionLevelStrategy;
 
 class LinkGroupShare extends Entity
 {

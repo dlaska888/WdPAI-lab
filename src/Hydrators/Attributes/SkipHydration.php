@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Hydrators\Attributes;
+namespace LinkyApp\Hydrators\Attributes;
 
 use Attribute;
 

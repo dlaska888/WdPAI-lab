@@ -1,9 +1,9 @@
 <?php
 
-namespace src\LinkyRouting\Middleware\Interfaces;
+namespace LinkyApp\LinkyRouting\Middleware\Interfaces;
 
-use src\LinkyRouting\Request;
-use src\LinkyRouting\Responses\Response;
+use LinkyApp\LinkyRouting\Request;
+use LinkyApp\LinkyRouting\Responses\Response;
 
 interface IMiddleware
 {

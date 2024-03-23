@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting\Attributes\Authorization;
+namespace LinkyApp\LinkyRouting\Attributes\Authorization;
 
 use Attribute;
 

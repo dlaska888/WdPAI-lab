@@ -1,8 +1,8 @@
 <?php
 
-namespace src\LinkyRouting\Helpers;
+namespace LinkyApp\LinkyRouting\Helpers;
 
-use src\LinkyRouting\Route;
+use LinkyApp\LinkyRouting\Route;
 
 class RouteResolver
 {

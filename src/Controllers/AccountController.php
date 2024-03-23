@@ -1,28 +1,28 @@
 <?php
 
-namespace src\Controllers;
+namespace LinkyApp\Controllers;
 
-use src\Enums\UserRole;
-use src\Exceptions\BadRequestException;
-use src\Exceptions\NotFoundException;
-use src\Handlers\UserSessionHandler;
-use src\LinkyRouting\Attributes\Authorization\Authorize;
-use src\LinkyRouting\Attributes\Authorization\SkipAuthorization;
-use src\LinkyRouting\Attributes\Controller\ApiController;
-use src\LinkyRouting\Attributes\HttpMethod\HttpDelete;
-use src\LinkyRouting\Attributes\HttpMethod\HttpGet;
-use src\LinkyRouting\Attributes\HttpMethod\HttpPost;
-use src\LinkyRouting\Attributes\HttpMethod\HttpPut;
-use src\LinkyRouting\Attributes\Route;
-use src\LinkyRouting\Responses\BinaryFile;
-use src\LinkyRouting\Responses\Json;
-use src\Models\Entities\File;
-use src\Models\Entities\LinkyUser;
-use src\Repos\FileRepo;
-use src\Repos\UserRepo;
-use src\Validators\FileValidator;
-use src\Validators\UpdatePasswordValidator;
-use src\Validators\UpdateUserNameValidator;
+use LinkyApp\Enums\UserRole;
+use LinkyApp\Exceptions\BadRequestException;
+use LinkyApp\Exceptions\NotFoundException;
+use LinkyApp\Handlers\UserSessionHandler;
+use LinkyApp\LinkyRouting\Attributes\Authorization\Authorize;
+use LinkyApp\LinkyRouting\Attributes\Authorization\SkipAuthorization;
+use LinkyApp\LinkyRouting\Attributes\Controller\ApiController;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpDelete;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpGet;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpPost;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpPut;
+use LinkyApp\LinkyRouting\Attributes\Route;
+use LinkyApp\LinkyRouting\Responses\BinaryFile;
+use LinkyApp\LinkyRouting\Responses\Json;
+use LinkyApp\Models\Entities\File;
+use LinkyApp\Models\Entities\LinkyUser;
+use LinkyApp\Repos\FileRepo;
+use LinkyApp\Repos\UserRepo;
+use LinkyApp\Validators\FileValidator;
+use LinkyApp\Validators\UpdatePasswordValidator;
+use LinkyApp\Validators\UpdateUserNameValidator;
 
 #[ApiController]
 #[Authorize([UserRole::NORMAL, UserRole::ADMIN])]

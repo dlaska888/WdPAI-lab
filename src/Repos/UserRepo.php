@@ -1,9 +1,9 @@
 <?php
 
-namespace src\Repos;
+namespace LinkyApp\Repos;
 
+use LinkyApp\Models\Entities\LinkyUser;
 use PDO;
-use src\Models\Entities\LinkyUser;
 
 class UserRepo extends BaseRepo
 {

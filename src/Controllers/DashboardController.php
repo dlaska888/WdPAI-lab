@@ -1,13 +1,13 @@
 <?php
 
-namespace src\Controllers;
+namespace LinkyApp\Controllers;
 
-use src\Handlers\UserSessionHandler;
-use src\LinkyRouting\Attributes\Controller\MvcController;
-use src\LinkyRouting\Attributes\HttpMethod\HttpGet;
-use src\LinkyRouting\Attributes\Route;
-use src\LinkyRouting\Responses\Redirect;
-use src\LinkyRouting\Responses\View;
+use LinkyApp\Handlers\UserSessionHandler;
+use LinkyApp\LinkyRouting\Attributes\Controller\MvcController;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpGet;
+use LinkyApp\LinkyRouting\Attributes\Route;
+use LinkyApp\LinkyRouting\Responses\Redirect;
+use LinkyApp\LinkyRouting\Responses\View;
 
 #[MvcController]
 class DashboardController extends DefaultController

@@ -10,7 +10,7 @@ const EditLinkForm = (function () {
         const method = "PUT";
 
         const url = StringHelper.getFullUrl(formData.get("url"));
-        const title = formData.get("title") || StringHelper.getDomainName(url);
+        const title = formData.get("title") || await StringHelper.getPageTitle(url);
 
         formData.set("url", url);
         formData.set("title", title);

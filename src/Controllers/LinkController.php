@@ -1,35 +1,35 @@
 <?php
 
-namespace src\Controllers;
+namespace LinkyApp\Controllers;
 
-use src\Enums\GroupPermissionLevel;
-use src\Enums\UserRole;
-use src\Exceptions\BadRequestException;
-use src\Exceptions\ForbiddenException;
-use src\Handlers\UserSessionHandler;
-use src\LinkyRouting\Attributes\Authorization\Authorize;
-use src\LinkyRouting\Attributes\Controller\ApiController;
-use src\LinkyRouting\Attributes\HttpMethod\HttpDelete;
-use src\LinkyRouting\Attributes\HttpMethod\HttpGet;
-use src\LinkyRouting\Attributes\HttpMethod\HttpPost;
-use src\LinkyRouting\Attributes\HttpMethod\HttpPut;
-use src\LinkyRouting\Attributes\Route;
-use src\LinkyRouting\Enums\HttpStatusCode;
-use src\LinkyRouting\Responses\Json;
-use src\Models\Entities\Link;
-use src\Models\Entities\LinkGroup;
-use src\Models\Entities\LinkGroupShare;
-use src\Repos\LinkGroupRepo;
-use src\Repos\LinkGroupShareRepo;
-use src\Repos\LinkRepo;
-use src\Repos\UserRepo;
-use src\Validators\AddLinkGroupShareValidator;
-use src\Validators\AddLinkGroupValidator;
-use src\Validators\AddLinkValidator;
-use src\Validators\SearchLinkGroupsValidator;
-use src\Validators\UpdateLinkGroupShareValidator;
-use src\Validators\UpdateLinkGroupValidator;
-use src\Validators\UpdateLinkValidator;
+use LinkyApp\Enums\GroupPermissionLevel;
+use LinkyApp\Enums\UserRole;
+use LinkyApp\Exceptions\BadRequestException;
+use LinkyApp\Exceptions\ForbiddenException;
+use LinkyApp\Handlers\UserSessionHandler;
+use LinkyApp\LinkyRouting\Attributes\Authorization\Authorize;
+use LinkyApp\LinkyRouting\Attributes\Controller\ApiController;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpDelete;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpGet;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpPost;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpPut;
+use LinkyApp\LinkyRouting\Attributes\Route;
+use LinkyApp\LinkyRouting\Enums\HttpStatusCode;
+use LinkyApp\LinkyRouting\Responses\Json;
+use LinkyApp\Models\Entities\Link;
+use LinkyApp\Models\Entities\LinkGroup;
+use LinkyApp\Models\Entities\LinkGroupShare;
+use LinkyApp\Repos\LinkGroupRepo;
+use LinkyApp\Repos\LinkGroupShareRepo;
+use LinkyApp\Repos\LinkRepo;
+use LinkyApp\Repos\UserRepo;
+use LinkyApp\Validators\AddLinkGroupShareValidator;
+use LinkyApp\Validators\AddLinkGroupValidator;
+use LinkyApp\Validators\AddLinkValidator;
+use LinkyApp\Validators\SearchLinkGroupsValidator;
+use LinkyApp\Validators\UpdateLinkGroupShareValidator;
+use LinkyApp\Validators\UpdateLinkGroupValidator;
+use LinkyApp\Validators\UpdateLinkValidator;
 
 #[ApiController]
 #[Authorize([UserRole::NORMAL, UserRole::ADMIN])]

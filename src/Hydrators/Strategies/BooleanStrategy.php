@@ -1,9 +1,9 @@
 <?php
 
-namespace src\Hydrators\Strategies;
+namespace LinkyApp\Hydrators\Strategies;
 
 use InvalidArgumentException;
-use src\Hydrators\Interfaces\IStrategy;
+use LinkyApp\Hydrators\Interfaces\IStrategy;
 
 class BooleanStrategy implements IStrategy
 {

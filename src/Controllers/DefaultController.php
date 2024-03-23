@@ -1,13 +1,13 @@
 <?php
 
-namespace src\Controllers;
+namespace LinkyApp\Controllers;
 
-use src\Exceptions\NotFoundException;
-use src\LinkyRouting\Attributes\Controller\MvcController;
-use src\LinkyRouting\Attributes\HttpMethod\HttpGet;
-use src\LinkyRouting\Attributes\Route;
-use src\LinkyRouting\Responses\BinaryFile;
-use src\LinkyRouting\Responses\View;
+use LinkyApp\Exceptions\NotFoundException;
+use LinkyApp\LinkyRouting\Attributes\Controller\MvcController;
+use LinkyApp\LinkyRouting\Attributes\HttpMethod\HttpGet;
+use LinkyApp\LinkyRouting\Attributes\Route;
+use LinkyApp\LinkyRouting\Responses\BinaryFile;
+use LinkyApp\LinkyRouting\Responses\View;
 
 #[MvcController]
 class DefaultController extends AppController

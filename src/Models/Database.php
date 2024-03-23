@@ -1,6 +1,6 @@
 <?php
 
-namespace src\Models;
+namespace LinkyApp\Models;
 
 use PDO;
 

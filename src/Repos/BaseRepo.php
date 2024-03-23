@@ -1,19 +1,19 @@
 <?php
 
-namespace src\Repos;
+namespace LinkyApp\Repos;
 
 use Exception;
 use InvalidArgumentException;
+use LinkyApp\Exceptions\NotFoundException;
+use LinkyApp\Helpers\StringHelper;
+use LinkyApp\Hydrators\EntityHydrator;
+use LinkyApp\Hydrators\Interfaces\IHydrator;
+use LinkyApp\Models\Database;
+use LinkyApp\Models\Entities\Entity;
+use LinkyApp\Repos\Interfaces\IRepo;
 use PDO;
 use ReflectionClass;
 use ReflectionException;
-use src\Exceptions\NotFoundException;
-use src\Helpers\StringHelper;
-use src\Hydrators\EntityHydrator;
-use src\Hydrators\Interfaces\IHydrator;
-use src\Models\Database;
-use src\Models\Entities\Entity;
-use src\Repos\Interfaces\IRepo;
 
 /**
  * @template T of Entity
@@ -45,7 +45,7 @@ abstract class BaseRepo implements IRepo
 
     /**
      * @param array<string, mixed> $data
-     * @return T
+     * @return Entity
      */
     protected function mapToObject(array $data)
     {
@@ -69,7 +69,7 @@ abstract class BaseRepo implements IRepo
     }
 
     /**
-     * @return list<T>
+     * @return Entity
      * @throws ReflectionException
      */
     public function findAll(): array
@@ -90,7 +90,7 @@ abstract class BaseRepo implements IRepo
 
     /**
      * @param string $id
-     * @return T
+     * @return Entity
      * @throws ReflectionException
      * @throws NotFoundException
      */
@@ -110,8 +110,8 @@ abstract class BaseRepo implements IRepo
     }
 
     /**
-     * @param T $model
-     * @return T
+     * @param Entity $model
+     * @return Entity
      * @throws ReflectionException|NotFoundException
      */
     public function insert($model)
@@ -140,8 +140,8 @@ abstract class BaseRepo implements IRepo
     }
 
     /**
-     * @param T $model
-     * @return T
+     * @param Entity $model
+     * @return Entity
      * @throws ReflectionException|NotFoundException
      */
     public function update($model)

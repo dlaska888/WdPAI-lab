@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting\Helpers;
+namespace LinkyApp\LinkyRouting\Helpers;
 
 class ControllerMapper
 {
@@ -36,6 +36,7 @@ class ControllerMapper
     {
         $filename = pathinfo($phpFile, PATHINFO_FILENAME);
         $namespace = str_replace('/', '\\', $this->controllersPath);
+        $namespace = str_replace('src\\', 'LinkyApp\\', $namespace);
         return $namespace . '\\' . $filename;
     }
 }

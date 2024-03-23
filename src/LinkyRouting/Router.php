@@ -1,12 +1,12 @@
 <?php
 
-namespace src\LinkyRouting;
+namespace LinkyApp\LinkyRouting;
 
-use src\LinkyRouting\Enums\HttpStatusCode;
-use src\LinkyRouting\Helpers\HttpResponseHandler;
-use src\LinkyRouting\Helpers\RouteResolver;
-use src\LinkyRouting\Middleware\Interfaces\IMiddleware;
-use src\LinkyRouting\Responses\Error;
+use LinkyApp\LinkyRouting\Enums\HttpStatusCode;
+use LinkyApp\LinkyRouting\Helpers\HttpResponseHandler;
+use LinkyApp\LinkyRouting\Helpers\RouteResolver;
+use LinkyApp\LinkyRouting\Middleware\Interfaces\IMiddleware;
+use LinkyApp\LinkyRouting\Responses\Error;
 
 class Router
 {

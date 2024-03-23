@@ -1,10 +1,10 @@
 <?php
 
-namespace src\LinkyRouting\Middleware;
+namespace LinkyApp\LinkyRouting\Middleware;
 
-use src\LinkyRouting\Middleware\Interfaces\IMiddleware;
-use src\LinkyRouting\Request;
-use src\LinkyRouting\Responses\Response;
+use LinkyApp\LinkyRouting\Middleware\Interfaces\IMiddleware;
+use LinkyApp\LinkyRouting\Request;
+use LinkyApp\LinkyRouting\Responses\Response;
 
 abstract class BaseMiddleware implements IMiddleware
 {

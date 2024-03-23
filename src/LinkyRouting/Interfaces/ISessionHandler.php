@@ -1,6 +1,6 @@
 <?php
 
-namespace src\LinkyRouting\Interfaces;
+namespace LinkyApp\LinkyRouting\Interfaces;
 
 interface ISessionHandler
 {

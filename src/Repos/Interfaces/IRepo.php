@@ -1,8 +1,8 @@
 <?php
 
-namespace src\Repos\Interfaces;
+namespace LinkyApp\Repos\Interfaces;
 
-use src\Models\Entities\Entity;
+use LinkyApp\Models\Entities\Entity;
 
 interface IRepo
 {
