@@ -47,5 +47,3 @@ RUN alias composer="php /usr/local/bin/composer/composer.phar"
 
 RUN composer require php-webdriver/webdriver
 RUN composer install
-
-VOLUME ["/app"]

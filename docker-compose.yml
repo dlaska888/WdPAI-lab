@@ -51,6 +51,7 @@ services:
     volumes:
       - .:/app/
       - ./uploads:/app/uploads/
+      - /app/vendor/
   postgres:
     image: postgres:alpine3.18
     restart: always
