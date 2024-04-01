@@ -30,9 +30,9 @@ class StringHelper {
         return url.match("^(.*)://") ? url : "https://" + url;
     }
 
-    static async getPageTitle(url, maxchars = 50) {
+    static async getPageTitle(url, maxLength = 50) {
         return await ApiClient
-            .fetchData(`/util/webtitle?url=${url}`)
+            .fetchData(`/util/webtitle?url=${url}&maxLength=${maxLength}`)
             .then(res => {
                 let result;
                 
@@ -40,11 +40,11 @@ class StringHelper {
                     result = res.data.title;
                 }
                 else{
-                    console.log("Page title fetch error! ", res.message);
+                    console.error("Page title fetch error! ", res.message);
                     result = this.getDomainName(url);
                 }
                     
-                return result.substring(0, maxchars);
+                return result;
             });
     }
 }

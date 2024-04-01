@@ -47,7 +47,7 @@ abstract class BaseValidator
         return $this;
     }
 
-    public function minLength(string $field, string $minLength, string $message = 'Value is too short.'): BaseValidator
+    public function minLength(string $field, int $minLength, string $message = 'Value is too short.'): BaseValidator
     {
         if ($this->hasValue($field) && strlen($this->data[$field]) < $minLength) {
             $this->addError($field, $message);
@@ -56,9 +56,9 @@ abstract class BaseValidator
         return $this;
     }
 
-    public function maxLength(string $field, string $maxLength, string $message = 'Value is too long.'): BaseValidator
+    public function maxLength(string $field, int $maxLength, string $message = 'Value is too long.'): BaseValidator
     {
-        if ($this->hasValue($field) && strlen($this->data[$field]) > $maxLength) {
+        if ($this->hasValue($field) && mb_strlen($this->data[$field]) > $maxLength) {
             $this->addError($field, $message);
         }
 
@@ -67,7 +67,7 @@ abstract class BaseValidator
 
     public function minValue(string $field, int $minValue, string $message = 'Value is too small.'): BaseValidator
     {
-        if ($this->hasValue($field) && $this->data[$field] < $minValue) {
+        if ($this->hasValue($field) && mb_strlen($this->data[$field]) < $minValue) {
             $this->addError($field, $message);
         }
 

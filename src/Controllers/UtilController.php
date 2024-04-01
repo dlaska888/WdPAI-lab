@@ -7,7 +7,7 @@ use LinkyApp\LinkyRouting\Attributes\Authorization\Authorize;
 use LinkyApp\LinkyRouting\Attributes\Controller\ApiController;
 use LinkyApp\LinkyRouting\Attributes\Route;
 use LinkyApp\LinkyRouting\Responses\Json;
-use LinkyApp\Validators\GetWebTitle;
+use LinkyApp\Validators\GetWebTitleValidator;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -18,7 +18,7 @@ class UtilController extends AppController
     #[Route("util/webtitle")]
     function getPageTitle(): Json
     {
-        $this->validateRequestData($_GET, GetWebTitle::class);
+        $this->validateRequestData($_GET, GetWebTitleValidator::class);
 
         $client = HttpClient::create();
         $url = $_GET['url'];
@@ -29,6 +29,8 @@ class UtilController extends AppController
         $crawler = new Crawler($htmlContent);
 
         $title = $crawler->filter('title')->text();
+
+        $title = isset($_GET['maxLength']) ? mb_substr($title, 0, $_GET['maxLength']) : $title;
 
         return new Json(["title" => $title]);
     }

@@ -2,12 +2,14 @@
 
 namespace LinkyApp\Validators;
 
-class GetWebTitle extends BaseValidator
+class GetWebTitleValidator extends BaseValidator
 {
     protected function addValidation(): void
     {
         $this
             ->notNull('url')
-            ->url('url');
+            ->url('url')
+            ->minValue('maxLength', 0);
+
     }
 }

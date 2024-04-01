@@ -3,7 +3,8 @@
         "voku/simple_html_dom": "^4.8",
         "voku/portable-utf8": "^6.0",
         "symfony/dom-crawler": "^7.0",
-        "symfony/http-client": "^7.0"
+        "symfony/http-client": "^7.0",
+      "ext-mbstring": "*"
     },
     "autoload": {
         "psr-4": {
