@@ -1,8 +1,4 @@
-# Project Readme
-
-## Project Name
-
-**Project Name**: LinkyApp
+# LinkyApp
 
 ## Project Description
 
