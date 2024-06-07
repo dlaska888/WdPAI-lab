@@ -1,7 +1,6 @@
 import FormModule from "./FormModule.js";
 import NotificationService from "../NotificationService.js";
 import ApiClient from "../ApiClient.js";
-import StringHelper from "../StringHelper.js";
 import {domain} from "../../appConfig.js"
 
 const AddLinkForm = (function () {
@@ -39,7 +38,7 @@ const AddLinkForm = (function () {
 
         const formFields = [
             {type: "select", name: "groupId", options: options},
-            {type: "text", name: "title", placeholder: "Title", value: tab.title},
+            {type: "text", name: "title", placeholder: "Title", value: tab.title.slice(0, 50)},
             {type: "url", name: "url", placeholder: "Url", value: tab.url, required: true},
         ];
 

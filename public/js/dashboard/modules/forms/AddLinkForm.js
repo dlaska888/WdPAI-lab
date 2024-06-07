@@ -10,7 +10,7 @@ const AddLinkForm = (function () {
         const method = "POST";
         
         const url = StringHelper.getFullUrl(formData.get("url"));
-        const title = formData.get("title") || await StringHelper.getPageTitle(url);
+        const title = formData.get("title") || await ApiClient.fetchPageTitle(url);
         
         formData.set("url", url);
         formData.set("title", title);

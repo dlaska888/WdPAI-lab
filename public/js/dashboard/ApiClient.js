@@ -55,6 +55,24 @@ class ApiClient {
             return result;
         }
     }
+
+    static async fetchPageTitle(url, maxLength = 50) {
+        return await ApiClient
+            .fetchData(`/util/webtitle?url=${url}&maxLength=${maxLength}`)
+            .then(res => {
+                let result;
+                
+                if (res.success){
+                    result = res.data.title;
+                }
+                else{
+                    console.error("Page title fetch error! ", res.message);
+                    result = this.getDomainName(url);
+                }
+                    
+                return result;
+            });
+    }
 }
 
 export default ApiClient;

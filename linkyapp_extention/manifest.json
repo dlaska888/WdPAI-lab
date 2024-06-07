@@ -7,7 +7,7 @@
     "48": "icon.png"
   },
   "host_permissions": [
-    "https://localhost/"
+    "https://srv24.mikr.us:20136/*"
   ],
   "permissions": [
     "activeTab",

@@ -1,5 +1,3 @@
-import ApiClient from "../dashboard/ApiClient.js"
-
 class StringHelper {
     static getDomainName(url) {
         try {
@@ -28,24 +26,6 @@ class StringHelper {
 
     static getFullUrl(url) {
         return url.match("^(.*)://") ? url : "https://" + url;
-    }
-
-    static async getPageTitle(url, maxLength = 50) {
-        return await ApiClient
-            .fetchData(`/util/webtitle?url=${url}&maxLength=${maxLength}`)
-            .then(res => {
-                let result;
-                
-                if (res.success){
-                    result = res.data.title;
-                }
-                else{
-                    console.error("Page title fetch error! ", res.message);
-                    result = this.getDomainName(url);
-                }
-                    
-                return result;
-            });
     }
 }
 
