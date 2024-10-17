@@ -278,7 +278,6 @@ main {
 
 			& .group-links {
 				height: 100%;
-				min-height: min-content;
 				padding: 0.5rem;
 				padding-top: 0.25rem;
 				
