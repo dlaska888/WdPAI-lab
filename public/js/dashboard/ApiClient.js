@@ -1,3 +1,4 @@
+import StringHelper from './StringHelper.js';
 class ApiClient {
     static createResultObject(success, data, message) {
         return { success, data, message };
@@ -67,7 +68,7 @@ class ApiClient {
                 }
                 else{
                     console.error("Page title fetch error! ", res.message);
-                    result = this.getDomainName(url);
+                    result = StringHelper.getDomainName(url);
                 }
                     
                 return result;
